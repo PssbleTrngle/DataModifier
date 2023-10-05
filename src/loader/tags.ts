@@ -32,7 +32,7 @@ export class TagRegistry {
 
    list() {
       if (!this.frozen) throw new Error('TagRegistry has not been frozen yet')
-      return [...this.entries?.keys()]
+      return [...this.entries.keys()]
    }
 
    get(id: string) {
