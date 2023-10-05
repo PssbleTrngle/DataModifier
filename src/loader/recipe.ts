@@ -13,6 +13,7 @@ import { fromJson, toJson } from '../textHelper'
 import SmeltingParser from '../parser/recipe/vanilla/smelting'
 import SmithingParser from '../parser/recipe/vanilla/smithing'
 import AssemblyRecipeParser from '../parser/recipe/create/assembly'
+import StonecuttingParser from '../parser/recipe/vanilla/stonecutting'
 
 export default class RecipeLoader {
    private readonly recipeParsers = new Map<string, RecipeParser<RecipeDefinition, Recipe>>()
@@ -31,6 +32,7 @@ export default class RecipeLoader {
       this.registerParser('minecraft:blasting', new SmeltingParser())
       this.registerParser('minecraft:campfire_cooking', new SmeltingParser())
       this.registerParser('minecraft:smithing', new SmithingParser())
+      this.registerParser('minecraft:stonecutting', new StonecuttingParser())
 
       this.registerParser('create:mixing', new ProcessingRecipeParser())
       this.registerParser('create:pressing', new ProcessingRecipeParser())

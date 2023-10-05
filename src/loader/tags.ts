@@ -1,5 +1,5 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { uniqBy } from 'lodash-es'
+import { orderBy, uniqBy } from 'lodash-es'
 import { Logger } from '../logger'
 import { TagDefinition, TagEntry } from '../schema/tag'
 import { fromJson } from '../textHelper'
@@ -26,7 +26,10 @@ export class TagRegistry {
 
       const slicedId = this.parseId(id)
       const existingEntries = this.entries.get(slicedId) ?? []
-      const unique = uniqBy([...existingEntries, ...definition.values], it => entryId(it))
+      const unique = orderBy(
+         uniqBy([...existingEntries, ...definition.values], it => entryId(it)),
+         it => entryId(it)
+      )
       this.entries.set(slicedId, unique)
    }
 
