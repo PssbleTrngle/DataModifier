@@ -129,10 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-test-output
+# webstorm
+.idea
 
-tmp
-resources
-merged
-merged.zip
-replacements.json
+test-output
