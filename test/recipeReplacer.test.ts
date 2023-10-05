@@ -3,13 +3,16 @@ import PackLoader from '../src/loader/pack'
 import createLogger from '../src/logger'
 import createTestAcceptor from './TestAcceptor'
 
-let loader: PackLoader
+const logger = createLogger()
+const loader = new PackLoader(logger)
 
-beforeEach(async () => {
-   const logger = createLogger()
-   loader = new PackLoader(logger)
+beforeAll(async () => {
    const resolver = createResolver({ from: 'example' })
    await loader.loadFrom(resolver)
+}, 10_000)
+
+afterEach(() => {
+   loader.clear()
 })
 
 test('replaces ingredients', async () => {

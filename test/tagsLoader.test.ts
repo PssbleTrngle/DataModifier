@@ -8,6 +8,10 @@ const loader = new PackLoader(logger)
 beforeAll(async () => {
    const resolver = createResolver({ from: 'example' })
    await loader.loadFrom(resolver)
+}, 10_000)
+
+afterEach(() => {
+   loader.clear()
 })
 
 test('loads tags correctly', async () => {

@@ -17,7 +17,7 @@ import StonecuttingParser from '../parser/recipe/vanilla/stonecutting'
 
 export default class RecipeLoader {
    private readonly recipeParsers = new Map<string, RecipeParser<RecipeDefinition, Recipe>>()
-   private readonly rules: RecipeRule[] = []
+   private rules: RecipeRule[] = []
 
    private readonly ignoredRecipeTypes = new Set<string>()
    private readonly unknownRecipeTypes = new Set<string>()
@@ -86,6 +86,11 @@ export default class RecipeLoader {
       this.recipes.set(id, recipe)
 
       return true
+   }
+
+   clear() {
+      this.unknownRecipeTypes.clear()
+      this.rules = []
    }
 
    emit(acceptor: Acceptor) {

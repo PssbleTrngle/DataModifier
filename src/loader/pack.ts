@@ -26,6 +26,10 @@ export default class PackLoader implements Loader {
       this.tags.freeze()
    }
 
+   clear() {
+      this.recipes.clear()
+   }
+
    emit(acceptor: Acceptor) {
       this.recipes.emit(acceptor)
    }
