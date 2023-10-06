@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 type Logable = string | number | boolean | null | undefined
-type LogMethod = (...args: Logable[]) => void
+type LogMethod = (message: Logable) => void
 
 type LogMethods = {
    error: LogMethod
@@ -13,15 +13,15 @@ export type Logger = LogMethods & {
    group(): Logger
 }
 
-function wrapLogMethods(logMethods: LogMethods) {
+export function wrapLogMethods(logMethods: LogMethods) {
    return { ...logMethods, group: () => subLogger(logMethods) }
 }
 
 function subLogger(logger: LogMethods): Logger {
    return wrapLogMethods({
-      error: (...args) => logger.error(`   `, ...args),
-      warn: (...args) => logger.error(`   `, ...args),
-      info: (...args) => logger.error(`   `, ...args),
+      error: message => logger.error(`   ${message}`),
+      warn: message => logger.warn(`   ${message}`),
+      info: message => logger.info(`   ${message}`),
    })
 }
 

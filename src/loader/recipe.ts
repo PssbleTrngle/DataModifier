@@ -3,28 +3,32 @@ import { Logger } from '../logger'
 import RecipeParser, { Recipe } from '../parser/recipe'
 import ShapedParser from '../parser/recipe/vanilla/shaped'
 import { RecipeDefinition } from '../schema/recipe'
-import { TagRegistry } from './tags'
-import RecipeRule from '../rule/recipe'
 import { Id } from '../common/id'
-import { Ingredient, IngredientTest, resolveIngredientTest, Result } from '../common/ingredient'
 import ShapelessParser from '../parser/recipe/vanilla/shapeless'
 import ProcessingRecipeParser from '../parser/recipe/create/processing'
-import { fromJson, toJson } from '../textHelper'
+import { fromJson } from '../textHelper'
 import SmeltingParser from '../parser/recipe/vanilla/smelting'
 import SmithingParser from '../parser/recipe/vanilla/smithing'
 import AssemblyRecipeParser from '../parser/recipe/create/assembly'
 import StonecuttingParser from '../parser/recipe/vanilla/stonecutting'
 
-export default class RecipeLoader {
+export interface RecipeRegistry {
+   forEach(consumer: (recipe: Recipe, id: Id) => void): void
+}
+
+export default class RecipeLoader implements RecipeRegistry {
    private readonly recipeParsers = new Map<string, RecipeParser<RecipeDefinition, Recipe>>()
-   private rules: RecipeRule[] = []
 
    private readonly ignoredRecipeTypes = new Set<string>()
    private readonly unknownRecipeTypes = new Set<string>()
 
    private readonly recipes = new Map<Id, Recipe>()
 
-   constructor(private readonly logger: Logger, private readonly itemTags: TagRegistry) {
+   forEach(consumer: (recipe: Recipe, id: Id) => void) {
+      this.recipes.forEach(consumer)
+   }
+
+   constructor(private readonly logger: Logger) {
       this.registerParser('minecraft:crafting_shaped', new ShapedParser())
       this.registerParser('minecraft:crafting_shapeless', new ShapelessParser())
       this.registerParser('minecraft:smelting', new SmeltingParser())
@@ -55,12 +59,8 @@ export default class RecipeLoader {
       this.recipeParsers.set(recipeType, parser)
    }
 
-   addRule(rule: RecipeRule) {
-      this.rules.push(rule)
-   }
-
    accept: Acceptor = (path, content) => {
-      const match = path.match(/data\/(?<namespace>[\w-]+)\/recipes\/(?<rest>[\w-/]+).json/)
+      const match = /data\/(?<namespace>[\w-]+)\/recipes\/(?<rest>[\w-/]+).json/.exec(path)
       if (!match?.groups) return false
 
       const { namespace, rest } = match.groups
@@ -90,29 +90,5 @@ export default class RecipeLoader {
 
    clear() {
       this.unknownRecipeTypes.clear()
-      this.rules = []
-   }
-
-   emit(acceptor: Acceptor) {
-      this.recipes.forEach((recipe, id) => {
-         const path = `data/${id.namespace}/recipe/${id.path}.json`
-
-         const rules = this.rules.filter(it => it.matches(recipe))
-         if (rules.length === 0) return
-
-         const modified = rules.reduce((previous, rule) => rule.modify(previous), recipe)
-
-         acceptor(path, toJson(modified.toDefinition()))
-      })
-   }
-
-   replaceResult(test: IngredientTest, value: Result) {
-      const predicate = resolveIngredientTest(test, this.itemTags)
-      this.addRule(new RecipeRule([], [predicate], recipe => recipe.replaceResult(predicate, value)))
-   }
-
-   replaceIngredient(test: IngredientTest, value: Ingredient) {
-      const predicate = resolveIngredientTest(test, this.itemTags)
-      this.addRule(new RecipeRule([predicate], [], recipe => recipe.replaceIngredient(predicate, value)))
    }
 }

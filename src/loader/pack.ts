@@ -4,16 +4,37 @@ import { Logger } from '../logger'
 import Loader from './index'
 import RecipeLoader from './recipe'
 import TagsLoader from './tags'
+import RecipeEmitter, { RecipeRules } from '../emit/recipe'
+import TagEmitter, { TagRules } from '../emit/tags'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
 
-   tags = new TagsLoader(this.logger)
-   recipes = new RecipeLoader(this.logger, this.tags.registry('items'))
+   private readonly tagLoader = new TagsLoader(this.logger)
+   private readonly recipesLoader = new RecipeLoader(this.logger)
+
+   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader.registry('items'))
+   private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
+
+   registerRegistry(key: string) {
+      this.tagLoader.registerRegistry(key)
+   }
+
+   tagRegistry(key: string) {
+      return this.tagLoader.registry(key)
+   }
+
+   get recipes(): RecipeRules {
+      return this.recipeEmitter
+   }
+
+   get tags(): TagRules {
+      return this.tagEmitter
+   }
 
    private acceptors: Record<string, Acceptor> = {
-      'data/*/tags/**/*.json': this.tags.accept,
-      'data/*/recipes/**/*.json': this.recipes.accept,
+      'data/*/tags/**/*.json': this.tagLoader.accept,
+      'data/*/recipes/**/*.json': this.recipesLoader.accept,
    }
 
    async loadFrom(resolver: IResolver) {
@@ -23,19 +44,21 @@ export default class PackLoader implements Loader {
          return acceptor(path, content)
       })
 
-      this.tags.freeze()
+      this.tagLoader.freeze()
    }
 
    clear() {
-      this.recipes.clear()
+      this.recipesLoader.clear()
+      this.recipeEmitter.clear()
+      this.tagEmitter.clear()
    }
 
-   emit(acceptor: Acceptor) {
-      this.recipes.emit(acceptor)
+   async emit(acceptor: Acceptor) {
+      await Promise.all([this.recipeEmitter.emit(acceptor), this.tagEmitter.emit(acceptor)])
    }
 
    async run(from: IResolver, to: Acceptor) {
       await this.loadFrom(from)
-      this.emit(to)
+      await this.emit(to)
    }
 }

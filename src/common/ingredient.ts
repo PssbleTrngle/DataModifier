@@ -26,26 +26,59 @@ type FluidStack = Fluid &
 export type Result = ItemStack | FluidStack
 
 export type Predicate<T> = (value: T) => boolean
-type CommonTest<T> = RegExp | Predicate<T>
+export type CommonTest<T> = RegExp | Predicate<T> | T
 export type IngredientTest = CommonTest<Ingredient> | ItemId | ItemTagId
 
-export function resolveIngredientTest(test: IngredientTest, itemTags: TagRegistry): (value: Ingredient) => boolean {
-   return ingredient => {
-      if (typeof test === 'function') {
-         return test(ingredient)
-      } else if (typeof test === 'string') {
-         if (test.startsWith('#')) {
+export function resolveIDTest<T extends string>(test: CommonTest<T>, tags: TagRegistry): Predicate<T> {
+   if (typeof test === 'function') {
+      return test
+   } else if (typeof test === 'string') {
+      if (test.startsWith('#')) {
+         return ingredient => {
+            if (ingredient.startsWith('#')) return test === ingredient
+            else return tags.contains(test, ingredient)
+         }
+      } else {
+         return ingredient => {
+            return test === ingredient
+         }
+      }
+   } else {
+      return ingredient => {
+         return test.test(ingredient)
+      }
+   }
+}
+
+// TODO use `resolveIdTest`
+export function resolveIngredientTest(test: IngredientTest, itemTags: TagRegistry): Predicate<Ingredient> {
+   if (typeof test === 'function') {
+      return test
+   } else if (typeof test === 'string') {
+      if (test.startsWith('#')) {
+         return ingredient => {
             if ('item' in ingredient) return itemTags.contains(test, ingredient.item)
             if ('tag' in ingredient) return test === ingredient.tag
             // TODO fluid
             return false
-         } else {
-            if ('item' in ingredient) return test === ingredient.item
          }
-      } else if ('item' in ingredient) {
-         return test.test(ingredient.item)
+      } else {
+         return ingredient => {
+            if ('item' in ingredient) return test === ingredient.item
+            return false
+         }
       }
-
-      return false
+   } else if (test instanceof RegExp) {
+      return ingredient => {
+         if ('item' in ingredient) {
+            return test.test(ingredient.item)
+         }
+         return false
+      }
+   } else {
+      if ('tag' in test) return resolveIngredientTest(test.tag, itemTags)
+      if ('item' in test) return resolveIngredientTest(test.item, itemTags)
    }
+
+   return () => false
 }

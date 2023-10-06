@@ -1,9 +1,9 @@
 import { createResolver } from '@pssbletrngle/pack-resolver'
 import PackLoader from '../src/loader/pack'
-import createLogger from '../src/logger'
-import createTestAcceptor from './TestAcceptor'
+import createTestAcceptor from './mock/TestAcceptor'
+import createTestLogger from './mock/TestLogger'
 
-const logger = createLogger()
+const logger = createTestLogger()
 const loader = new PackLoader(logger)
 
 beforeAll(async () => {
@@ -15,14 +15,19 @@ afterEach(() => {
    loader.clear()
 })
 
+test('has no unknown recipe loaders', () => {
+   expect(logger.hasWarning()).toBeFalsy()
+   expect(logger.hasError()).toBeFalsy()
+})
+
 test('replaces ingredients', async () => {
-   const acceptor = createTestAcceptor('1')
+   const acceptor = createTestAcceptor()
 
    loader.recipes.replaceIngredient('minecraft:redstone', {
       item: 'minecraft:emerald',
    })
 
-   loader.emit(acceptor)
+   await loader.emit(acceptor)
 
    expect(acceptor.paths().length).toBe(14)
 
@@ -31,13 +36,13 @@ test('replaces ingredients', async () => {
 })
 
 test('replaces ingredients in create recipes', async () => {
-   const acceptor = createTestAcceptor('2')
+   const acceptor = createTestAcceptor()
 
    loader.recipes.replaceIngredient('#forge:raw_materials/zinc', {
       tag: '#forge:raw_materials/iron',
    })
 
-   loader.emit(acceptor)
+   await loader.emit(acceptor)
 
    expect(acceptor.paths().length).toBe(4)
 

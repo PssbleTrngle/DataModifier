@@ -4,12 +4,29 @@ import { Logger } from '../logger'
 import { TagDefinition, TagEntry } from '../schema/tag'
 import { fromJson } from '../textHelper'
 
-function entryId(entry: TagEntry) {
+export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
    else return entry.value
 }
 
-export class TagRegistry {
+export function orderTagEntries(entries: TagEntry[]) {
+   return orderBy(
+      uniqBy(entries, it => entryId(it)),
+      it => entryId(it)
+   )
+}
+
+export interface TagRegistry {
+   list(): string[]
+
+   get(id: string): TagEntry[] | undefined
+
+   resolve(id: string): TagEntry[]
+
+   contains(id: string, entry: string): boolean
+}
+
+class WriteableTagRegistry implements TagRegistry {
    private readonly entries = new Map<string, TagEntry[]>()
    private frozen = false
 
@@ -26,10 +43,7 @@ export class TagRegistry {
 
       const slicedId = this.parseId(id)
       const existingEntries = this.entries.get(slicedId) ?? []
-      const unique = orderBy(
-         uniqBy([...existingEntries, ...definition.values], it => entryId(it)),
-         it => entryId(it)
-      )
+      const unique = orderTagEntries([...existingEntries, ...definition.values])
       this.entries.set(slicedId, unique)
    }
 
@@ -44,6 +58,27 @@ export class TagRegistry {
       return this.entries.get(slicedId)
    }
 
+   resolve(id: string, level = 0): TagEntry[] {
+      if (level >= 100) throw new Error(`Circular TagDefinition: ${id}`)
+
+      const entries = this.get(id) ?? []
+      return entries.flatMap(it => {
+         const entry = entryId(it)
+         const required = typeof it === 'string' ? true : it.required !== false
+
+         if (entry.startsWith('#')) {
+            if (entry === id) throw new Error(`Circular TagDefinition: ${entry} -> ${id}`)
+            const step = this.resolve(entry)
+            if (required) return step
+            return step.map(it => {
+               if (typeof it === 'string') return { required: false, value: it }
+               return { ...it, required: false }
+            })
+         }
+         return [it]
+      })
+   }
+
    contains(id: string, entry: string) {
       return (
          this.get(id)?.some(it => {
@@ -55,15 +90,21 @@ export class TagRegistry {
 }
 
 export default class TagsLoader {
-   private registries: Record<string, TagRegistry> = {
-      items: new TagRegistry(),
-      blocks: new TagRegistry(),
+   private registries: Record<string, WriteableTagRegistry> = {}
+
+   constructor(private readonly logger: Logger) {
+      this.registerRegistry('items')
+      this.registerRegistry('blocks')
+      this.registerRegistry('fluids')
    }
 
-   constructor(private readonly logger: Logger) {}
+   registerRegistry(key: string) {
+      this.registries[key] = new WriteableTagRegistry()
+   }
 
    registry(key: string): TagRegistry {
-      if (!(key in this.registries)) throw new Error(`unknown registry tags '${key}'`)
+      if (!(key in this.registries))
+         throw new Error(`unknown registry tags '${key}'. Register them using \`registerRegistry\``)
       return this.registries[key]
    }
 
