@@ -16,8 +16,8 @@ afterEach(() => {
 })
 
 test('has no unknown recipe loaders', () => {
-   expect(logger.hasWarning()).toBeFalsy()
-   expect(logger.hasError()).toBeFalsy()
+   expect(logger.warnings()).toBe([])
+   expect(logger.errors()).toBe([])
 })
 
 test('replaces ingredients', async () => {
@@ -29,7 +29,7 @@ test('replaces ingredients', async () => {
 
    await loader.emit(acceptor)
 
-   expect(acceptor.paths().length).toBe(14)
+   expect(acceptor.paths().length).toBe(34)
 
    expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot()
    expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot()

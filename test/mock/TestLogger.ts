@@ -1,9 +1,9 @@
 import { Logger, wrapLogMethods } from '../../src/logger'
 
 export interface TestLogger extends Logger {
-   hasError(): boolean
-   hasWarning(): boolean
-   hasInfo(): boolean
+   errors(): ReadonlyArray<unknown>
+   warnings(): ReadonlyArray<unknown>
+   infoMessages(): ReadonlyArray<unknown>
 }
 
 export default function createTestLogger(): TestLogger {
@@ -17,9 +17,9 @@ export default function createTestLogger(): TestLogger {
       info: (...args) => infoMessages.push(args),
    }) as TestLogger
 
-   logger.hasError = () => !!errors.length
-   logger.hasWarning = () => !!warnings.length
-   logger.hasInfo = () => !!infoMessages.length
+   logger.errors = () => errors
+   logger.warnings = () => warnings
+   logger.infoMessages = () => infoMessages
 
    return logger
 }

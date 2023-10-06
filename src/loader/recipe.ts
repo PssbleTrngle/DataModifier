@@ -11,6 +11,8 @@ import SmeltingParser from '../parser/recipe/vanilla/smelting'
 import SmithingParser from '../parser/recipe/vanilla/smithing'
 import AssemblyRecipeParser from '../parser/recipe/create/assembly'
 import StonecuttingParser from '../parser/recipe/vanilla/stonecutting'
+import CuttingRecipeParser from '../parser/recipe/farmersdelight/cutting'
+import CookingRecipeParser from '../parser/recipe/farmersdelight/cooking'
 
 export interface RecipeRegistry {
    forEach(consumer: (recipe: Recipe, id: Id) => void): void
@@ -53,6 +55,9 @@ export default class RecipeLoader implements RecipeRegistry {
       this.registerParser('create:haunting', new ProcessingRecipeParser())
       this.registerParser('create:mechanical_crafting', new ShapedParser())
       this.registerParser('create:sequenced_assembly', new AssemblyRecipeParser())
+
+      this.registerParser('farmersdelight:cooking', new CookingRecipeParser())
+      this.registerParser('farmersdelight:cutting', new CuttingRecipeParser())
    }
 
    registerParser(recipeType: string, parser: RecipeParser<RecipeDefinition, Recipe>) {
