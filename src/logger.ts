@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 type Logable = string | number | boolean | null | undefined
-type LogMethod = (message: Logable) => void
+type LogMethod = (message: Logable, ...args: unknown[]) => void
 
 type LogMethods = {
    error: LogMethod
@@ -28,9 +28,9 @@ function subLogger(logger: LogMethods): Logger {
 export default function createLogger(): Logger {
    return wrapLogMethods({
       /* eslint-disable no-console */
-      error: (...args) => console.error(chalk.red(...args)),
-      warn: (...args) => console.warn(chalk.yellow(...args)),
-      info: (...args) => console.log(chalk.green(...args)),
+      error: (msg, ...args) => console.error(chalk.red(msg), ...args),
+      warn: (msg, ...args) => console.warn(chalk.yellow(msg), ...args),
+      info: (msg, ...args) => console.log(chalk.green(msg), ...args),
       /* eslint-enable no-console */
    })
 }

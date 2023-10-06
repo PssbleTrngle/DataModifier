@@ -25,5 +25,5 @@ export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefini
 }
 
 export default abstract class RecipeParser<TDefinition extends RecipeDefinition, TRecipe extends Recipe> {
-   abstract create(definition: TDefinition): TRecipe
+   abstract create(definition: TDefinition): TRecipe | null
 }

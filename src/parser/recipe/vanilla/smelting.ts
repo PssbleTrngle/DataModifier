@@ -7,7 +7,6 @@ type SmeltingRecipeDefinition = RecipeDefinition &
       ingredient: Ingredient
       result: Result
       experience?: number
-      cookingTime?: number
    }>
 
 class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
