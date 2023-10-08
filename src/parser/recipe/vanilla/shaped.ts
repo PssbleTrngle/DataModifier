@@ -3,7 +3,7 @@ import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { mapValues } from 'lodash-es'
 
-type ShapedRecipeDefinition = RecipeDefinition &
+export type ShapedRecipeDefinition = RecipeDefinition &
    Readonly<{
       key: Record<string, Ingredient>
       pattern: string[]

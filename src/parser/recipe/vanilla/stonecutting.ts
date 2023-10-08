@@ -2,7 +2,7 @@ import RecipeParser, { Recipe } from '..'
 import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
-type StonecuttingRecipeDefinition = RecipeDefinition &
+export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredient: Ingredient
       result: string

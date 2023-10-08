@@ -113,3 +113,53 @@ exports[`replaces ingredients in create recipes 4`] = `
   "type": "minecraft:smelting",
 }
 `;
+
+exports[`replaces ingredients with additional input filter 1`] = `
+{
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone",
+    },
+    "R": {
+      "item": "minecraft:emerald",
+    },
+    "T": {
+      "tag": "minecraft:planks",
+    },
+    "X": {
+      "item": "minecraft:iron_ingot",
+    },
+  },
+  "pattern": [
+    "TTT",
+    "#X#",
+    "#R#",
+  ],
+  "result": {
+    "item": "minecraft:piston",
+  },
+  "type": "minecraft:crafting_shaped",
+}
+`;
+
+exports[`replaces ingredients with additional input filter 2`] = `
+{
+  "key": {
+    "#": {
+      "tag": "minecraft:planks",
+    },
+    "X": {
+      "item": "minecraft:emerald",
+    },
+  },
+  "pattern": [
+    "###",
+    "#X#",
+    "###",
+  ],
+  "result": {
+    "item": "minecraft:note_block",
+  },
+  "type": "minecraft:crafting_shaped",
+}
+`;

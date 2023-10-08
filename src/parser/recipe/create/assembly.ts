@@ -3,7 +3,7 @@ import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { ProcessingRecipe, ProcessingRecipeDefinition } from './processing'
 
-type AssemblyRecipeDefinition = RecipeDefinition &
+export type AssemblyRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredient: Ingredient
       transitionalItem: Ingredient

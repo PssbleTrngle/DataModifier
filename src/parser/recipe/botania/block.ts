@@ -12,7 +12,7 @@ export type BlockInput =
    | BlockOutput
    | Readonly<{
         type: 'tag'
-        tag: `#${string}`
+        tag: string
      }>
 
 export type BlockRecipeDefinition = RecipeDefinition &

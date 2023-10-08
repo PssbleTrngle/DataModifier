@@ -2,7 +2,7 @@ import RecipeParser, { Recipe, replace } from '..'
 import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
-type SmithingRecipeDefinition = RecipeDefinition &
+export type SmithingRecipeDefinition = RecipeDefinition &
    Readonly<{
       base: Ingredient
       addition: Ingredient

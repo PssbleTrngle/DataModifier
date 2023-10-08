@@ -2,7 +2,7 @@ import RecipeParser, { Recipe, replace } from '..'
 import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
-type ShapelessRecipeDefinition = RecipeDefinition &
+export type ShapelessRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: Ingredient[]
       result: Result

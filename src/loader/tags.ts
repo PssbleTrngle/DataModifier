@@ -3,6 +3,7 @@ import { orderBy, uniqBy } from 'lodash-es'
 import { Logger } from '../logger'
 import { TagDefinition, TagEntry } from '../schema/tag'
 import { fromJson } from '../textHelper'
+import { encodeId, IdInput } from '../common/id'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
@@ -19,18 +20,19 @@ export function orderTagEntries(entries: TagEntry[]) {
 export interface TagRegistry {
    list(): string[]
 
-   get(id: string): TagEntry[] | undefined
+   get(id: IdInput): TagEntry[] | undefined
 
    resolve(id: string): TagEntry[]
 
-   contains(id: string, entry: string): boolean
+   contains(id: IdInput, entry: IdInput): boolean
 }
 
 class WriteableTagRegistry implements TagRegistry {
    private readonly entries = new Map<string, TagEntry[]>()
    private frozen = false
 
-   private parseId(id: string) {
+   private parseId(input: IdInput) {
+      const id = encodeId(input)
       return id.startsWith('#') ? id.substring(1) : id
    }
 
@@ -52,16 +54,17 @@ class WriteableTagRegistry implements TagRegistry {
       return [...this.entries.keys()]
    }
 
-   get(id: string) {
+   get(id: IdInput) {
       if (!this.frozen) throw new Error('TagRegistry has not been frozen yet')
       const slicedId = this.parseId(id)
       return this.entries.get(slicedId)
    }
 
-   resolve(id: string, level = 0): TagEntry[] {
+   resolve(input: IdInput, level = 0): TagEntry[] {
+      const id = encodeId(input)
       if (level >= 100) throw new Error(`Circular TagDefinition: ${id}`)
 
-      const entries = this.get(id) ?? []
+      const entries = this.get(input) ?? []
       return entries.flatMap(it => {
          const entry = entryId(it)
          const required = typeof it === 'string' ? true : it.required !== false
@@ -79,11 +82,12 @@ class WriteableTagRegistry implements TagRegistry {
       })
    }
 
-   contains(id: string, entry: string) {
+   contains(id: IdInput, entry: IdInput) {
+      const entryId = encodeId(entry)
       return (
          this.get(id)?.some(it => {
-            if (typeof it === 'string') return it === entry
-            return it.value === entry
+            if (typeof it === 'string') return it === entryId
+            return it.value === entryId
          }) ?? false
       )
    }
