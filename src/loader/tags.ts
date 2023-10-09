@@ -3,7 +3,8 @@ import { orderBy, uniqBy } from 'lodash-es'
 import { Logger } from '../logger'
 import { TagDefinition, TagEntry } from '../schema/tag'
 import { fromJson } from '../textHelper'
-import { encodeId, IdInput } from '../common/id'
+import { encodeId, IdInput, TagInput } from '../common/id'
+import Registry from '../common/registry'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
@@ -17,50 +18,54 @@ export function orderTagEntries(entries: TagEntry[]) {
    )
 }
 
+export interface TagRegistryHolder {
+   registry(key: string): TagRegistry
+}
+
 export interface TagRegistry {
    list(): string[]
 
-   get(id: IdInput): TagEntry[] | undefined
+   get(id: TagInput): TagEntry[] | undefined
 
-   resolve(id: string): TagEntry[]
+   resolve(id: TagInput): TagEntry[]
 
-   contains(id: IdInput, entry: IdInput): boolean
+   contains(id: TagInput, entry: IdInput): boolean
 }
 
 class WriteableTagRegistry implements TagRegistry {
-   private readonly entries = new Map<string, TagEntry[]>()
+   private readonly entries = new Registry<TagEntry[]>()
    private frozen = false
 
-   private parseId(input: IdInput) {
+   private validateId(input: IdInput) {
       const id = encodeId(input)
-      return id.startsWith('#') ? id.substring(1) : id
+      if (!id.startsWith('#')) throw new Error("tag id's must start with a '#'")
    }
 
    freeze() {
       this.frozen = true
    }
 
-   load(id: string, definition: TagDefinition) {
+   load(id: TagInput, definition: TagDefinition) {
+      this.validateId(id)
       if (this.frozen) throw new Error('TagRegistry has already been frozen')
 
-      const slicedId = this.parseId(id)
-      const existingEntries = this.entries.get(slicedId) ?? []
+      const existingEntries = this.entries.get(id) ?? []
       const unique = orderTagEntries([...existingEntries, ...definition.values])
-      this.entries.set(slicedId, unique)
+      this.entries.set(id, unique)
    }
 
    list() {
       if (!this.frozen) throw new Error('TagRegistry has not been frozen yet')
-      return [...this.entries.keys()]
+      return this.entries.keys()
    }
 
-   get(id: IdInput) {
+   get(id: TagInput) {
+      this.validateId(id)
       if (!this.frozen) throw new Error('TagRegistry has not been frozen yet')
-      const slicedId = this.parseId(id)
-      return this.entries.get(slicedId)
+      return this.entries.get(id)
    }
 
-   resolve(input: IdInput, level = 0): TagEntry[] {
+   resolve(input: TagInput, level = 0): TagEntry[] {
       const id = encodeId(input)
       if (level >= 100) throw new Error(`Circular TagDefinition: ${id}`)
 
@@ -71,7 +76,7 @@ class WriteableTagRegistry implements TagRegistry {
 
          if (entry.startsWith('#')) {
             if (entry === id) throw new Error(`Circular TagDefinition: ${entry} -> ${id}`)
-            const step = this.resolve(entry)
+            const step = this.resolve(entry as TagInput)
             if (required) return step
             return step.map(it => {
                if (typeof it === 'string') return { required: false, value: it }
@@ -82,10 +87,10 @@ class WriteableTagRegistry implements TagRegistry {
       })
    }
 
-   contains(id: IdInput, entry: IdInput) {
+   contains(id: TagInput, entry: IdInput) {
       const entryId = encodeId(entry)
       return (
-         this.get(id)?.some(it => {
+         this.resolve(id)?.some(it => {
             if (typeof it === 'string') return it === entryId
             return it.value === entryId
          }) ?? false
@@ -93,7 +98,7 @@ class WriteableTagRegistry implements TagRegistry {
    }
 }
 
-export default class TagsLoader {
+export default class TagsLoader implements TagRegistryHolder {
    private registries: Record<string, WriteableTagRegistry> = {}
 
    constructor(private readonly logger: Logger) {
@@ -123,7 +128,7 @@ export default class TagsLoader {
 
       const path = rest.substring(registry[0].length + 1)
 
-      return { namespace, registry: registry[1], path }
+      return { namespace, registry: registry[1], path, isTag: true }
    }
 
    readonly accept: Acceptor = (path, content) => {
@@ -131,7 +136,7 @@ export default class TagsLoader {
       if (!info) return false
 
       const parsed: TagDefinition = fromJson(content.toString())
-      const id = `${info.namespace}:${info.path}`
+      const id = encodeId(info) as TagInput
       info.registry.load(id, parsed)
 
       return true

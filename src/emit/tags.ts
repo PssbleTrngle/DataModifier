@@ -4,7 +4,8 @@ import { CommonTest, resolveIDTest } from '../common/ingredient'
 import { Logger } from '../logger'
 import TagsLoader, { entryId, orderTagEntries, TagRegistry } from '../loader/tags'
 import { TagDefinition, TagEntry } from '../schema/tag'
-import { createId, Id } from '../common/id'
+import { createId, Id, NormalizedId, TagInput } from '../common/id'
+import Registry from '../common/registry'
 
 export interface TagRules {
    add(registry: string, id: `#${string}`, value: TagEntry): void
@@ -20,17 +21,16 @@ export interface TagRules {
 }
 
 interface ScopedTagRules<T extends string = string> {
-   add(id: `#${string}`, value: TagEntry): void
-
-   remove(id: `#${string}`, test: CommonTest<T>): void
+   add(id: TagInput, value: TagEntry): void
+   remove(id: TagInput, test: CommonTest<T>): void
 }
 
 type TagModifier = (previous: TagDefinition) => TagDefinition
 
-class ScopedEmitter<T extends string = string> implements ScopedTagRules<T> {
+class ScopedEmitter<T extends NormalizedId = NormalizedId> implements ScopedTagRules<T> {
    constructor(private readonly registry: TagRegistry) {}
 
-   private readonly modifiers = new Map<string, TagModifier[]>()
+   private readonly modifiers = new Registry<TagModifier[]>()
 
    getModified(consumer: (id: Id, definition: TagDefinition) => void) {
       this.modifiers.forEach((modifiers, id) => {
@@ -43,13 +43,11 @@ class ScopedEmitter<T extends string = string> implements ScopedTagRules<T> {
       })
    }
 
-   private modify(id: string, modifier: TagModifier) {
-      const existing = this.modifiers.get(id)
-      if (existing) existing.push(modifier)
-      else this.modifiers.set(id, [modifier])
+   private modify(id: TagInput, modifier: TagModifier) {
+      this.modifiers.getOrPut(id, () => []).push(modifier)
    }
 
-   add(id: string, value: TagEntry) {
+   add(id: TagInput, value: TagEntry) {
       this.modify(id, previous => {
          return {
             ...previous,
@@ -58,7 +56,7 @@ class ScopedEmitter<T extends string = string> implements ScopedTagRules<T> {
       })
    }
 
-   remove(id: string, test: CommonTest<T>) {
+   remove(id: TagInput, test: CommonTest<T>) {
       const predicate = resolveIDTest(test, this.registry)
       this.modify(id, previous => {
          const defaultValues = (previous.replace ? undefined : this.registry.resolve(id)) ?? []

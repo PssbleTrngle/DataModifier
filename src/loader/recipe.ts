@@ -23,6 +23,7 @@ import BrewRecipeParser from '../parser/recipe/botania/brew'
 import ManaInfusionRecipeParser from '../parser/recipe/botania/manaInfusion'
 import GogWrapperRecipeParser from '../parser/recipe/botania/gogWrapper'
 import ApothecaryRecipeParser from '../parser/recipe/botania/apothecary'
+import Registry from '../common/registry'
 
 export interface RecipeRegistry {
    forEach(consumer: (recipe: Recipe, id: Id) => void): void
@@ -34,7 +35,7 @@ export default class RecipeLoader implements RecipeRegistry {
    private readonly ignoredRecipeTypes = new Set<string>()
    private readonly unknownRecipeTypes = new Set<string>()
 
-   private readonly recipes = new Map<Id, Recipe>()
+   private readonly recipes = new Registry<Recipe>()
 
    forEach(consumer: (recipe: Recipe, id: Id) => void) {
       this.recipes.forEach(consumer)

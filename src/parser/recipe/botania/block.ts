@@ -1,6 +1,7 @@
 import RecipeParser, { Recipe } from '..'
 import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
+import { encodeId } from '../../../common/id'
 
 export type BlockOutput = Readonly<{
    type: 'block'
@@ -52,11 +53,11 @@ export function fromBlockInput(input: BlockInput): Ingredient {
    switch (input.type) {
       case 'block':
          return {
-            item: input.block,
+            item: encodeId(input.block),
          }
       case 'tag':
          return {
-            tag: input.tag,
+            tag: encodeId(input.tag),
          }
       default:
          throw new Error(`Unknown block input type ${(input as BlockInput).type}`)
@@ -65,7 +66,7 @@ export function fromBlockInput(input: BlockInput): Ingredient {
 
 export function fromBlockOutput(output: BlockOutput): Result {
    return {
-      item: output.block,
+      item: encodeId(output.block),
    }
 }
 

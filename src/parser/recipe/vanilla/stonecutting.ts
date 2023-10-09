@@ -1,6 +1,7 @@
 import RecipeParser, { Recipe } from '..'
 import { Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
+import { encodeId } from '../../../common/id'
 
 export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -15,7 +16,7 @@ class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
    }
 
    getResults(): Result[] {
-      return [{ item: this.definition.result, count: this.definition.count }]
+      return [{ item: encodeId(this.definition.result), count: this.definition.count }]
    }
 
    replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {

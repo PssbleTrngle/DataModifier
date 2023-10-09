@@ -3,7 +3,7 @@ import match from 'minimatch'
 import { Logger } from '../logger'
 import Loader from './index'
 import RecipeLoader from './recipe'
-import TagsLoader from './tags'
+import TagsLoader, { TagRegistryHolder } from './tags'
 import RecipeEmitter, { RecipeRules } from '../emit/recipe'
 import TagEmitter, { TagRules } from '../emit/tags'
 
@@ -13,15 +13,15 @@ export default class PackLoader implements Loader {
    private readonly tagLoader = new TagsLoader(this.logger)
    private readonly recipesLoader = new RecipeLoader(this.logger)
 
-   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader.registry('items'))
+   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
    private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
 
    registerRegistry(key: string) {
       this.tagLoader.registerRegistry(key)
    }
 
-   tagRegistry(key: string) {
-      return this.tagLoader.registry(key)
+   get tagRegistry(): TagRegistryHolder {
+      return this.tagLoader
    }
 
    get recipes(): RecipeRules {
