@@ -29,9 +29,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: pnpm run lint
-
-      - run: pnpm run test
+      - run: pnpm run test:ci
 
       - name: notify sonarqube
         if: ${{ github.event_name == 'push' }}

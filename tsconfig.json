@@ -6,6 +6,7 @@
          "es2018",
          "dom"
       ],
+      "allowJs": true,
       "target": "es2018",
       "moduleResolution": "node",
       "module": "ES2022",
