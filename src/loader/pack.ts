@@ -3,9 +3,10 @@ import match from 'minimatch'
 import { Logger } from '../logger'
 import Loader from './index'
 import RecipeLoader from './recipe'
-import TagsLoader, { TagRegistryHolder } from './tags'
+import TagsLoader from './tags'
 import RecipeEmitter, { RecipeRules } from '../emit/recipe'
 import TagEmitter, { TagRules } from '../emit/tags'
+import { IngredientTest } from '../common/ingredient'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
@@ -20,8 +21,8 @@ export default class PackLoader implements Loader {
       this.tagLoader.registerRegistry(key)
    }
 
-   get tagRegistry(): TagRegistryHolder {
-      return this.tagLoader
+   tagRegistry(key: string) {
+      return this.tagLoader.registry(key)
    }
 
    get recipes(): RecipeRules {
@@ -30,6 +31,10 @@ export default class PackLoader implements Loader {
 
    get tags(): TagRules {
       return this.tagEmitter
+   }
+
+   resolveIngredientTest(test: IngredientTest) {
+      return this.recipeEmitter.resolveIngredientTest(test)
    }
 
    private acceptors: Record<string, Acceptor> = {

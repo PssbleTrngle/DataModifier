@@ -1,7 +1,8 @@
 import { PackLoader } from '../src'
-import { resolveIngredientTest } from '../src/common/ingredient'
 import createTestLogger from './mock/TestLogger'
 import createTestResolver from './mock/TestResolver'
+import createTestAcceptor from './mock/TestAcceptor'
+import { Ingredient } from '../src/common/ingredient'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
@@ -10,8 +11,54 @@ beforeAll(async () => {
    await loader.loadFrom(resolver)
 }, 10_000)
 
-test('matches ingredients using regex', () => {
-   const predicate = resolveIngredientTest(/.+:spruce_.+/, loader.tagRegistry)
+afterEach(() => {
+   loader.clear()
+   logger.reset()
+})
+
+describe('tests regarding ingredient/result shapes', () => {
+   it('warns about unknown ingredient shape', async () => {
+      const predicate = loader.resolveIngredientTest('minecraft:diamond')
+
+      predicate(['test', { whatever: true }] as any as Ingredient)
+      predicate({} as any as Ingredient)
+
+      expect(logger.warn).toBeCalledTimes(2)
+   })
+
+   it('does not encounter any unknown ingredient shapes', async () => {
+      const acceptor = createTestAcceptor()
+
+      // TODO pretty sure this should fail
+
+      loader.recipes.replaceIngredient('minecraft:coal', { item: 'minecraft:diamond' })
+      loader.recipes.replaceIngredient({ item: 'minecraft:coal' }, { item: 'minecraft:diamond' })
+      loader.recipes.replaceIngredient({ fluid: 'minecraft:water' }, { item: 'minecraft:lava' })
+      loader.recipes.replaceIngredient({ block: 'minecraft:coal_block' }, { item: 'minecraft:diamond_block' })
+
+      await loader.emit(acceptor)
+
+      expect(logger.warn).not.toBeCalled()
+      expect(logger.error).not.toBeCalled()
+   })
+
+   it('does not encounter any unknown result shapes', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.recipes.replaceResult('minecraft:coal', { item: 'minecraft:diamond' })
+      loader.recipes.replaceResult({ item: 'minecraft:coal' }, { item: 'minecraft:diamond' })
+      loader.recipes.replaceResult({ fluid: 'minecraft:water' }, { item: 'minecraft:lava' })
+      loader.recipes.replaceResult({ block: 'minecraft:coal_block' }, { item: 'minecraft:diamond_block' })
+
+      await loader.emit(acceptor)
+
+      expect(logger.warn).not.toBeCalled()
+      expect(logger.error).not.toBeCalled()
+   })
+})
+
+it('matches ingredients using regex', () => {
+   const predicate = loader.resolveIngredientTest(/.+:spruce_.+/)
 
    expect(predicate({ item: 'minecraft:spruce_log' })).toBeTruthy()
    expect(predicate({ item: 'spruce_fence' })).toBeTruthy()
@@ -23,8 +70,8 @@ test('matches ingredients using regex', () => {
    expect(predicate({ tag: 'minecraft:stripped_spruce_wood' })).toBeFalsy()
 })
 
-test('matches ingredients using item id', () => {
-   const predicate = resolveIngredientTest('minecraft:obsidian', loader.tagRegistry)
+it('matches ingredients using item id', () => {
+   const predicate = loader.resolveIngredientTest('minecraft:obsidian')
 
    expect(predicate({ item: 'minecraft:obsidian' })).toBeTruthy()
 
@@ -35,8 +82,8 @@ test('matches ingredients using item id', () => {
    expect(predicate({ tag: 'minecraft:mineable/pickaxe' })).toBeFalsy()
 })
 
-test('matches ingredients using item tag', () => {
-   const predicate = resolveIngredientTest('#minecraft:logs', loader.tagRegistry)
+it('matches ingredients using item tag', () => {
+   const predicate = loader.resolveIngredientTest('#minecraft:logs')
 
    expect(predicate({ item: 'minecraft:oak_log' })).toBeTruthy()
    expect(predicate({ item: 'stripped_birch_log' })).toBeTruthy()
@@ -46,8 +93,8 @@ test('matches ingredients using item tag', () => {
    expect(predicate({ tag: 'minecraft:mineable/axe' })).toBeFalsy()
 })
 
-test('matches ingredients using item ingredient', () => {
-   const predicate = resolveIngredientTest({ tag: 'minecraft:piglin_loved' }, loader.tagRegistry)
+it('matches ingredients using item ingredient', () => {
+   const predicate = loader.resolveIngredientTest({ tag: 'minecraft:piglin_loved' })
 
    expect(predicate({ item: 'minecraft:golden_sword' })).toBeTruthy()
    expect(predicate({ item: 'golden_apple' })).toBeTruthy()
@@ -56,8 +103,8 @@ test('matches ingredients using item ingredient', () => {
    expect(predicate({ item: 'blackstone' })).toBeFalsy()
 })
 
-test('matches ingredients using tag ingredient', () => {
-   const predicate = resolveIngredientTest({ item: 'minecraft:mangrove_leaves' }, loader.tagRegistry)
+it('matches ingredients using tag ingredient', () => {
+   const predicate = loader.resolveIngredientTest({ item: 'minecraft:mangrove_leaves' })
 
    expect(predicate({ item: 'minecraft:mangrove_leaves' })).toBeTruthy()
    expect(predicate({ item: 'mangrove_leaves' })).toBeTruthy()
@@ -65,12 +112,12 @@ test('matches ingredients using tag ingredient', () => {
    expect(predicate({ item: 'minecraft:mangrove_sapling' })).toBeFalsy()
 })
 
-test('matches ingredients using predicate', () => {
-   const predicate = resolveIngredientTest(it => {
+it('matches ingredients using predicate', () => {
+   const predicate = loader.resolveIngredientTest(it => {
       if ('tag' in it) return it.tag.includes('stone')
       if ('item' in it) return it.item.includes('wool')
       return false
-   }, loader.tagRegistry)
+   })
 
    expect(predicate({ item: 'minecraft:red_wool' })).toBeTruthy()
    expect(predicate({ item: 'green_wool' })).toBeTruthy()
@@ -81,8 +128,8 @@ test('matches ingredients using predicate', () => {
    expect(predicate({ tag: 'minecraft:pink_wool' })).toBeFalsy()
 })
 
-test('matches fluid ingredients', () => {
-   const predicate = resolveIngredientTest({ fluid: 'minecraft:water' }, loader.tagRegistry)
+it('matches fluid ingredients', () => {
+   const predicate = loader.resolveIngredientTest({ fluid: 'minecraft:water' })
 
    expect(predicate({ fluid: 'minecraft:water' })).toBeTruthy()
 
@@ -92,8 +139,8 @@ test('matches fluid ingredients', () => {
    expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
 })
 
-test('matches fluid ingredients using tag', () => {
-   const predicate = resolveIngredientTest({ fluidTag: 'minecraft:water' }, loader.tagRegistry)
+it('matches fluid ingredients using tag', () => {
+   const predicate = loader.resolveIngredientTest({ fluidTag: 'minecraft:water' })
 
    expect(predicate({ fluid: 'minecraft:water' })).toBeTruthy()
    expect(predicate({ fluid: 'minecraft:flowing_water' })).toBeTruthy()
@@ -105,8 +152,8 @@ test('matches fluid ingredients using tag', () => {
    expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
 })
 
-test('matches block ingredients', () => {
-   const predicate = resolveIngredientTest({ block: 'minecraft:water' }, loader.tagRegistry)
+it('matches block ingredients', () => {
+   const predicate = loader.resolveIngredientTest({ block: 'minecraft:water' })
 
    expect(predicate({ block: 'minecraft:water' })).toBeTruthy()
 
@@ -116,8 +163,8 @@ test('matches block ingredients', () => {
    expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
 })
 
-test('matches block ingredients using tag', () => {
-   const predicate = resolveIngredientTest({ blockTag: 'minecraft:base_stone_overworld' }, loader.tagRegistry)
+it('matches block ingredients using tag', () => {
+   const predicate = loader.resolveIngredientTest({ blockTag: 'minecraft:base_stone_overworld' })
 
    expect(predicate({ block: 'minecraft:stone' })).toBeTruthy()
    expect(predicate({ block: 'minecraft:andesite' })).toBeTruthy()

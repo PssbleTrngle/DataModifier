@@ -2,25 +2,25 @@ import { createId, encodeId, Id, NormalizedId } from '../src/common/id'
 import { resolveIDTest } from '../src/common/ingredient'
 import Registry from '../src/common/registry'
 
-test('parses id from string', () => {
+it('parses id from string', () => {
    expect(createId('minecraft:stone')).toMatchObject({ namespace: 'minecraft', path: 'stone' })
    expect(createId('dirt')).toMatchObject({ namespace: 'minecraft', path: 'dirt' })
    expect(createId('minecraft:with/path')).toMatchObject({ namespace: 'minecraft', path: 'with/path' })
    expect(createId('example:custom')).toMatchObject({ namespace: 'example', path: 'custom' })
 })
 
-test('parses id from tag', () => {
+it('parses id from tag', () => {
    expect(createId('#minecraft:planks')).toMatchObject({ namespace: 'minecraft', path: 'planks', isTag: true })
    expect(createId('#logs')).toMatchObject({ namespace: 'minecraft', path: 'logs', isTag: true })
    expect(createId('#minecraft:nested/tag')).toMatchObject({ namespace: 'minecraft', path: 'nested/tag', isTag: true })
 })
 
-test('accepts id object', () => {
+it('accepts id object', () => {
    const id: Id = { namespace: 'minecraft', path: 'the/id' }
    expect(createId(id)).toMatchObject(id)
 })
 
-test('encodes id correctly', () => {
+it('encodes id correctly', () => {
    expect(encodeId('#minecraft:planks')).toBe('#minecraft:planks')
    expect(encodeId('#mineable/axe')).toBe('#minecraft:mineable/axe')
    expect(encodeId('#mineable/axe')).toBe('#minecraft:mineable/axe')
@@ -28,7 +28,7 @@ test('encodes id correctly', () => {
    expect(encodeId({ namespace: 'minecraft', path: 'pickaxes', isTag: true })).toBe('#minecraft:pickaxes')
 })
 
-test('correctly tests id using string', () => {
+it('correctly tests id using string', () => {
    const predicate = resolveIDTest<NormalizedId>('minecraft:stone')
 
    expect(predicate({ namespace: 'minecraft', path: 'stone' })).toBeTruthy()
@@ -39,7 +39,7 @@ test('correctly tests id using string', () => {
    expect(predicate('example:stone')).toBeFalsy()
 })
 
-test('correctly tests id using regex', () => {
+it('correctly tests id using regex', () => {
    const predicate = resolveIDTest(/.+:oak_.+/)
 
    expect(predicate({ namespace: 'minecraft', path: 'oak_planks' })).toBeTruthy()
@@ -50,7 +50,7 @@ test('correctly tests id using regex', () => {
    expect(predicate('minecraft:stripped_oak_log')).toBeFalsy()
 })
 
-test('correctly tests id using predicate', () => {
+it('correctly tests id using predicate', () => {
    const predicate = resolveIDTest(it => it.includes('one'))
 
    expect(predicate({ namespace: 'minecraft', path: 'stone' })).toBeTruthy()
@@ -62,7 +62,7 @@ test('correctly tests id using predicate', () => {
    expect(predicate('minecraft:andesite')).toBeFalsy()
 })
 
-test('works as unique map key', () => {
+it('works as unique map key', () => {
    const map = new Registry<number>()
 
    map.set({ namespace: 'minecraft', path: 'air' }, 1)

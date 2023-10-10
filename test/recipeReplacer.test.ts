@@ -17,12 +17,12 @@ afterEach(() => {
    loader.clear()
 })
 
-test('has no unknown recipe loaders', () => {
-   expect(logger.warnings()).toMatchObject([])
-   expect(logger.errors()).toMatchObject([])
+it('has no unknown recipe loaders', () => {
+   expect(logger.warn).not.toBeCalled()
+   expect(logger.error).not.toBeCalled()
 })
 
-test('replaces ingredients', async () => {
+it('replaces ingredients', async () => {
    const acceptor = createTestAcceptor()
 
    loader.recipes.replaceIngredient('minecraft:redstone', {
@@ -37,7 +37,7 @@ test('replaces ingredients', async () => {
    expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot()
 })
 
-test('replaces ingredients with additional input filter', async () => {
+it('replaces ingredients with additional input filter', async () => {
    const acceptor = createTestAcceptor()
 
    loader.recipes.replaceIngredient(
@@ -59,7 +59,7 @@ test('replaces ingredients with additional input filter', async () => {
    expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toBeNull()
 })
 
-test('replaces ingredients in create recipes', async () => {
+it('replaces ingredients in create recipes', async () => {
    const acceptor = createTestAcceptor()
 
    loader.recipes.replaceIngredient('#forge:raw_materials/zinc', {
@@ -76,7 +76,7 @@ test('replaces ingredients in create recipes', async () => {
    expect(acceptor.jsonAt('data/create/recipe/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot()
 })
 
-test('removes recipes with id filter', async () => {
+it('removes recipes with id filter', async () => {
    const acceptor = createTestAcceptor()
 
    loader.recipes.removeRecipe({
@@ -91,7 +91,7 @@ test('removes recipes with id filter', async () => {
    expect(acceptor.jsonAt('data/minecraft/recipe/sticky_piston.json')).toMatchObject(RecipeEmitter.EMPTY_RECIPE)
 })
 
-test('creates custom recipes', async () => {
+it('creates custom recipes', async () => {
    const acceptor = createTestAcceptor()
 
    const recipe: ShapedRecipeDefinition = {

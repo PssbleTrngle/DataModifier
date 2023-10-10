@@ -25,19 +25,6 @@ type RecipeTest = Readonly<{
    input?: IngredientTest
 }>
 
-function resolveRecipeTest(test: RecipeTest, tags: TagsLoader) {
-   const recipe: Predicate<Id>[] = []
-   const ingredient: Predicate<Ingredient>[] = []
-   const result: Predicate<Ingredient>[] = []
-
-   if (test.id) recipe.push(resolveIDTest(test.id))
-   if (test.namespace) recipe.push(id => id.namespace === test.namespace)
-   if (test.output) result.push(resolveIngredientTest(test.output, tags))
-   if (test.input) ingredient.push(resolveIngredientTest(test.input, tags))
-
-   return { recipe, ingredient, result }
-}
-
 export interface RecipeRules {
    replaceResult(test: IngredientTest, value: Result, additionalTests?: RecipeTest): void
 
@@ -114,6 +101,23 @@ export default class RecipeEmitter implements RecipeRules {
       await Promise.all([this.modifyRecipes(acceptor), this.createRecipes(acceptor)])
    }
 
+   resolveIngredientTest(test: IngredientTest) {
+      return resolveIngredientTest(test, this.tags, this.logger)
+   }
+
+   private resolveRecipeTest(test: RecipeTest) {
+      const recipe: Predicate<Id>[] = []
+      const ingredient: Predicate<Ingredient>[] = []
+      const result: Predicate<Ingredient>[] = []
+
+      if (test.id) recipe.push(resolveIDTest(test.id))
+      if (test.namespace) recipe.push(id => id.namespace === test.namespace)
+      if (test.output) result.push(this.resolveIngredientTest(test.output))
+      if (test.input) ingredient.push(this.resolveIngredientTest(test.input))
+
+      return { recipe, ingredient, result }
+   }
+
    addRule(rule: RecipeRule) {
       this.rules.push(rule)
    }
@@ -127,15 +131,15 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    removeRecipe(test: RecipeTest) {
-      const recipePredicates = resolveRecipeTest(test, this.tags)
+      const recipePredicates = this.resolveRecipeTest(test)
       this.addRule(
          new RecipeRule(recipePredicates.recipe, recipePredicates.ingredient, recipePredicates.result, () => null)
       )
    }
 
    replaceResult(test: IngredientTest, value: Result, additionalTest: RecipeTest = {}) {
-      const predicate = resolveIngredientTest(test, this.tags)
-      const recipePredicates = resolveRecipeTest(additionalTest, this.tags)
+      const predicate = this.resolveIngredientTest(test)
+      const recipePredicates = this.resolveRecipeTest(additionalTest)
       this.addRule(
          new RecipeRule(
             recipePredicates.recipe,
@@ -147,8 +151,8 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTest: RecipeTest = {}) {
-      const predicate = resolveIngredientTest(test, this.tags)
-      const recipePredicates = resolveRecipeTest(additionalTest, this.tags)
+      const predicate = this.resolveIngredientTest(test)
+      const recipePredicates = this.resolveRecipeTest(additionalTest)
       this.addRule(
          new RecipeRule(
             recipePredicates.recipe,

@@ -14,9 +14,9 @@ afterEach(() => {
    loader.clear()
 })
 
-test('loads tags correctly', async () => {
-   const itemTags = loader.tagRegistry.registry('items')
-   const blockTags = loader.tagRegistry.registry('blocks')
+it('loads tags correctly', async () => {
+   const itemTags = loader.tagRegistry('items')
+   const blockTags = loader.tagRegistry('blocks')
 
    expect(blockTags.list().length).toBe(259)
    expect(itemTags.list().length).toBe(302)
@@ -25,16 +25,16 @@ test('loads tags correctly', async () => {
    expect(itemTags.get('#minecraft:logs')).toMatchSnapshot()
 })
 
-test('resolves tags correctly', async () => {
-   const itemTags = loader.tagRegistry.registry('items')
-   const blockTags = loader.tagRegistry.registry('blocks')
+it('resolves tags correctly', async () => {
+   const itemTags = loader.tagRegistry('items')
+   const blockTags = loader.tagRegistry('blocks')
 
    expect(blockTags.resolve('#minecraft:mineable/axe')).toMatchSnapshot()
    expect(itemTags.resolve('#minecraft:trapdoors')).toMatchSnapshot()
 })
 
-test('finds item in tag', async () => {
-   const blockTags = loader.tagRegistry.registry('blocks')
+it('finds item in tag', async () => {
+   const blockTags = loader.tagRegistry('blocks')
 
    expect(blockTags.contains('#minecraft:mineable/axe', 'minecraft:note_block')).toBeTruthy()
    expect(blockTags.contains('#minecraft:mineable/axe', 'minecraft:oak_log')).toBeTruthy()
@@ -44,8 +44,8 @@ test('finds item in tag', async () => {
    expect(blockTags.contains('#minecraft:mineable/axe', 'minecraft:stone')).toBeFalsy()
 })
 
-test('finds tag in tag', async () => {
-   const blockTags = loader.tagRegistry.registry('blocks')
+it('finds tag in tag', async () => {
+   const blockTags = loader.tagRegistry('blocks')
 
    expect(blockTags.contains('#minecraft:mineable/axe', '#minecraft:logs')).toBeTruthy()
    expect(blockTags.contains('#minecraft:mineable/axe', '#minecraft:logs_that_burn')).toBeTruthy()

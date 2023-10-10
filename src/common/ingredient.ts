@@ -1,5 +1,6 @@
 import { TagRegistry, TagRegistryHolder } from '../loader/tags'
 import { createId, encodeId, Id, IdInput, NormalizedId, TagInput } from './id'
+import { Logger } from '../logger'
 
 type Item = Readonly<{ item: string }>
 type ItemTag = Readonly<{ tag: string }>
@@ -67,6 +68,7 @@ export function resolveIDTest<T extends NormalizedId>(test: CommonTest<T>, tags?
 export function resolveIdIngredientTest(
    test: NormalizedId | RegExp,
    tags: TagRegistry,
+   logger: Logger,
    idSupplier: (it: Ingredient) => Id | null
 ): Predicate<Ingredient> {
    return resolveCommonTest(
@@ -74,6 +76,7 @@ export function resolveIdIngredientTest(
       ingredient => {
          const id = idSupplier(ingredient)
          if (id) return encodeId(id)
+         logger.warn('unknown ingredient shape:', ingredient)
          return '__ignored' as NormalizedId
       },
       tags
@@ -98,22 +101,31 @@ function extractBlockID(ingredient: Ingredient): Id | null {
    return null
 }
 
-export function resolveIngredientTest(test: IngredientTest, tags: TagRegistryHolder): Predicate<Ingredient> {
+export function resolveIngredientTest(
+   test: IngredientTest,
+   tags: TagRegistryHolder,
+   logger: Logger
+): Predicate<Ingredient> {
    if (typeof test === 'string' || test instanceof RegExp) {
-      return resolveIdIngredientTest(test, tags.registry('items'), extractItemID)
-   } else if (typeof test === 'function') {
-      return test
-   } else {
-      if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
-      if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), extractItemID)
-      if ('fluidTag' in test)
-         return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), extractFluidID)
-      if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
-      if ('blockTag' in test)
-         return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), extractBlockID)
-      if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
-
-      // TODO warn?
-      return () => false
+      return resolveIdIngredientTest(test, tags.registry('items'), logger, extractItemID)
    }
+
+   if (typeof test === 'function') {
+      return test
+   }
+
+   if ('tag' in test)
+      return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), logger, extractItemID)
+   if ('item' in test)
+      return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), logger, extractItemID)
+   if ('fluidTag' in test)
+      return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), logger, extractFluidID)
+   if ('fluid' in test)
+      return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), logger, extractFluidID)
+   if ('blockTag' in test)
+      return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), logger, extractBlockID)
+   if ('block' in test)
+      return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), logger, extractBlockID)
+
+   return () => false
 }

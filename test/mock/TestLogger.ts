@@ -1,25 +1,26 @@
+// @ts-ignore
+import { jest } from '@jest/globals'
 import { Logger, wrapLogMethods } from '../../src/logger'
 
 export interface TestLogger extends Logger {
-   errors(): ReadonlyArray<unknown>
-   warnings(): ReadonlyArray<unknown>
-   infoMessages(): ReadonlyArray<unknown>
+   reset(): void
+   info: jest.Mock
+   warn: jest.Mock
+   error: jest.Mock
 }
 
 export default function createTestLogger(): TestLogger {
-   const errors: unknown[][] = []
-   const warnings: unknown[][] = []
-   const infoMessages: unknown[][] = []
-
    const logger = wrapLogMethods({
-      error: (...args) => errors.push(args),
-      warn: (...args) => warnings.push(args),
-      info: (...args) => infoMessages.push(args),
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
    }) as TestLogger
 
-   logger.errors = () => errors
-   logger.warnings = () => warnings
-   logger.infoMessages = () => infoMessages
+   logger.reset = () => {
+      logger.info.mockReset()
+      logger.warn.mockReset()
+      logger.error.mockReset()
+   }
 
    return logger
 }

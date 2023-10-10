@@ -13,7 +13,7 @@
    "scripts": {
       "build": "tsc",
       "lint": "eslint src/**/*.ts",
-      "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+      "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest",
       "test:ci": "pnpm run lint && pnpm run test --coverage"
    },
    "repository": {
