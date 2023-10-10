@@ -47,7 +47,7 @@ test('matches ingredients using item tag', () => {
 })
 
 test('matches ingredients using item ingredient', () => {
-   const predicate = resolveIngredientTest({ tag: '#minecraft:piglin_loved' }, loader.tagRegistry)
+   const predicate = resolveIngredientTest({ tag: 'minecraft:piglin_loved' }, loader.tagRegistry)
 
    expect(predicate({ item: 'minecraft:golden_sword' })).toBeTruthy()
    expect(predicate({ item: 'golden_apple' })).toBeTruthy()
@@ -79,4 +79,53 @@ test('matches ingredients using predicate', () => {
    expect(predicate({ item: 'minecraft:stone_pickaxe' })).toBeFalsy()
    expect(predicate({ item: 'stone_pickaxe' })).toBeFalsy()
    expect(predicate({ tag: 'minecraft:pink_wool' })).toBeFalsy()
+})
+
+test('matches fluid ingredients', () => {
+   const predicate = resolveIngredientTest({ fluid: 'minecraft:water' }, loader.tagRegistry)
+
+   expect(predicate({ fluid: 'minecraft:water' })).toBeTruthy()
+
+   expect(predicate({ fluid: 'minecraft:lava' })).toBeFalsy()
+   expect(predicate({ item: 'minecraft:water' })).toBeFalsy()
+   expect(predicate({ fluidTag: 'minecraft:water' })).toBeFalsy()
+   expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
+})
+
+test('matches fluid ingredients using tag', () => {
+   const predicate = resolveIngredientTest({ fluidTag: 'minecraft:water' }, loader.tagRegistry)
+
+   expect(predicate({ fluid: 'minecraft:water' })).toBeTruthy()
+   expect(predicate({ fluid: 'minecraft:flowing_water' })).toBeTruthy()
+   expect(predicate({ fluidTag: 'minecraft:water' })).toBeTruthy()
+
+   expect(predicate({ fluid: 'minecraft:lava' })).toBeFalsy()
+   expect(predicate({ fluidTag: 'minecraft:lava' })).toBeFalsy()
+   expect(predicate({ item: 'minecraft:water' })).toBeFalsy()
+   expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
+})
+
+test('matches block ingredients', () => {
+   const predicate = resolveIngredientTest({ block: 'minecraft:water' }, loader.tagRegistry)
+
+   expect(predicate({ block: 'minecraft:water' })).toBeTruthy()
+
+   expect(predicate({ fluid: 'minecraft:lava' })).toBeFalsy()
+   expect(predicate({ item: 'minecraft:water' })).toBeFalsy()
+   expect(predicate({ fluidTag: 'minecraft:water' })).toBeFalsy()
+   expect(predicate({ tag: 'minecraft:water' })).toBeFalsy()
+})
+
+test('matches block ingredients using tag', () => {
+   const predicate = resolveIngredientTest({ blockTag: 'minecraft:base_stone_overworld' }, loader.tagRegistry)
+
+   expect(predicate({ block: 'minecraft:stone' })).toBeTruthy()
+   expect(predicate({ block: 'minecraft:andesite' })).toBeTruthy()
+   expect(predicate({ blockTag: 'minecraft:base_stone_overworld' })).toBeTruthy()
+
+   expect(predicate({ block: 'minecraft:obsidian' })).toBeFalsy()
+   expect(predicate({ fluid: 'minecraft:stone' })).toBeFalsy()
+   expect(predicate({ blockTag: 'minecraft:mineable/pickaxe' })).toBeFalsy()
+   expect(predicate({ item: 'minecraft:stone' })).toBeFalsy()
+   expect(predicate({ tag: 'minecraft:stone' })).toBeFalsy()
 })

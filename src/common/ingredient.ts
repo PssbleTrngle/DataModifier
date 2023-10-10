@@ -1,5 +1,5 @@
 import { TagRegistry, TagRegistryHolder } from '../loader/tags'
-import { IdInput, NormalizedId, TagInput, encodeId } from './id'
+import { createId, encodeId, Id, IdInput, NormalizedId, TagInput } from './id'
 
 type Item = Readonly<{ item: string }>
 type ItemTag = Readonly<{ tag: string }>
@@ -7,7 +7,17 @@ type ItemTag = Readonly<{ tag: string }>
 type Fluid = Readonly<{ fluid: string }>
 type FluidTag = Readonly<{ fluidTag: string }>
 
-export type Ingredient = ItemTag | Item | Fluid | FluidTag
+export type Block = Readonly<{
+   block: string
+   weight?: number
+}>
+
+export type BlockTag = Readonly<{
+   blockTag: string
+   weight?: number
+}>
+
+export type Ingredient = ItemTag | Item | Fluid | FluidTag | Block | BlockTag
 
 type ItemStack = Item &
    Readonly<{
@@ -19,7 +29,7 @@ type FluidStack = Fluid &
       amount: number
    }>
 
-export type Result = ItemStack | FluidStack
+export type Result = ItemStack | FluidStack | Block
 
 export type Predicate<T> = (value: T) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
@@ -54,23 +64,56 @@ export function resolveIDTest<T extends NormalizedId>(test: CommonTest<T>, tags?
    return resolveCommonTest(test, it => encodeId<T>(it), tags)
 }
 
+export function resolveIdIngredientTest(
+   test: NormalizedId | RegExp,
+   tags: TagRegistry,
+   idSupplier: (it: Ingredient) => Id | null
+): Predicate<Ingredient> {
+   return resolveCommonTest(
+      test,
+      ingredient => {
+         const id = idSupplier(ingredient)
+         if (id) return encodeId(id)
+         return '__ignored' as NormalizedId
+      },
+      tags
+   )
+}
+
+function extractItemID(ingredient: Ingredient): Id | null {
+   if ('tag' in ingredient) return { ...createId(ingredient.tag), isTag: true }
+   if ('item' in ingredient) return createId(ingredient.item)
+   return null
+}
+
+function extractFluidID(ingredient: Ingredient): Id | null {
+   if ('fluidTag' in ingredient) return { ...createId(ingredient.fluidTag), isTag: true }
+   if ('fluid' in ingredient) return createId(ingredient.fluid)
+   return null
+}
+
+function extractBlockID(ingredient: Ingredient): Id | null {
+   if ('blockTag' in ingredient) return { ...createId(ingredient.blockTag), isTag: true }
+   if ('block' in ingredient) return createId(ingredient.block)
+   return null
+}
+
 export function resolveIngredientTest(test: IngredientTest, tags: TagRegistryHolder): Predicate<Ingredient> {
    if (typeof test === 'string' || test instanceof RegExp) {
-      return resolveCommonTest(
-         test,
-         (ingredient): NormalizedId => {
-            if ('tag' in ingredient) return `#${encodeId(ingredient.tag)}`
-            if ('item' in ingredient) return encodeId(ingredient.item)
-            return '__ignored' as NormalizedId
-         },
-         tags.registry('items')
-      )
+      return resolveIdIngredientTest(test, tags.registry('items'), extractItemID)
    } else if (typeof test === 'function') {
       return test
    } else {
-      if ('tag' in test) return resolveIngredientTest(encodeId(test.tag), tags)
-      if ('item' in test) return resolveIngredientTest(encodeId(test.item), tags)
-      // TODO fluids
+      if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
+      if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), extractItemID)
+      if ('fluidTag' in test)
+         return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), extractFluidID)
+      if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
+      if ('blockTag' in test)
+         return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), extractBlockID)
+      if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
+
+      // TODO warn?
       return () => false
    }
 }

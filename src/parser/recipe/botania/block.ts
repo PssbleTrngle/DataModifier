@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { Block, BlockTag, Ingredient, Predicate, Result } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { encodeId } from '../../../common/id'
 
@@ -14,6 +14,7 @@ export type BlockInput =
    | Readonly<{
         type: 'tag'
         tag: string
+        weight?: number
      }>
 
 export type BlockRecipeDefinition = RecipeDefinition &
@@ -24,49 +25,51 @@ export type BlockRecipeDefinition = RecipeDefinition &
    }>
 
 export function createBlockInput(ingredient: Ingredient): BlockInput | null {
-   if ('item' in ingredient)
-      return {
-         type: 'block',
-         block: ingredient.item,
-      }
+   const output = createBlockOutput(ingredient as Result)
+   if (output) return output
 
-   if ('tag' in ingredient)
+   if ('blockTag' in ingredient)
       return {
          type: 'tag',
-         tag: ingredient.tag,
+         tag: ingredient.blockTag,
+         weight: ingredient.weight,
       }
 
    return null
 }
 
 export function createBlockOutput(result: Result): BlockOutput | null {
-   if ('item' in result)
+   if ('block' in result)
       return {
          type: 'block',
-         block: result.item,
+         block: result.block,
+         weight: result.weight,
       }
 
    return null
 }
 
-export function fromBlockInput(input: BlockInput): Ingredient {
+export function fromBlockInput(input: BlockInput): Block | BlockTag {
    switch (input.type) {
       case 'block':
          return {
-            item: encodeId(input.block),
+            block: encodeId(input.block),
+            weight: input.weight,
          }
       case 'tag':
          return {
-            tag: encodeId(input.tag),
+            blockTag: encodeId(input.tag),
+            weight: input.weight,
          }
       default:
          throw new Error(`Unknown block input type ${(input as BlockInput).type}`)
    }
 }
 
-export function fromBlockOutput(output: BlockOutput): Result {
+export function fromBlockOutput(output: BlockOutput): Block {
    return {
-      item: encodeId(output.block),
+      block: encodeId(output.block),
+      weight: output.weight,
    }
 }
 
