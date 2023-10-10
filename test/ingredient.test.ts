@@ -1,12 +1,12 @@
+import { PackLoader } from '../src'
 import { resolveIngredientTest } from '../src/common/ingredient'
 import createTestLogger from './mock/TestLogger'
-import { PackLoader } from '../src'
-import { createResolver } from '@pssbletrngle/pack-resolver'
+import createTestResolver from './mock/TestResolver'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 beforeAll(async () => {
-   const resolver = createResolver({ from: 'example', include: ['data/*/tags/**/*.json'] })
+   const resolver = createTestResolver({ include: ['data/*/tags/**/*.json'] })
    await loader.loadFrom(resolver)
 }, 10_000)
 
@@ -40,8 +40,7 @@ test('matches ingredients using item tag', () => {
 
    expect(predicate({ item: 'minecraft:oak_log' })).toBeTruthy()
    expect(predicate({ item: 'stripped_birch_log' })).toBeTruthy()
-   // TODO I probably want this later
-   // expect(predicate({ tag: 'minecraft:logs_that_burn' })).toBeTruthy()
+   expect(predicate({ tag: 'minecraft:logs_that_burn' })).toBeTruthy()
 
    expect(predicate({ item: 'minecraft:stone' })).toBeFalsy()
    expect(predicate({ tag: 'minecraft:mineable/axe' })).toBeFalsy()

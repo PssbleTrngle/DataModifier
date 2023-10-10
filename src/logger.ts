@@ -25,6 +25,14 @@ function subLogger(logger: LogMethods): Logger {
    })
 }
 
+export function createSilentLogger(): Logger {
+   return wrapLogMethods({
+      error: () => {},
+      warn: () => {},
+      info: () => {},
+   })
+}
+
 export default function createLogger(): Logger {
    return wrapLogMethods({
       /* eslint-disable no-console */

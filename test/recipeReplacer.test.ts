@@ -1,15 +1,15 @@
-import { createResolver } from '@pssbletrngle/pack-resolver'
+import RecipeEmitter from '../src/emit/recipe'
 import PackLoader from '../src/loader/pack'
+import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped'
 import createTestAcceptor from './mock/TestAcceptor'
 import createTestLogger from './mock/TestLogger'
-import RecipeEmitter from '../src/emit/recipe'
-import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped'
+import createTestResolver from './mock/TestResolver'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 
 beforeAll(async () => {
-   const resolver = createResolver({ from: 'example' })
+   const resolver = createTestResolver()
    await loader.loadFrom(resolver)
 }, 10_000)
 

@@ -1,5 +1,5 @@
 import { TagRegistry, TagRegistryHolder } from '../loader/tags'
-import { encodeId, IdInput, NormalizedId, TagInput } from './id'
+import { IdInput, NormalizedId, TagInput, encodeId } from './id'
 
 type Item = Readonly<{ item: string }>
 type ItemTag = Readonly<{ tag: string }>
@@ -39,7 +39,7 @@ export function resolveCommonTest<TEntry, TId extends string>(
    } else if (test.startsWith('#')) {
       return ingredient => {
          const id = resolve(ingredient)
-         if (id.startsWith('#')) return test === id
+         if (id.startsWith('#') && test === id) return true
          else if (tags) return tags.contains(test as TagInput, id) ?? false
          else throw new Error('Cannot parse ID test without tags')
       }

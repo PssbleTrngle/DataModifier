@@ -1,12 +1,12 @@
-import { createResolver } from '@pssbletrngle/pack-resolver'
 import PackLoader from '../src/loader/pack'
 import createTestAcceptor from './mock/TestAcceptor'
 import createTestLogger from './mock/TestLogger'
+import createTestResolver from './mock/TestResolver'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 beforeAll(async () => {
-   const resolver = createResolver({ from: 'example', include: ['data/*/tags/**/*.json'] })
+   const resolver = createTestResolver({ include: ['data/*/tags/**/*.json'] })
    await loader.loadFrom(resolver)
 }, 10_000)
 

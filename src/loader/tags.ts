@@ -1,10 +1,10 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { orderBy, uniqBy } from 'lodash-es'
+import { IdInput, TagInput, encodeId } from '../common/id'
+import Registry from '../common/registry'
 import { Logger } from '../logger'
 import { TagDefinition, TagEntry } from '../schema/tag'
 import { fromJson } from '../textHelper'
-import { encodeId, IdInput, TagInput } from '../common/id'
-import Registry from '../common/registry'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
@@ -87,12 +87,14 @@ class WriteableTagRegistry implements TagRegistry {
       })
    }
 
-   contains(id: TagInput, entry: IdInput) {
+   contains(id: TagInput, entry: IdInput): boolean {
       const entryId = encodeId(entry)
       return (
-         this.resolve(id)?.some(it => {
-            if (typeof it === 'string') return it === entryId
-            return it.value === entryId
+         this.get(id)?.some(it => {
+            const value = encodeId(typeof it === 'string' ? it : it.value)
+            if (value === entryId) return true
+            if (value.startsWith('#')) return this.contains(value as TagInput, entryId)
+            return false
          }) ?? false
       )
    }

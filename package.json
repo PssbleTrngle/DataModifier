@@ -40,7 +40,7 @@
       "ts-jest": "^29.1.1"
    },
    "dependencies": {
-      "@pssbletrngle/pack-resolver": "1.2.0",
+      "@pssbletrngle/pack-resolver": "1.2.2",
       "@pssbletrngle/resource-merger": "1.2.4",
       "@types/minimatch": "^3.0.5",
       "@types/prettier": "^2.7.0",

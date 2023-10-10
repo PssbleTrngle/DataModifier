@@ -1,8 +1,6 @@
-import { existsSync, mkdirSync, rmdirSync } from 'fs'
+// @ts-ignore
+import { jest } from '@jest/globals'
 
 beforeAll(() => {
-   if (1 === 1) return
-   const emitOutput = 'test-output'
-   if (existsSync(emitOutput)) rmdirSync(emitOutput, { recursive: true })
-   mkdirSync(emitOutput)
+   global.jest = jest
 })
