@@ -29,7 +29,7 @@ export type BlockTag = zod.infer<typeof BlockTagSchema>
 export type Ingredient = Item | ItemTag | Fluid | FluidTag | Block | BlockTag | IngredientInput[]
 export type IngredientInput = Ingredient | string
 
-export function createIngredient(input: IngredientInput): Ingredient {
+export function createIngredient(input: unknown): Ingredient {
    if (!input) throw new IllegalShapeError('result input may not be null')
 
    if (typeof input === 'string') {

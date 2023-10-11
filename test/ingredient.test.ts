@@ -2,7 +2,9 @@ import { PackLoader } from '../src'
 import createTestLogger from './mock/TestLogger'
 import createTestResolver from './mock/TestResolver'
 import createTestAcceptor from './mock/TestAcceptor'
-import { Ingredient } from '../src/common/ingredient'
+import { createIngredient } from '../src/common/ingredient'
+import { createResult, Result } from '../src/common/result'
+import { tryCatching } from '../src/error'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
@@ -18,14 +20,24 @@ afterEach(() => {
 
 describe('tests regarding ingredient/result shapes', () => {
    it('warns about unknown ingredient shape', async () => {
-      const predicate = loader.resolveIngredientTest('minecraft:diamond')
-
-      predicate(['test', { whatever: true }] as any as Ingredient, logger)
-      predicate({} as any as Ingredient, logger)
-      predicate(10 as any as Ingredient, logger)
-      predicate(null as any as Ingredient, logger)
+      tryCatching(logger, () => createIngredient(['test', { whatever: true }]))
+      tryCatching(logger, () => createIngredient({}))
+      tryCatching(logger, () => createIngredient(10))
+      tryCatching(logger, () => createIngredient(null))
 
       expect(logger.warn).toBeCalledTimes(4)
+   })
+
+   it('warns about unknown result shape', async () => {
+      tryCatching(logger, () => createResult(['test', { whatever: true }] as any as Result))
+      tryCatching(logger, () => createResult({}))
+      tryCatching(logger, () => createResult(10))
+      tryCatching(logger, () => createResult(null))
+      tryCatching(logger, () => createResult({ tag: 'minecraft:pickaxes' }))
+      tryCatching(logger, () => createResult({ fluidTag: 'minecraft:fluid' }))
+      tryCatching(logger, () => createResult({ blockTag: 'minecraft:stone' }))
+
+      expect(logger.warn).toBeCalledTimes(7)
    })
 
    it('does not encounter any unknown ingredient shapes', async () => {

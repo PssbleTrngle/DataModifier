@@ -39,14 +39,16 @@ export type Block = zod.infer<typeof BlockSchema>
 export type Result = ItemStack | FluidStack | Block
 export type ResultInput = Result | string
 
-export function createResult(input: ResultInput): Result {
+export function createResult(input: unknown): Result {
    if (!input) throw new IllegalShapeError('result input may not be null')
 
    if (typeof input === 'string') return { item: input }
 
-   if ('item' in input) return ItemStackSchema.parse(input)
-   if ('fluid' in input) return FluidStackSchema.parse(input)
-   if ('block' in input) return BlockSchema.parse(input)
+   if (typeof input === 'object') {
+      if ('item' in input) return ItemStackSchema.parse(input)
+      if ('fluid' in input) return FluidStackSchema.parse(input)
+      if ('block' in input) return BlockSchema.parse(input)
+   }
 
    throw new IllegalShapeError(`unknown result shape`, input)
 }
