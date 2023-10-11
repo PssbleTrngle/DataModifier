@@ -9,6 +9,10 @@ export function replace<T>(from: Predicate<T>, to: T) {
    }
 }
 
+export function replaceOrKeep<T>(from: Predicate<T>, to: T, value: T) {
+   return replace(from, to)(value)
+}
+
 export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefinition> {
    constructor(protected readonly definition: TDefinition) {}
 

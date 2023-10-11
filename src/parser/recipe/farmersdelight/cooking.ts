@@ -1,4 +1,4 @@
-import RecipeParser, { Recipe, replace } from '..'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { exists } from '@pssbletrngle/pack-resolver'
@@ -26,7 +26,7 @@ export class CookingRecipe extends Recipe<CookingRecipeDefinition> {
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new CookingRecipe({
          ...this.definition,
-         container: this.definition.container && replace(from, to)(this.definition.container),
+         container: this.definition.container && replaceOrKeep(from, to, this.definition.container),
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }

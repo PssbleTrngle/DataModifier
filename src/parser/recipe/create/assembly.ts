@@ -1,4 +1,4 @@
-import RecipeParser, { Recipe, replace } from '..'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { ProcessingRecipe, ProcessingRecipeDefinition } from './processing'
@@ -36,8 +36,8 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
-         ingredient: replace(from, to)(this.definition.ingredient),
-         transitionalItem: replace(from, to)(this.definition.ingredient),
+         ingredient: replaceOrKeep(from, to, this.definition.ingredient),
+         transitionalItem: replaceOrKeep(from, to, this.definition.ingredient),
          sequence: this.sequence.map(it => it.replaceIngredient(from, to).toDefinition()),
       })
    }

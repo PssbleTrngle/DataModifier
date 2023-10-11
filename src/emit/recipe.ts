@@ -12,7 +12,7 @@ import {
 import RecipeRule from '../rule/recipe'
 import { Logger } from '../logger'
 import TagsLoader from '../loader/tags'
-import { createId, encodeId, Id, IdInput, NormalizedId } from '../common/id'
+import { createId, Id, IdInput, NormalizedId } from '../common/id'
 import { Recipe } from '../parser/recipe'
 import { RecipeDefinition } from '../schema/recipe'
 import Registry from '../common/registry'
@@ -82,13 +82,7 @@ export default class RecipeEmitter implements RecipeRules {
 
          const path = this.recipePath(id)
 
-         const rules = this.rules.filter(it => {
-            try {
-               return it.matches(id, recipe)
-            } catch (error) {
-               this.logger.error(`Could not parse recipe ${encodeId(id)}: ${error}`)
-            }
-         })
+         const rules = this.rules.filter(it => it.matches(id, recipe, this.logger))
          if (rules.length === 0) return
 
          const modified = rules.reduce<Recipe | null>((previous, rule) => previous && rule.modify(previous), recipe)
@@ -109,7 +103,7 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    resolveIngredientTest(test: IngredientTest) {
-      return resolveIngredientTest(test, this.tags, this.logger)
+      return resolveIngredientTest(test, this.tags)
    }
 
    private resolveRecipeTest(test: RecipeTest) {

@@ -1,4 +1,4 @@
-import RecipeParser, { Recipe, replace } from '..'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { ResultInput } from '../../../common/result'
@@ -22,7 +22,7 @@ export class ApothecaryRecipe extends Recipe<ApothecaryRecipeDefinition> {
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ApothecaryRecipe({
          ...this.definition,
-         reagent: replace(from, to)(this.definition.reagent),
+         reagent: replaceOrKeep(from, to, this.definition.reagent),
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }

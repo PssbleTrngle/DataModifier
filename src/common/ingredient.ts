@@ -5,7 +5,7 @@ import { resolveCommonTest } from './predicates'
 import { Block, BlockSchema, Fluid, FluidSchema, Item, ItemSchema } from './result'
 import zod from 'zod'
 import { exists } from '@pssbletrngle/pack-resolver'
-import { IllegalShapeError } from '../error'
+import { IllegalShapeError, tryCatching } from '../error'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),
@@ -54,14 +54,13 @@ export function createIngredient(input: IngredientInput): Ingredient {
    throw new IllegalShapeError('unknown ingredient shape', input)
 }
 
-export type Predicate<T> = (value: T, logger: Logger) => boolean
+export type Predicate<T> = (value: T, logger?: Logger) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
 export type IngredientTest = CommonTest<Ingredient> | NormalizedId
 
 export function resolveIdIngredientTest(
    test: NormalizedId | RegExp,
    tags: TagRegistry,
-   logger: Logger,
    idSupplier: (it: Ingredient) => Id | null
 ): Predicate<IngredientInput> {
    function resolveIds(it: IngredientInput): Id[] {
@@ -74,18 +73,10 @@ export function resolveIdIngredientTest(
 
    return resolveCommonTest(
       test,
-      input => {
-         try {
+      (input, logger) =>
+         tryCatching(logger, () => {
             return resolveIds(input).map(encodeId)
-         } catch (error) {
-            if (error instanceof IllegalShapeError) {
-               logger.warn((error as Error).message)
-               return []
-            } else {
-               throw error
-            }
-         }
-      },
+         }) ?? [],
       tags
    )
 }
@@ -108,31 +99,23 @@ function extractBlockID(ingredient: Ingredient): Id | null {
    return null
 }
 
-export function resolveIngredientTest(
-   test: IngredientTest,
-   tags: TagRegistryHolder,
-   logger: Logger
-): Predicate<IngredientInput> {
+export function resolveIngredientTest(test: IngredientTest, tags: TagRegistryHolder): Predicate<IngredientInput> {
    if (typeof test === 'string' || test instanceof RegExp) {
-      return resolveIdIngredientTest(test, tags.registry('items'), logger, extractItemID)
+      return resolveIdIngredientTest(test, tags.registry('items'), extractItemID)
    }
 
    if (typeof test === 'function') {
       return (it, logger) => test(createIngredient(it), logger)
    }
 
-   if ('tag' in test)
-      return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), logger, extractItemID)
-   if ('item' in test)
-      return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), logger, extractItemID)
+   if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
+   if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), extractItemID)
    if ('fluidTag' in test)
-      return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), logger, extractFluidID)
-   if ('fluid' in test)
-      return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), logger, extractFluidID)
+      return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), extractFluidID)
+   if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
    if ('blockTag' in test)
-      return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), logger, extractBlockID)
-   if ('block' in test)
-      return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), logger, extractBlockID)
+      return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), extractBlockID)
+   if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
 
    return () => false
 }

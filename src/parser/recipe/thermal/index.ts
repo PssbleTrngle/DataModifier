@@ -1,13 +1,14 @@
-import RecipeParser, { Recipe, replace } from '..'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { arrayOrSelf, exists } from '@pssbletrngle/pack-resolver'
 import { ResultInput } from '../../../common/result'
+import { fromThermalIngredient, ThermalIngredientInput, toThermalIngredient } from './ingredient'
 
 export type ThermalRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient?: IngredientInput
-      ingredients?: IngredientInput[]
+      ingredient?: ThermalIngredientInput
+      ingredients?: ThermalIngredientInput[]
       result: ResultInput[] | ResultInput
       energy?: number
       experience?: number
@@ -27,7 +28,9 @@ TODO seen Ingredient in form
 
 export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
    getIngredients(): IngredientInput[] {
-      return [this.definition.ingredient, ...(this.definition.ingredients ?? [])].filter(exists)
+      return [this.definition.ingredient, ...(this.definition.ingredients ?? [])]
+         .filter(exists)
+         .map(fromThermalIngredient)
    }
 
    getResults(): ResultInput[] {
@@ -37,8 +40,13 @@ export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ThermalRecipe({
          ...this.definition,
-         ingredient: this.definition.ingredient && replace(from, to)(this.definition.ingredient),
-         ingredients: this.definition.ingredients?.map(replace(from, to)),
+         ingredient:
+            this.definition.ingredient &&
+            toThermalIngredient(replaceOrKeep(from, to, fromThermalIngredient(this.definition.ingredient))),
+         ingredients: this.definition.ingredients
+            ?.map(fromThermalIngredient)
+            ?.map(replace(from, to))
+            ?.map(toThermalIngredient),
       })
    }
 

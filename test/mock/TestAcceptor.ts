@@ -27,7 +27,7 @@ export default function createTestAcceptor(emitOutput: string | null = null): Te
       return true
    }
 
-   acceptor.paths = () => [...received.keys()]
+   acceptor.paths = () => [...received.keys()].sort()
 
    acceptor.at = path => received.get(path) ?? null
    acceptor.jsonAt = path => {

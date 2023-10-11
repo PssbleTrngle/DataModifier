@@ -50,6 +50,50 @@ exports[`replace ingredient replacement replaces ingredients 2`] = `
 }
 `;
 
+exports[`replace ingredient replacement replaces ingredients 3`] = `
+[
+  "data/botania/recipe/brew/speed.json",
+  "data/botania/recipe/brew/weak_regeneration.json",
+  "data/botania/recipe/detector_light_relay.json",
+  "data/botania/recipe/ender_eye_block.json",
+  "data/botania/recipe/hourglass.json",
+  "data/botania/recipe/lens_mine.json",
+  "data/botania/recipe/mana_detector.json",
+  "data/botania/recipe/mana_infusion/mana_powder_dust.json",
+  "data/botania/recipe/mana_infusion/redstone_dupe.json",
+  "data/botania/recipe/mana_infusion/redstone_to_glowstone_dust.json",
+  "data/botania/recipe/pattern_1_1.json",
+  "data/botania/recipe/pattern_1_2.json",
+  "data/botania/recipe/pattern_1_3.json",
+  "data/botania/recipe/pattern_2_1.json",
+  "data/botania/recipe/pattern_2_2.json",
+  "data/botania/recipe/pattern_2_3.json",
+  "data/botania/recipe/pattern_3_1.json",
+  "data/botania/recipe/pattern_3_2.json",
+  "data/botania/recipe/pattern_donut.json",
+  "data/botania/recipe/quartz_red.json",
+  "data/botania/recipe/red_pavement.json",
+  "data/botania/recipe/redstone_root.json",
+  "data/botania/recipe/redstone_spreader.json",
+  "data/botania/recipe/spark_changer.json",
+  "data/botania/recipe/unholy_cloak.json",
+  "data/minecraft/recipe/clock.json",
+  "data/minecraft/recipe/compass.json",
+  "data/minecraft/recipe/detector_rail.json",
+  "data/minecraft/recipe/dispenser.json",
+  "data/minecraft/recipe/dropper.json",
+  "data/minecraft/recipe/note_block.json",
+  "data/minecraft/recipe/observer.json",
+  "data/minecraft/recipe/piston.json",
+  "data/minecraft/recipe/powered_rail.json",
+  "data/minecraft/recipe/redstone_block.json",
+  "data/minecraft/recipe/redstone_lamp.json",
+  "data/minecraft/recipe/redstone_torch.json",
+  "data/minecraft/recipe/repeater.json",
+  "data/minecraft/recipe/target.json",
+]
+`;
+
 exports[`replace ingredient replacement replaces ingredients in create recipes 1`] = `
 {
   "key": {

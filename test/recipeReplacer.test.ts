@@ -32,10 +32,10 @@ describe('replace ingredient replacement', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.paths().length).toBe(38)
-
       expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot()
       expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot()
+
+      expect(acceptor.paths()).toMatchSnapshot()
    })
 
    it('replaces ingredients with additional input filter', async () => {

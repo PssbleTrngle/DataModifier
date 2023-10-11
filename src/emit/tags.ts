@@ -63,7 +63,9 @@ class ScopedEmitter<T extends NormalizedId = NormalizedId> implements ScopedTagR
          const defaultValues = (previous.replace ? undefined : this.registry.resolve(id)) ?? []
          return {
             replace: true,
-            values: [...defaultValues, ...previous.values].filter(it => !predicate(entryId(it) as T)),
+            values: [...defaultValues, ...previous.values].filter(it => {
+               return !predicate(entryId(it) as T)
+            }),
          }
       })
    }

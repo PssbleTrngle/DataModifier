@@ -1,4 +1,4 @@
-import RecipeParser, { Recipe, replace } from '..'
+import RecipeParser, { Recipe, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { ResultInput } from '../../../common/result'
@@ -22,8 +22,8 @@ class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new SmithingRecipe({
          ...this.definition,
-         base: replace(from, to)(this.definition.base),
-         addition: replace(from, to)(this.definition.addition),
+         base: replaceOrKeep(from, to, this.definition.base),
+         addition: replaceOrKeep(from, to, this.definition.addition),
       })
    }
 
