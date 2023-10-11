@@ -15,7 +15,8 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "declaration": true,
-      "declarationMap": true
+      "declarationMap": true,
+      "typeRoots": ["node_modules/@types", "@types"]
    },
    "include": [
       "src"

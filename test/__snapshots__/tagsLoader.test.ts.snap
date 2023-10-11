@@ -1,6 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`loading of tags loads tags correctly 1`] = `
+exports[`loading of tags loads tags correctly: #logs content 1`] = `
+[
+  "#minecraft:crimson_stems",
+  "#minecraft:logs_that_burn",
+  "#minecraft:warped_stems",
+]
+`;
+
+exports[`loading of tags loads tags correctly: #mineable/pickaxe content 1`] = `
 [
   "#minecraft:anvil",
   "#minecraft:cauldrons",
@@ -826,15 +834,7 @@ exports[`loading of tags loads tags correctly 1`] = `
 ]
 `;
 
-exports[`loading of tags loads tags correctly 2`] = `
-[
-  "#minecraft:crimson_stems",
-  "#minecraft:logs_that_burn",
-  "#minecraft:warped_stems",
-]
-`;
-
-exports[`loading of tags resolves tags correctly 1`] = `
+exports[`loading of tags resolves tags correctly: resolved #mineable/axe entries 1`] = `
 [
   "minecraft:black_banner",
   "minecraft:black_wall_banner",
@@ -1182,7 +1182,7 @@ exports[`loading of tags resolves tags correctly 1`] = `
 ]
 `;
 
-exports[`loading of tags resolves tags correctly 2`] = `
+exports[`loading of tags resolves tags correctly: resolved #trapdoors entries 1`] = `
 [
   "minecraft:acacia_trapdoor",
   "minecraft:birch_trapdoor",

@@ -26,7 +26,7 @@ describe('adding of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/tags/items/minable/axe.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/items/minable/axe.json')).toMatchSnapshot('#mineable/axe content')
    })
 
    it('adds tag entries to custom registries', async () => {
@@ -37,7 +37,9 @@ describe('adding of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/example/tags/whatever/registry/something.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/example/tags/whatever/registry/something.json')).toMatchSnapshot(
+         '#example:something content'
+      )
    })
 })
 
@@ -49,7 +51,7 @@ describe('removal of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/tags/blocks/oak_logs.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/oak_logs.json')).toMatchSnapshot('#oak_logs content')
    })
 
    it('removes tag entries using tag', async () => {
@@ -61,8 +63,10 @@ describe('removal of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/tags/blocks/mineable/axe.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/mineable/axe.json')).toMatchSnapshot('modified #minable/axe')
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot(
+         'modified #guarded_by_piglins'
+      )
    })
 
    it('removes tag entries using regex', async () => {
@@ -72,7 +76,7 @@ describe('removal of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/tags/blocks/birch_logs.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/birch_logs.json')).toMatchSnapshot('modified #birch_logs')
    })
 
    it('removes tag entries using predicate', async () => {
@@ -82,6 +86,8 @@ describe('removal of tag entries', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot(
+         'modified #guarded_by_piglins'
+      )
    })
 })

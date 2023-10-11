@@ -1,7 +1,7 @@
 import { Logger } from './logger'
 
 export class IllegalShapeError extends Error {
-   constructor(message: string, readonly input?: any) {
+   constructor(message: string, readonly input?: unknown) {
       super(input ? `${message}: ${JSON.stringify(input)}` : message)
    }
 }

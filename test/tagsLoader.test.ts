@@ -22,16 +22,16 @@ describe('loading of tags', () => {
       expect(blockTags.list().length).toBe(259)
       expect(itemTags.list().length).toBe(302)
 
-      expect(blockTags.get('#minecraft:mineable/pickaxe')).toMatchSnapshot()
-      expect(itemTags.get('#minecraft:logs')).toMatchSnapshot()
+      expect(blockTags.get('#minecraft:mineable/pickaxe')).toMatchSnapshot('#mineable/pickaxe content')
+      expect(itemTags.get('#minecraft:logs')).toMatchSnapshot('#logs content')
    })
 
    it('resolves tags correctly', async () => {
       const itemTags = loader.tagRegistry('items')
       const blockTags = loader.tagRegistry('blocks')
 
-      expect(blockTags.resolve('#minecraft:mineable/axe')).toMatchSnapshot()
-      expect(itemTags.resolve('#minecraft:trapdoors')).toMatchSnapshot()
+      expect(blockTags.resolve('#minecraft:mineable/axe')).toMatchSnapshot('resolved #mineable/axe entries')
+      expect(itemTags.resolve('#minecraft:trapdoors')).toMatchSnapshot('resolved #trapdoors entries')
    })
 })
 

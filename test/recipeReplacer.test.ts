@@ -18,8 +18,8 @@ afterEach(() => {
 })
 
 it('has no unknown recipe loaders', () => {
-   expect(logger.warn).not.toBeCalled()
-   expect(logger.error).not.toBeCalled()
+   expect(logger.warn).not.toHaveBeenCalled()
+   expect(logger.error).not.toHaveBeenCalled()
 })
 
 describe('replace ingredient replacement', () => {
@@ -32,10 +32,10 @@ describe('replace ingredient replacement', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot('modified piston recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot('modified compass recipe')
 
-      expect(acceptor.paths()).toMatchSnapshot()
+      expect(acceptor.paths()).toMatchSnapshot('recipes including redstone as an ingredient')
    })
 
    it('replaces ingredients with additional input filter', async () => {
@@ -55,8 +55,8 @@ describe('replace ingredient replacement', () => {
 
       expect(acceptor.paths().length).toBe(2)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/minecraft/recipe/note_block.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot('modified piston recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipe/note_block.json')).toMatchSnapshot('modified note_block recipe')
       expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toBeNull()
    })
 
@@ -71,10 +71,18 @@ describe('replace ingredient replacement', () => {
 
       expect(acceptor.paths().length).toBe(4)
 
-      expect(acceptor.jsonAt('data/create/recipe/crafting/materials/raw_zinc_block.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/create/recipe/crushing/raw_zinc.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/create/recipe/blasting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot()
-      expect(acceptor.jsonAt('data/create/recipe/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/create/recipe/crafting/materials/raw_zinc_block.json')).toMatchSnapshot(
+         'modified create:raw_zinc_block recipe'
+      )
+      expect(acceptor.jsonAt('data/create/recipe/crushing/raw_zinc.json')).toMatchSnapshot(
+         'modified create:raw_zinc recipe'
+      )
+      expect(acceptor.jsonAt('data/create/recipe/blasting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
+         'modified create:zinc_ingot_from_raw_ore recipe'
+      )
+      expect(acceptor.jsonAt('data/create/recipe/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
+         'modified create:zinc_ingot_from_raw_ore recipe'
+      )
    })
 })
 

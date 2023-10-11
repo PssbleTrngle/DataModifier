@@ -7,5 +7,15 @@
       "no-console": "error",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-empty-function": "off"
-   }
+   },
+   "overrides": [
+      {
+         "files": ["test/**"],
+         "plugins": ["jest"],
+         "extends": ["plugin:jest/recommended"],
+         "rules": {
+            "jest/prefer-snapshot-hint": ["error", "always"]
+         }
+      }
+   ]
 }

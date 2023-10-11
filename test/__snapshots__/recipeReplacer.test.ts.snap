@@ -1,6 +1,92 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`replace ingredient replacement replaces ingredients 1`] = `
+exports[`replace ingredient replacement replaces ingredients in create recipes: modified create:raw_zinc recipe 1`] = `
+{
+  "ingredients": [
+    {
+      "tag": "#forge:raw_materials/iron",
+    },
+  ],
+  "processingTime": 400,
+  "results": [
+    {
+      "item": "create:crushed_raw_zinc",
+    },
+    {
+      "chance": 0.75,
+      "item": "create:experience_nugget",
+    },
+  ],
+  "type": "create:crushing",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients in create recipes: modified create:raw_zinc_block recipe 1`] = `
+{
+  "key": {
+    "C": {
+      "tag": "#forge:raw_materials/iron",
+    },
+  },
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC",
+  ],
+  "result": {
+    "item": "create:raw_zinc_block",
+  },
+  "type": "minecraft:crafting_shaped",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients in create recipes: modified create:zinc_ingot_from_raw_ore recipe 1`] = `
+{
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": {
+    "tag": "#forge:raw_materials/iron",
+  },
+  "result": "create:zinc_ingot",
+  "type": "minecraft:blasting",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients in create recipes: modified create:zinc_ingot_from_raw_ore recipe 2`] = `
+{
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": {
+    "tag": "#forge:raw_materials/iron",
+  },
+  "result": "create:zinc_ingot",
+  "type": "minecraft:smelting",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients with additional input filter: modified note_block recipe 1`] = `
+{
+  "key": {
+    "#": {
+      "tag": "minecraft:planks",
+    },
+    "X": {
+      "item": "minecraft:emerald",
+    },
+  },
+  "pattern": [
+    "###",
+    "#X#",
+    "###",
+  ],
+  "result": {
+    "item": "minecraft:note_block",
+  },
+  "type": "minecraft:crafting_shaped",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients with additional input filter: modified piston recipe 1`] = `
 {
   "key": {
     "#": {
@@ -28,7 +114,7 @@ exports[`replace ingredient replacement replaces ingredients 1`] = `
 }
 `;
 
-exports[`replace ingredient replacement replaces ingredients 2`] = `
+exports[`replace ingredient replacement replaces ingredients: modified compass recipe 1`] = `
 {
   "key": {
     "#": {
@@ -50,7 +136,35 @@ exports[`replace ingredient replacement replaces ingredients 2`] = `
 }
 `;
 
-exports[`replace ingredient replacement replaces ingredients 3`] = `
+exports[`replace ingredient replacement replaces ingredients: modified piston recipe 1`] = `
+{
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone",
+    },
+    "R": {
+      "item": "minecraft:emerald",
+    },
+    "T": {
+      "tag": "minecraft:planks",
+    },
+    "X": {
+      "item": "minecraft:iron_ingot",
+    },
+  },
+  "pattern": [
+    "TTT",
+    "#X#",
+    "#R#",
+  ],
+  "result": {
+    "item": "minecraft:piston",
+  },
+  "type": "minecraft:crafting_shaped",
+}
+`;
+
+exports[`replace ingredient replacement replaces ingredients: recipes including redstone as an ingredient 1`] = `
 [
   "data/botania/recipe/brew/speed.json",
   "data/botania/recipe/brew/weak_regeneration.json",
@@ -92,118 +206,4 @@ exports[`replace ingredient replacement replaces ingredients 3`] = `
   "data/minecraft/recipe/repeater.json",
   "data/minecraft/recipe/target.json",
 ]
-`;
-
-exports[`replace ingredient replacement replaces ingredients in create recipes 1`] = `
-{
-  "key": {
-    "C": {
-      "tag": "#forge:raw_materials/iron",
-    },
-  },
-  "pattern": [
-    "CCC",
-    "CCC",
-    "CCC",
-  ],
-  "result": {
-    "item": "create:raw_zinc_block",
-  },
-  "type": "minecraft:crafting_shaped",
-}
-`;
-
-exports[`replace ingredient replacement replaces ingredients in create recipes 2`] = `
-{
-  "ingredients": [
-    {
-      "tag": "#forge:raw_materials/iron",
-    },
-  ],
-  "processingTime": 400,
-  "results": [
-    {
-      "item": "create:crushed_raw_zinc",
-    },
-    {
-      "chance": 0.75,
-      "item": "create:experience_nugget",
-    },
-  ],
-  "type": "create:crushing",
-}
-`;
-
-exports[`replace ingredient replacement replaces ingredients in create recipes 3`] = `
-{
-  "cookingtime": 100,
-  "experience": 0.7,
-  "ingredient": {
-    "tag": "#forge:raw_materials/iron",
-  },
-  "result": "create:zinc_ingot",
-  "type": "minecraft:blasting",
-}
-`;
-
-exports[`replace ingredient replacement replaces ingredients in create recipes 4`] = `
-{
-  "cookingtime": 200,
-  "experience": 0.7,
-  "ingredient": {
-    "tag": "#forge:raw_materials/iron",
-  },
-  "result": "create:zinc_ingot",
-  "type": "minecraft:smelting",
-}
-`;
-
-exports[`replace ingredient replacement replaces ingredients with additional input filter 1`] = `
-{
-  "key": {
-    "#": {
-      "item": "minecraft:cobblestone",
-    },
-    "R": {
-      "item": "minecraft:emerald",
-    },
-    "T": {
-      "tag": "minecraft:planks",
-    },
-    "X": {
-      "item": "minecraft:iron_ingot",
-    },
-  },
-  "pattern": [
-    "TTT",
-    "#X#",
-    "#R#",
-  ],
-  "result": {
-    "item": "minecraft:piston",
-  },
-  "type": "minecraft:crafting_shaped",
-}
-`;
-
-exports[`replace ingredient replacement replaces ingredients with additional input filter 2`] = `
-{
-  "key": {
-    "#": {
-      "tag": "minecraft:planks",
-    },
-    "X": {
-      "item": "minecraft:emerald",
-    },
-  },
-  "pattern": [
-    "###",
-    "#X#",
-    "###",
-  ],
-  "result": {
-    "item": "minecraft:note_block",
-  },
-  "type": "minecraft:crafting_shaped",
-}
 `;

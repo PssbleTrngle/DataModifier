@@ -1,6 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`adding of tag entries adds tag entries 1`] = `
+exports[`adding of tag entries adds tag entries to custom registries: #example:something content 1`] = `
+{
+  "replace": false,
+  "values": [
+    "example:entry",
+  ],
+}
+`;
+
+exports[`adding of tag entries adds tag entries: #mineable/axe content 1`] = `
 {
   "replace": false,
   "values": [
@@ -13,16 +22,7 @@ exports[`adding of tag entries adds tag entries 1`] = `
 }
 `;
 
-exports[`adding of tag entries adds tag entries to custom registries 1`] = `
-{
-  "replace": false,
-  "values": [
-    "example:entry",
-  ],
-}
-`;
-
-exports[`removal of tag entries removes tag entries using id 1`] = `
+exports[`removal of tag entries removes tag entries using id: #oak_logs content 1`] = `
 {
   "replace": true,
   "values": [
@@ -33,7 +33,7 @@ exports[`removal of tag entries removes tag entries using id 1`] = `
 }
 `;
 
-exports[`removal of tag entries removes tag entries using predicate 1`] = `
+exports[`removal of tag entries removes tag entries using predicate: modified #guarded_by_piglins 1`] = `
 {
   "replace": true,
   "values": [
@@ -63,7 +63,7 @@ exports[`removal of tag entries removes tag entries using predicate 1`] = `
 }
 `;
 
-exports[`removal of tag entries removes tag entries using regex 1`] = `
+exports[`removal of tag entries removes tag entries using regex: modified #birch_logs 1`] = `
 {
   "replace": true,
   "values": [
@@ -73,7 +73,14 @@ exports[`removal of tag entries removes tag entries using regex 1`] = `
 }
 `;
 
-exports[`removal of tag entries removes tag entries using tag 1`] = `
+exports[`removal of tag entries removes tag entries using tag: modified #guarded_by_piglins 1`] = `
+{
+  "replace": true,
+  "values": [],
+}
+`;
+
+exports[`removal of tag entries removes tag entries using tag: modified #minable/axe 1`] = `
 {
   "replace": true,
   "values": [
@@ -388,12 +395,5 @@ exports[`removal of tag entries removes tag entries using tag 1`] = `
     "minecraft:yellow_banner",
     "minecraft:yellow_wall_banner",
   ],
-}
-`;
-
-exports[`removal of tag entries removes tag entries using tag 2`] = `
-{
-  "replace": true,
-  "values": [],
 }
 `;
