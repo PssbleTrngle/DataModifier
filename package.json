@@ -51,6 +51,7 @@
       "node-stream-zip": "^1.15.0",
       "prettier": "^2.7.1",
       "prismarine-nbt": "^2.2.1",
-      "typescript": "^4.8.2"
+      "typescript": "^4.8.2",
+      "zod": "^3.22.4"
    }
 }

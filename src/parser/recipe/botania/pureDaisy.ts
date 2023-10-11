@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe } from '..'
-import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
+import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import {
    BlockInput,
@@ -9,6 +9,7 @@ import {
    fromBlockInput,
    fromBlockOutput,
 } from './orechid'
+import { ResultInput } from '../../../common/result'
 
 export type PureDaisyRecipeDefinition = RecipeDefinition &
    Readonly<{

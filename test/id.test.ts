@@ -1,6 +1,6 @@
 import { createId, encodeId, Id, NormalizedId } from '../src/common/id'
-import { resolveIDTest } from '../src/common/ingredient'
 import Registry from '../src/common/registry'
+import { resolveIDTest } from '../src/common/predicates'
 
 it('parses id from string', () => {
    expect(createId('minecraft:stone')).toMatchObject({ namespace: 'minecraft', path: 'stone' })

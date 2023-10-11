@@ -1,7 +1,9 @@
 import RecipeParser, { Recipe } from '..'
-import { createResult, IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
+import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { encodeId } from '../../../common/id'
+import { createResult, ResultInput } from '../../../common/result'
+import { IllegalShapeError } from '../../../error'
 
 export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -28,7 +30,7 @@ class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
 
    replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       const result = createResult(to)
-      if (!('item' in result)) throw new Error('stonecutting does only support item results')
+      if (!('item' in result)) throw new IllegalShapeError('stonecutting does only support item results', result)
 
       return new StonecuttingRecipe({
          ...this.definition,

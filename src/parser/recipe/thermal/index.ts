@@ -1,7 +1,8 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
+import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { arrayOrSelf, exists } from '@pssbletrngle/pack-resolver'
+import { ResultInput } from '../../../common/result'
 
 export type ThermalRecipeDefinition = RecipeDefinition &
    Readonly<{

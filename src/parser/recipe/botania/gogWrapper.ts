@@ -1,7 +1,8 @@
 import RecipeParser, { Recipe } from '..'
-import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
+import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import RecipeLoader from '../../../loader/recipe'
+import { ResultInput } from '../../../common/result'
 
 export type GogWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{

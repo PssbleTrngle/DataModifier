@@ -7,7 +7,7 @@ import { Ingredient } from '../src/common/ingredient'
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 beforeAll(async () => {
-   const resolver = createTestResolver({ include: ['data/*/tags/**/*.json'] })
+   const resolver = createTestResolver()
    await loader.loadFrom(resolver)
 }, 10_000)
 
@@ -22,14 +22,14 @@ describe('tests regarding ingredient/result shapes', () => {
 
       predicate(['test', { whatever: true }] as any as Ingredient)
       predicate({} as any as Ingredient)
+      predicate(10 as any as Ingredient)
+      predicate(null as any as Ingredient)
 
-      expect(logger.warn).toBeCalledTimes(2)
+      expect(logger.warn).toBeCalledTimes(4)
    })
 
    it('does not encounter any unknown ingredient shapes', async () => {
       const acceptor = createTestAcceptor()
-
-      // TODO pretty sure this should fail
 
       loader.recipes.replaceIngredient('minecraft:coal', { item: 'minecraft:diamond' })
       loader.recipes.replaceIngredient({ item: 'minecraft:coal' }, { item: 'minecraft:diamond' })

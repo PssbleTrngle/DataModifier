@@ -7,17 +7,17 @@ import {
    IngredientInput,
    IngredientTest,
    Predicate,
-   resolveIDTest,
    resolveIngredientTest,
-   Result,
 } from '../common/ingredient'
 import RecipeRule from '../rule/recipe'
 import { Logger } from '../logger'
 import TagsLoader from '../loader/tags'
-import { createId, Id, IdInput, NormalizedId } from '../common/id'
+import { createId, encodeId, Id, IdInput, NormalizedId } from '../common/id'
 import { Recipe } from '../parser/recipe'
 import { RecipeDefinition } from '../schema/recipe'
 import Registry from '../common/registry'
+import { resolveIDTest } from '../common/predicates'
+import { Result } from '../common/result'
 
 type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
@@ -82,7 +82,13 @@ export default class RecipeEmitter implements RecipeRules {
 
          const path = this.recipePath(id)
 
-         const rules = this.rules.filter(it => it.matches(id, recipe))
+         const rules = this.rules.filter(it => {
+            try {
+               return it.matches(id, recipe)
+            } catch (error) {
+               this.logger.error(`Could not parse recipe ${encodeId(id)}: ${error}`)
+            }
+         })
          if (rules.length === 0) return
 
          const modified = rules.reduce<Recipe | null>((previous, rule) => previous && rule.modify(previous), recipe)

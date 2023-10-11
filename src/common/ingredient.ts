@@ -1,85 +1,62 @@
 import { TagRegistry, TagRegistryHolder } from '../loader/tags'
-import { createId, encodeId, Id, IdInput, NormalizedId, TagInput } from './id'
+import { createId, encodeId, Id, NormalizedId } from './id'
 import { Logger } from '../logger'
+import { resolveCommonTest } from './predicates'
+import { Block, BlockSchema, Fluid, FluidSchema, Item, ItemSchema } from './result'
+import zod from 'zod'
+import { exists } from '@pssbletrngle/pack-resolver'
+import { IllegalShapeError } from '../error'
 
-type Item = Readonly<{ item: string }>
-type ItemTag = Readonly<{ tag: string }>
+export const ItemTagSchema = zod.object({
+   tag: zod.string(),
+})
 
-type Fluid = Readonly<{ fluid: string }>
-type FluidTag = Readonly<{ fluidTag: string }>
+export type ItemTag = zod.infer<typeof ItemTagSchema>
 
-export type Block = Readonly<{
-   block: string
-   weight?: number
-}>
+export const FluidTagSchema = zod.object({
+   fluidTag: zod.string(),
+})
 
-export type BlockTag = Readonly<{
-   blockTag: string
-   weight?: number
-}>
+export type FluidTag = zod.infer<typeof FluidTagSchema>
 
-export type Ingredient = ItemTag | Item | Fluid | FluidTag | Block | BlockTag
+export const BlockTagSchema = zod.object({
+   blockTag: zod.string(),
+   weight: zod.number().optional(),
+})
+
+export type BlockTag = zod.infer<typeof BlockTagSchema>
+
+export type Ingredient = Item | ItemTag | Fluid | FluidTag | Block | BlockTag | IngredientInput[]
 export type IngredientInput = Ingredient | string
 
 export function createIngredient(input: IngredientInput): Ingredient {
+   if (!input) throw new IllegalShapeError('result input may not be null')
+
    if (typeof input === 'string') {
       if (input.startsWith('#')) return { tag: input.substring(1) }
       else return { item: input }
    }
 
-   return input
+   if (Array.isArray(input)) {
+      return input.map(createIngredient)
+   }
+
+   if (typeof input === 'object') {
+      if ('item' in input) return ItemSchema.parse(input)
+      if ('fluid' in input) return FluidSchema.parse(input)
+      if ('block' in input) return BlockSchema.parse(input)
+
+      if ('tag' in input) return ItemTagSchema.parse(input)
+      if ('fluidTag' in input) return FluidTagSchema.parse(input)
+      if ('blockTag' in input) return BlockTagSchema.parse(input)
+   }
+
+   throw new IllegalShapeError('unknown ingredient shape', input)
 }
 
-type ItemStack = Item &
-   Readonly<{
-      count?: number
-   }>
-
-type FluidStack = Fluid &
-   Readonly<{
-      amount: number
-   }>
-
-export type Result = ItemStack | FluidStack | Block
-export type ResultInput = Result | string
-
-export function createResult(input: ResultInput): Result {
-   if (typeof input === 'string') return { item: input }
-   return input
-}
-
-export type Predicate<T> = (value: T) => boolean
+export type Predicate<T> = (value: T, logger: Logger) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
 export type IngredientTest = CommonTest<Ingredient> | NormalizedId
-
-export function resolveCommonTest<TEntry, TId extends string>(
-   test: CommonTest<NormalizedId<TId>>,
-   resolve: (value: TEntry) => NormalizedId<TId>,
-   tags?: TagRegistry
-): Predicate<TEntry> {
-   if (typeof test === 'function') {
-      return it => test(resolve(it))
-   } else if (test instanceof RegExp) {
-      return ingredient => {
-         return test.test(resolve(ingredient))
-      }
-   } else if (test.startsWith('#')) {
-      return ingredient => {
-         const id = resolve(ingredient)
-         if (id.startsWith('#') && test === id) return true
-         else if (tags) return tags.contains(test as TagInput, id) ?? false
-         else throw new Error('Cannot parse ID test without tags')
-      }
-   } else {
-      return ingredient => {
-         return test === resolve(ingredient)
-      }
-   }
-}
-
-export function resolveIDTest<T extends NormalizedId>(test: CommonTest<T>, tags?: TagRegistry): Predicate<IdInput<T>> {
-   return resolveCommonTest(test, it => encodeId<T>(it), tags)
-}
 
 export function resolveIdIngredientTest(
    test: NormalizedId | RegExp,
@@ -87,13 +64,27 @@ export function resolveIdIngredientTest(
    logger: Logger,
    idSupplier: (it: Ingredient) => Id | null
 ): Predicate<IngredientInput> {
+   function resolveIds(it: IngredientInput): Id[] {
+      if (Array.isArray(it)) {
+         return it.flatMap(resolveIds)
+      } else {
+         return [idSupplier(createIngredient(it))].filter(exists)
+      }
+   }
+
    return resolveCommonTest(
       test,
-      ingredient => {
-         const id = idSupplier(createIngredient(ingredient))
-         if (id) return encodeId(id)
-         logger.warn('unknown ingredient shape:', ingredient)
-         return '__ignored' as NormalizedId
+      input => {
+         try {
+            return resolveIds(input).map(encodeId)
+         } catch (error) {
+            if (error instanceof IllegalShapeError) {
+               logger.warn((error as Error).message)
+               return []
+            } else {
+               throw error
+            }
+         }
       },
       tags
    )
@@ -127,7 +118,7 @@ export function resolveIngredientTest(
    }
 
    if (typeof test === 'function') {
-      return it => test(createIngredient(it))
+      return (it, logger) => test(createIngredient(it), logger)
    }
 
    if ('tag' in test)

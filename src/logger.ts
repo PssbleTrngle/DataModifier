@@ -10,18 +10,23 @@ type LogMethods = {
 }
 
 export type Logger = LogMethods & {
-   group(): Logger
+   group(prefix?: string): Logger
 }
 
-export function wrapLogMethods(logMethods: LogMethods) {
-   return { ...logMethods, group: () => subLogger(logMethods) }
+export function wrapLogMethods(logMethods: LogMethods): Logger {
+   return { ...logMethods, group: prefix => subLogger(logMethods, prefix) }
 }
 
-function subLogger(logger: LogMethods): Logger {
+function grouped(prefix: string | undefined, message: Logable) {
+   if (prefix) return `${prefix}:   ${message}`
+   return `   ${message}`
+}
+
+function subLogger(logger: LogMethods, prefix?: string): Logger {
    return wrapLogMethods({
-      error: message => logger.error(`   ${message}`),
-      warn: message => logger.warn(`   ${message}`),
-      info: message => logger.info(`   ${message}`),
+      error: (message, ...args) => logger.error(grouped(prefix, message), ...args),
+      warn: (message, ...args) => logger.warn(grouped(prefix, message), ...args),
+      info: (message, ...args) => logger.info(grouped(prefix, message), ...args),
    })
 }
 

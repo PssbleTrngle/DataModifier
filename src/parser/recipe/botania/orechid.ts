@@ -1,15 +1,9 @@
 import RecipeParser, { Recipe } from '..'
-import {
-   Block,
-   BlockTag,
-   createIngredient,
-   createResult,
-   IngredientInput,
-   Predicate,
-   ResultInput,
-} from '../../../common/ingredient'
+import { BlockTag, createIngredient, IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { encodeId } from '../../../common/id'
+import { Block, createResult, ResultInput } from '../../../common/result'
+import { IllegalShapeError } from '../../../error'
 
 export type BlockOutput =
    | string
@@ -79,7 +73,7 @@ export function fromBlockInput(input: BlockInput): Block | BlockTag {
             weight: input.weight,
          }
       default:
-         throw new Error(`Unknown block input type ${(input as BlockInput).type}`)
+         throw new IllegalShapeError(`Unknown block input type`, input)
    }
 }
 
