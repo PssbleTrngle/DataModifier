@@ -1,31 +1,31 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type RunicAltarRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: Ingredient[]
-      output: Result
+      ingredients: IngredientInput[]
+      output: ResultInput
       mana?: number
    }>
 
 export class RunicAltarRecipe extends Recipe<RunicAltarRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.output]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): RunicAltarRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new RunicAltarRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): RunicAltarRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new RunicAltarRecipe({
          ...this.definition,
          output: to,

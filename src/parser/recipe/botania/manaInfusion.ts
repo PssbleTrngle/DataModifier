@@ -1,27 +1,27 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
-import { BlockInput, createBlockInput, fromBlockInput } from './block'
+import { BlockInput, createBlockInput, fromBlockInput } from './orechid'
 
 export type ManaInfusionRecipeDefinition = RecipeDefinition &
    Readonly<{
-      input: Ingredient
-      output: Result
+      input: IngredientInput
+      output: ResultInput
       catalyst?: BlockInput
       mana?: number
    }>
 
 export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       if (!this.definition.catalyst) return [this.definition.input]
       return [fromBlockInput(this.definition.catalyst), this.definition.input]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.output]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): ManaInfusionRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
          input: replace(from, to)(this.definition.input),
@@ -32,7 +32,7 @@ export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): ManaInfusionRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
          output: to,

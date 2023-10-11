@@ -1,31 +1,31 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type ElvenTradeRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: Ingredient[]
-      output: Result[]
+      ingredients: IngredientInput[]
+      output: ResultInput[]
       mana?: number
    }>
 
 export class ElvenTradeRecipe extends Recipe<ElvenTradeRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return this.definition.output
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): ElvenTradeRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ElvenTradeRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): ElvenTradeRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new ElvenTradeRecipe({
          ...this.definition,
          output: this.definition.output.map(replace(from, to)),

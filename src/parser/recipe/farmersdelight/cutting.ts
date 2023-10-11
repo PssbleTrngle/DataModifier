@@ -1,31 +1,31 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type CuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: Ingredient[]
-      result: Result[]
+      ingredients: IngredientInput[]
+      result: ResultInput[]
       tool: unknown
    }>
 
 export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return this.definition.result
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): CuttingRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new CuttingRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): CuttingRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new CuttingRecipe({
          ...this.definition,
          result: this.definition.result.map(replace(from, to)),

@@ -14,70 +14,74 @@ afterEach(() => {
    loader.clear()
 })
 
-it('adds tag entries', async () => {
-   const acceptor = createTestAcceptor()
+describe('adding of tag entries', () => {
+   it('adds tag entries', async () => {
+      const acceptor = createTestAcceptor()
 
-   loader.tags.items.add('#minecraft:minable/axe', 'minecraft:obsidian')
-   loader.tags.items.add('#minecraft:minable/axe', {
-      value: 'create:brass_block',
-      required: false,
+      loader.tags.items.add('#minecraft:minable/axe', 'minecraft:obsidian')
+      loader.tags.items.add('#minecraft:minable/axe', {
+         value: 'create:brass_block',
+         required: false,
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('data/minecraft/tags/items/minable/axe.json')).toMatchSnapshot()
    })
 
-   await loader.emit(acceptor)
+   it('adds tag entries to custom registries', async () => {
+      const acceptor = createTestAcceptor()
 
-   expect(acceptor.jsonAt('data/minecraft/tags/items/minable/axe.json')).toMatchSnapshot()
+      loader.registerRegistry('whatever/registry')
+      loader.tags.add('whatever/registry', '#example:something', 'example:entry')
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('data/example/tags/whatever/registry/something.json')).toMatchSnapshot()
+   })
 })
 
-it('adds tag entries to custom registries', async () => {
-   const acceptor = createTestAcceptor()
+describe('removal of tag entries', () => {
+   it('removes tag entries using id', async () => {
+      const acceptor = createTestAcceptor()
 
-   loader.registerRegistry('whatever/registry')
-   loader.tags.add('whatever/registry', '#example:something', 'example:entry')
+      loader.tags.blocks.remove('#minecraft:oak_logs', 'minecraft:oak_log')
 
-   await loader.emit(acceptor)
+      await loader.emit(acceptor)
 
-   expect(acceptor.jsonAt('data/example/tags/whatever/registry/something.json')).toMatchSnapshot()
-})
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/oak_logs.json')).toMatchSnapshot()
+   })
 
-it('removes tag entries using id', async () => {
-   const acceptor = createTestAcceptor()
+   it('removes tag entries using tag', async () => {
+      const acceptor = createTestAcceptor()
 
-   loader.tags.blocks.remove('#minecraft:oak_logs', 'minecraft:oak_log')
+      loader.tags.blocks.remove('#minecraft:mineable/axe', '#minecraft:logs')
+      loader.tags.blocks.remove('#minecraft:guarded_by_piglins', '#minecraft:mineable/axe')
+      loader.tags.blocks.remove('#minecraft:guarded_by_piglins', '#minecraft:mineable/pickaxe')
 
-   await loader.emit(acceptor)
+      await loader.emit(acceptor)
 
-   expect(acceptor.jsonAt('data/minecraft/tags/blocks/oak_logs.json')).toMatchSnapshot()
-})
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/mineable/axe.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
+   })
 
-it('removes tag entries using tag', async () => {
-   const acceptor = createTestAcceptor()
+   it('removes tag entries using regex', async () => {
+      const acceptor = createTestAcceptor()
 
-   loader.tags.blocks.remove('#minecraft:mineable/axe', '#minecraft:logs')
-   loader.tags.blocks.remove('#minecraft:guarded_by_piglins', '#minecraft:mineable/axe')
-   loader.tags.blocks.remove('#minecraft:guarded_by_piglins', '#minecraft:mineable/pickaxe')
+      loader.tags.blocks.remove('#minecraft:birch_logs', /minecraft:stripped_.+/)
 
-   await loader.emit(acceptor)
+      await loader.emit(acceptor)
 
-   expect(acceptor.jsonAt('data/minecraft/tags/blocks/mineable/axe.json')).toMatchSnapshot()
-   expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
-})
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/birch_logs.json')).toMatchSnapshot()
+   })
 
-it('removes tag entries using regex', async () => {
-   const acceptor = createTestAcceptor()
+   it('removes tag entries using predicate', async () => {
+      const acceptor = createTestAcceptor()
 
-   loader.tags.blocks.remove('#minecraft:birch_logs', /minecraft:stripped_.+/)
+      loader.tags.blocks.remove('#minecraft:guarded_by_piglins', it => it.includes('gold'))
 
-   await loader.emit(acceptor)
+      await loader.emit(acceptor)
 
-   expect(acceptor.jsonAt('data/minecraft/tags/blocks/birch_logs.json')).toMatchSnapshot()
-})
-
-it('removes tag entries using predicate', async () => {
-   const acceptor = createTestAcceptor()
-
-   loader.tags.blocks.remove('#minecraft:guarded_by_piglins', it => it.includes('gold'))
-
-   await loader.emit(acceptor)
-
-   expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
+      expect(acceptor.jsonAt('data/minecraft/tags/blocks/guarded_by_piglins.json')).toMatchSnapshot()
+   })
 })

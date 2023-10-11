@@ -1,21 +1,17 @@
 import RecipeParser, { Recipe, replace } from '..'
 import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
-import { exists } from '@pssbletrngle/pack-resolver'
 
-export type CookingRecipeDefinition = RecipeDefinition &
+export type TerraPlateRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: IngredientInput[]
-      container?: IngredientInput
       result: ResultInput
-      cookingTime?: number
-      experience?: number
-      recipe_book_tab?: string
+      mana?: number
    }>
 
-export class CookingRecipe extends Recipe<CookingRecipeDefinition> {
+export class TerraPlateRecipe extends Recipe<TerraPlateRecipeDefinition> {
    getIngredients(): IngredientInput[] {
-      return [this.definition.container, ...this.definition.ingredients].filter(exists)
+      return this.definition.ingredients
    }
 
    getResults(): ResultInput[] {
@@ -23,23 +19,22 @@ export class CookingRecipe extends Recipe<CookingRecipeDefinition> {
    }
 
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
-      return new CookingRecipe({
+      return new TerraPlateRecipe({
          ...this.definition,
-         container: this.definition.container && replace(from, to)(this.definition.container),
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
    replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
-      return new CookingRecipe({
+      return new TerraPlateRecipe({
          ...this.definition,
          result: to,
       })
    }
 }
 
-export default class CookingRecipeParser extends RecipeParser<CookingRecipeDefinition, CookingRecipe> {
-   create(definition: CookingRecipeDefinition): CookingRecipe {
-      return new CookingRecipe(definition)
+export default class TerraPlateRecipeParser extends RecipeParser<TerraPlateRecipeDefinition, TerraPlateRecipe> {
+   create(definition: TerraPlateRecipeDefinition): TerraPlateRecipe {
+      return new TerraPlateRecipe(definition)
    }
 }

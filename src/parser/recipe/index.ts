@@ -1,4 +1,4 @@
-import { Ingredient, Predicate, Result } from '../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../common/ingredient'
 import { RecipeDefinition } from '../../schema/recipe'
 
 export function replace<T>(from: Predicate<T>, to: T) {
@@ -11,13 +11,13 @@ export function replace<T>(from: Predicate<T>, to: T) {
 export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefinition> {
    constructor(protected readonly definition: TDefinition) {}
 
-   abstract getIngredients(): Ingredient[]
+   abstract getIngredients(): IngredientInput[]
 
-   abstract replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe
+   abstract replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe
 
-   abstract getResults(): Result[]
+   abstract getResults(): ResultInput[]
 
-   abstract replaceResult(from: Predicate<Ingredient>, to: Result): Recipe
+   abstract replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe
 
    toDefinition(): TDefinition {
       return this.definition

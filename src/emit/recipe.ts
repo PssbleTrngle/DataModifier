@@ -4,6 +4,7 @@ import { toJson } from '../textHelper'
 import {
    CommonTest,
    Ingredient,
+   IngredientInput,
    IngredientTest,
    Predicate,
    resolveIDTest,
@@ -107,8 +108,8 @@ export default class RecipeEmitter implements RecipeRules {
 
    private resolveRecipeTest(test: RecipeTest) {
       const recipe: Predicate<Id>[] = []
-      const ingredient: Predicate<Ingredient>[] = []
-      const result: Predicate<Ingredient>[] = []
+      const ingredient: Predicate<IngredientInput>[] = []
+      const result: Predicate<IngredientInput>[] = []
 
       if (test.id) recipe.push(resolveIDTest(test.id))
       if (test.namespace) recipe.push(id => id.namespace === test.namespace)

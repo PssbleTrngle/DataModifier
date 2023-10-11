@@ -1,38 +1,39 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { createResult, IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { encodeId } from '../../../common/id'
 
 export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: Ingredient
+      ingredient: IngredientInput
       result: string
       count?: number
    }>
 
 class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [this.definition.ingredient]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [{ item: encodeId(this.definition.result), count: this.definition.count }]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new StonecuttingRecipe({
          ...this.definition,
          ingredient: to,
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
-      if (!('item' in to)) throw new Error('stonecutting does only support item results')
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+      const result = createResult(to)
+      if (!('item' in result)) throw new Error('stonecutting does only support item results')
 
       return new StonecuttingRecipe({
          ...this.definition,
-         result: to.item,
-         count: to.count ?? 1,
+         result: result.item,
+         count: result.count ?? 1,
       })
    }
 }

@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import RecipeLoader from '../../../loader/recipe'
 
@@ -19,15 +19,15 @@ export class GogWrapperRecipe extends Recipe<Omit<GogWrapperRecipeDefinition, 'r
       super(definition)
    }
 
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [...this.base.getIngredients(), ...this.gog.getIngredients()]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [...this.base.getResults(), ...this.gog.getResults()]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): GogWrapperRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new GogWrapperRecipe(
          this.definition,
          this.base.replaceIngredient(from, to),
@@ -35,7 +35,7 @@ export class GogWrapperRecipe extends Recipe<Omit<GogWrapperRecipeDefinition, 'r
       )
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): GogWrapperRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new GogWrapperRecipe(this.definition, this.base.replaceResult(from, to), this.gog.replaceResult(from, to))
    }
 }

@@ -1,10 +1,10 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type ThermalCatalystRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: Ingredient
+      ingredient: IngredientInput
       primary_mod?: number
       secondary_mod?: number
       energy_mod?: number
@@ -13,15 +13,15 @@ export type ThermalCatalystRecipeDefinition = RecipeDefinition &
    }>
 
 export class ThermalCatalystRecipe extends Recipe<ThermalCatalystRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [this.definition.ingredient]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return []
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): ThermalCatalystRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ThermalCatalystRecipe({
          ...this.definition,
          ingredient: to,

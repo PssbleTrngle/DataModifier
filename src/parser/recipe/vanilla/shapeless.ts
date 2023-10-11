@@ -1,30 +1,30 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type ShapelessRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: Ingredient[]
-      result: Result
+      ingredients: IngredientInput[]
+      result: ResultInput
    }>
 
 class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ShapelessRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new ShapelessRecipe({
          ...this.definition,
          result: to,

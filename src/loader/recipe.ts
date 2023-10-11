@@ -16,7 +16,7 @@ import CookingRecipeParser from '../parser/recipe/farmersdelight/cooking'
 import ThermalRecipeParser from '../parser/recipe/thermal'
 import ThermalCatalystRecipeParser from '../parser/recipe/thermal/catalyst'
 import NbtWrapperRecipeParser from '../parser/recipe/botania/nbtWrapper'
-import BlockRecipeParser from '../parser/recipe/botania/block'
+import OrechidRecipeParser from '../parser/recipe/botania/orechid'
 import RunicAltarRecipeParser from '../parser/recipe/botania/runicAltar'
 import ElvenTradeRecipeParser from '../parser/recipe/botania/elvenTrade'
 import BrewRecipeParser from '../parser/recipe/botania/brew'
@@ -24,6 +24,8 @@ import ManaInfusionRecipeParser from '../parser/recipe/botania/manaInfusion'
 import GogWrapperRecipeParser from '../parser/recipe/botania/gogWrapper'
 import ApothecaryRecipeParser from '../parser/recipe/botania/apothecary'
 import Registry from '../common/registry'
+import TerraPlateRecipeParser from '../parser/recipe/botania/terraPlate'
+import PureDaisyRecipeParser from '../parser/recipe/botania/pureDaisy'
 
 export interface RecipeRegistry {
    forEach(consumer: (recipe: Recipe, id: Id) => void): void
@@ -90,16 +92,16 @@ export default class RecipeLoader implements RecipeRegistry {
       this.registerParser('thermal:smelter_catalyst', new ThermalCatalystRecipeParser())
 
       this.registerParser('botania:nbt_output_wrapper', new NbtWrapperRecipeParser(this))
-      this.registerParser('botania:orechid', new BlockRecipeParser())
-      this.registerParser('botania:orechid_ignem', new BlockRecipeParser())
-      this.registerParser('botania:pure_daisy', new BlockRecipeParser())
-      this.registerParser('botania:state_copying_pure_daisy', new BlockRecipeParser())
-      this.registerParser('botania:marimorphosis', new BlockRecipeParser())
+      this.registerParser('botania:orechid', new OrechidRecipeParser())
+      this.registerParser('botania:orechid_ignem', new OrechidRecipeParser())
+      this.registerParser('botania:marimorphosis', new OrechidRecipeParser())
+      this.registerParser('botania:pure_daisy', new PureDaisyRecipeParser())
+      this.registerParser('botania:state_copying_pure_daisy', new PureDaisyRecipeParser())
       this.registerParser('botania:mana_upgrade', new ShapedParser())
       this.registerParser('botania:water_bottle_matching_shaped', new ShapedParser())
       this.registerParser('botania:runic_altar', new RunicAltarRecipeParser())
       this.registerParser('botania:runic_altar_head', new RunicAltarRecipeParser())
-      this.registerParser('botania:terra_plate', new RunicAltarRecipeParser())
+      this.registerParser('botania:terra_plate', new TerraPlateRecipeParser())
       this.registerParser('botania:elven_trade', new ElvenTradeRecipeParser())
       this.registerParser('botania:brew', new BrewRecipeParser())
       this.registerParser('botania:twig_wand', new ShapedParser())
@@ -136,7 +138,7 @@ export default class RecipeLoader implements RecipeRegistry {
       try {
          return parser.create(definition) as TRecipe
       } catch (e) {
-         throw new Error(`Failed to parse recipe with type '${definition.type}':` + e)
+         throw new Error(`Failed to parse recipe with type '${definition.type}'`, { cause: e })
       }
    }
 

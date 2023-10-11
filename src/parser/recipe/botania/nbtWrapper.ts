@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import RecipeLoader from '../../../loader/recipe'
 
@@ -14,19 +14,19 @@ export class NbtWrapperRecipe extends Recipe<Omit<NbtWrapperRecipeDefinition, 'r
       super(definition)
    }
 
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.recipe.getIngredients()
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return this.recipe.getResults()
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): NbtWrapperRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new NbtWrapperRecipe(this.definition, this.recipe.replaceIngredient(from, to))
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): NbtWrapperRecipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new NbtWrapperRecipe(this.definition, this.recipe.replaceResult(from, to))
    }
 }

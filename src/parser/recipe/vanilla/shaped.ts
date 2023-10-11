@@ -1,32 +1,32 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { mapValues } from 'lodash-es'
 
 export type ShapedRecipeDefinition = RecipeDefinition &
    Readonly<{
-      key: Record<string, Ingredient>
+      key: Record<string, IngredientInput>
       pattern: string[]
-      result: Result
+      result: ResultInput
    }>
 
 class ShapedRecipe extends Recipe<ShapedRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return Object.values(this.definition.key)
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new ShapedRecipe({
          ...this.definition,
          key: mapValues(this.definition.key, replace(from, to)),
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new ShapedRecipe({
          ...this.definition,
          result: to,

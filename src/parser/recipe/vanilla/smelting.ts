@@ -1,31 +1,31 @@
 import RecipeParser, { Recipe } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type SmeltingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: Ingredient
-      result: Result
+      ingredient: IngredientInput
+      result: ResultInput
       experience?: number
    }>
 
 class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [this.definition.ingredient]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
          ingredient: to,
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
          result: to,

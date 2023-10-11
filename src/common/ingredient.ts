@@ -19,6 +19,16 @@ export type BlockTag = Readonly<{
 }>
 
 export type Ingredient = ItemTag | Item | Fluid | FluidTag | Block | BlockTag
+export type IngredientInput = Ingredient | string
+
+export function createIngredient(input: IngredientInput): Ingredient {
+   if (typeof input === 'string') {
+      if (input.startsWith('#')) return { tag: input.substring(1) }
+      else return { item: input }
+   }
+
+   return input
+}
 
 type ItemStack = Item &
    Readonly<{
@@ -31,6 +41,12 @@ type FluidStack = Fluid &
    }>
 
 export type Result = ItemStack | FluidStack | Block
+export type ResultInput = Result | string
+
+export function createResult(input: ResultInput): Result {
+   if (typeof input === 'string') return { item: input }
+   return input
+}
 
 export type Predicate<T> = (value: T) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
@@ -70,11 +86,11 @@ export function resolveIdIngredientTest(
    tags: TagRegistry,
    logger: Logger,
    idSupplier: (it: Ingredient) => Id | null
-): Predicate<Ingredient> {
+): Predicate<IngredientInput> {
    return resolveCommonTest(
       test,
       ingredient => {
-         const id = idSupplier(ingredient)
+         const id = idSupplier(createIngredient(ingredient))
          if (id) return encodeId(id)
          logger.warn('unknown ingredient shape:', ingredient)
          return '__ignored' as NormalizedId
@@ -105,13 +121,13 @@ export function resolveIngredientTest(
    test: IngredientTest,
    tags: TagRegistryHolder,
    logger: Logger
-): Predicate<Ingredient> {
+): Predicate<IngredientInput> {
    if (typeof test === 'string' || test instanceof RegExp) {
       return resolveIdIngredientTest(test, tags.registry('items'), logger, extractItemID)
    }
 
    if (typeof test === 'function') {
-      return test
+      return it => test(createIngredient(it))
    }
 
    if ('tag' in test)

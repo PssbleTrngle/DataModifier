@@ -1,24 +1,24 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type SmithingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      base: Ingredient
-      addition: Ingredient
-      result: Result
+      base: IngredientInput
+      addition: IngredientInput
+      result: ResultInput
    }>
 
 class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [this.definition.base, this.definition.addition]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new SmithingRecipe({
          ...this.definition,
          base: replace(from, to)(this.definition.base),
@@ -26,7 +26,7 @@ class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new SmithingRecipe({
          ...this.definition,
          result: to,

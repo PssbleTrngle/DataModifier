@@ -1,23 +1,23 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 
 export type BrewRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: Ingredient[]
+      ingredients: IngredientInput[]
       brew: string
    }>
 
 export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return []
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): BrewRecipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new BrewRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),

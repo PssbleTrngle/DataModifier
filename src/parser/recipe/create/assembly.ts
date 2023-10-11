@@ -1,13 +1,13 @@
 import RecipeParser, { Recipe, replace } from '..'
-import { Ingredient, Predicate, Result } from '../../../common/ingredient'
+import { IngredientInput, Predicate, ResultInput } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
 import { ProcessingRecipe, ProcessingRecipeDefinition } from './processing'
 
 export type AssemblyRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: Ingredient
-      transitionalItem: Ingredient
-      results: Result[]
+      ingredient: IngredientInput
+      transitionalItem: IngredientInput
+      results: ResultInput[]
       loops?: number
       sequence: ProcessingRecipeDefinition[]
    }>
@@ -20,7 +20,7 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       this.sequence = this.definition.sequence.map(it => new ProcessingRecipe(it))
    }
 
-   getIngredients(): Ingredient[] {
+   getIngredients(): IngredientInput[] {
       return [
          this.definition.ingredient,
          this.definition.transitionalItem,
@@ -28,11 +28,11 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       ]
    }
 
-   getResults(): Result[] {
+   getResults(): ResultInput[] {
       return [...this.definition.results, ...this.sequence.flatMap(it => it.getResults())]
    }
 
-   replaceIngredient(from: Predicate<Ingredient>, to: Ingredient): Recipe {
+   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
          ingredient: replace(from, to)(this.definition.ingredient),
@@ -41,7 +41,7 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       })
    }
 
-   replaceResult(from: Predicate<Ingredient>, to: Result): Recipe {
+   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
          results: this.definition.results.map(replace(from, to)),
