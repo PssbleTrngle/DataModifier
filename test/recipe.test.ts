@@ -1,4 +1,4 @@
-import RecipeEmitter from '../src/emit/recipe'
+import { EMPTY_RECIPE } from '../src/emit/recipe'
 import PackLoader from '../src/loader/pack'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped'
 import createTestAcceptor from './mock/TestAcceptor'
@@ -98,8 +98,8 @@ describe('recipe removal', () => {
 
       expect(acceptor.paths().length).toBe(2)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchObject(RecipeEmitter.EMPTY_RECIPE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/sticky_piston.json')).toMatchObject(RecipeEmitter.EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipe/sticky_piston.json')).toMatchObject(EMPTY_RECIPE)
    })
 
    it('removes recipes with result filter', async () => {
@@ -113,12 +113,10 @@ describe('recipe removal', () => {
 
       expect(acceptor.paths().length).toBe(3)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef.json')).toMatchObject(RecipeEmitter.EMPTY_RECIPE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef_from_smoking.json')).toMatchObject(
-         RecipeEmitter.EMPTY_RECIPE
-      )
+      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef_from_smoking.json')).toMatchObject(EMPTY_RECIPE)
       expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef_from_campfire_cooking.json')).toMatchObject(
-         RecipeEmitter.EMPTY_RECIPE
+         EMPTY_RECIPE
       )
    })
 })
