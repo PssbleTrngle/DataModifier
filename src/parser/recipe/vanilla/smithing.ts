@@ -10,7 +10,7 @@ export type SmithingRecipeDefinition = RecipeDefinition &
       result: ResultInput
    }>
 
-class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
+export class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return [this.definition.base, this.definition.addition]
    }

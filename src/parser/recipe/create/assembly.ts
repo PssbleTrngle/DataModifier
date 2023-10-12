@@ -1,7 +1,7 @@
 import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
 import { IngredientInput, Predicate } from '../../../common/ingredient'
 import { RecipeDefinition } from '../../../schema/recipe'
-import { ProcessingRecipe, ProcessingRecipeDefinition } from './processing'
+import { CreateProcessingRecipe, CreateProcessingRecipeDefinition } from './processing'
 import { ResultInput } from '../../../common/result'
 
 export type AssemblyRecipeDefinition = RecipeDefinition &
@@ -10,15 +10,15 @@ export type AssemblyRecipeDefinition = RecipeDefinition &
       transitionalItem: IngredientInput
       results: ResultInput[]
       loops?: number
-      sequence: ProcessingRecipeDefinition[]
+      sequence: CreateProcessingRecipeDefinition[]
    }>
 
-class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
-   private readonly sequence: ProcessingRecipe[]
+export  class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
+   private readonly sequence: CreateProcessingRecipe[]
 
    constructor(protected readonly definition: AssemblyRecipeDefinition) {
       super(definition)
-      this.sequence = this.definition.sequence.map(it => new ProcessingRecipe(it))
+      this.sequence = this.definition.sequence.map(it => new CreateProcessingRecipe(it))
    }
 
    getIngredients(): IngredientInput[] {

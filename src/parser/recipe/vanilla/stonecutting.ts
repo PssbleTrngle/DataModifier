@@ -12,7 +12,7 @@ export type StonecuttingRecipeDefinition = RecipeDefinition &
       count?: number
    }>
 
-class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
+export class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return [this.definition.ingredient]
    }

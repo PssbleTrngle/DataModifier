@@ -11,7 +11,7 @@ export type ShapedRecipeDefinition = RecipeDefinition &
       result: ResultInput
    }>
 
-class ShapedRecipe extends Recipe<ShapedRecipeDefinition> {
+export class ShapedRecipe extends Recipe<ShapedRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return Object.values(this.definition.key)
    }

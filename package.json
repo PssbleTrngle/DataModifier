@@ -3,7 +3,13 @@
    "version": "0.0.0-dev",
    "description": "Data Modifier",
    "main": "dist/index.js",
-   "exports": "./dist/index.js",
+   "exports": {
+      ".": "./dist/index.js",
+      "./parser": "./dist/parser/index.js",
+      "./parser/create": "./dist/parser/create.js",
+      "./parser/thermal": "./dist/parser/thermal.js",
+      "./parser/farmersdelight": "./dist/parser/farmersdelight.js"
+   },
    "types": "./dist/index.d.ts",
    "files": [
       "dist"

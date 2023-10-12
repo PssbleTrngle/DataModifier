@@ -10,7 +10,7 @@ export type SmeltingRecipeDefinition = RecipeDefinition &
       experience?: number
    }>
 
-class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
+export class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return [this.definition.ingredient]
    }

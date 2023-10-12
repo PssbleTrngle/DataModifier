@@ -5,7 +5,7 @@ import ShapedParser from '../parser/recipe/vanilla/shaped'
 import { RecipeDefinition } from '../schema/recipe'
 import { Id } from '../common/id'
 import ShapelessParser from '../parser/recipe/vanilla/shapeless'
-import ProcessingRecipeParser from '../parser/recipe/create/processing'
+import CreateProcessingRecipeParser from '../parser/recipe/create/processing'
 import { fromJson } from '../textHelper'
 import SmeltingParser from '../parser/recipe/vanilla/smelting'
 import SmithingParser from '../parser/recipe/vanilla/smithing'
@@ -50,19 +50,19 @@ export default class RecipeLoader implements RegistryProvider<Recipe> {
       this.registerParser('minecraft:smithing', new SmithingParser())
       this.registerParser('minecraft:stonecutting', new StonecuttingParser())
 
-      this.registerParser('create:mixing', new ProcessingRecipeParser())
-      this.registerParser('create:pressing', new ProcessingRecipeParser())
-      this.registerParser('create:emptying', new ProcessingRecipeParser())
-      this.registerParser('create:crushing', new ProcessingRecipeParser())
-      this.registerParser('create:milling', new ProcessingRecipeParser())
-      this.registerParser('create:compacting', new ProcessingRecipeParser())
-      this.registerParser('create:filling', new ProcessingRecipeParser())
-      this.registerParser('create:cutting', new ProcessingRecipeParser())
-      this.registerParser('create:item_application', new ProcessingRecipeParser())
-      this.registerParser('create:sandpaper_polishing', new ProcessingRecipeParser())
-      this.registerParser('create:deploying', new ProcessingRecipeParser())
-      this.registerParser('create:splashing', new ProcessingRecipeParser())
-      this.registerParser('create:haunting', new ProcessingRecipeParser())
+      this.registerParser('create:mixing', new CreateProcessingRecipeParser())
+      this.registerParser('create:pressing', new CreateProcessingRecipeParser())
+      this.registerParser('create:emptying', new CreateProcessingRecipeParser())
+      this.registerParser('create:crushing', new CreateProcessingRecipeParser())
+      this.registerParser('create:milling', new CreateProcessingRecipeParser())
+      this.registerParser('create:compacting', new CreateProcessingRecipeParser())
+      this.registerParser('create:filling', new CreateProcessingRecipeParser())
+      this.registerParser('create:cutting', new CreateProcessingRecipeParser())
+      this.registerParser('create:item_application', new CreateProcessingRecipeParser())
+      this.registerParser('create:sandpaper_polishing', new CreateProcessingRecipeParser())
+      this.registerParser('create:deploying', new CreateProcessingRecipeParser())
+      this.registerParser('create:splashing', new CreateProcessingRecipeParser())
+      this.registerParser('create:haunting', new CreateProcessingRecipeParser())
       this.registerParser('create:mechanical_crafting', new ShapedParser())
       this.registerParser('create:sequenced_assembly', new AssemblyRecipeParser())
 

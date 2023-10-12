@@ -9,7 +9,7 @@ export type ShapelessRecipeDefinition = RecipeDefinition &
       result: ResultInput
    }>
 
-class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
+export class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
