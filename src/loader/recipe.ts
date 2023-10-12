@@ -26,12 +26,9 @@ import ApothecaryRecipeParser from '../parser/recipe/botania/apothecary'
 import Registry from '../common/registry'
 import TerraPlateRecipeParser from '../parser/recipe/botania/terraPlate'
 import PureDaisyRecipeParser from '../parser/recipe/botania/pureDaisy'
+import { RegistryProvider } from '../emit'
 
-export interface RecipeRegistry {
-   forEach(consumer: (recipe: Recipe, id: Id) => void): void
-}
-
-export default class RecipeLoader implements RecipeRegistry {
+export default class RecipeLoader implements RegistryProvider<Recipe> {
    private readonly recipeParsers = new Map<string, RecipeParser<RecipeDefinition, Recipe>>()
 
    private readonly ignoredRecipeTypes = new Set<string>()
@@ -146,7 +143,7 @@ export default class RecipeLoader implements RecipeRegistry {
       this.recipeParsers.set(recipeType, parser)
    }
 
-   accept: Acceptor = (path, content) => {
+   readonly accept: Acceptor = (path, content) => {
       const match = /data\/(?<namespace>[\w-]+)\/recipes\/(?<rest>[\w-/]+).json/.exec(path)
       if (!match?.groups) return false
 

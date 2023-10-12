@@ -38,7 +38,7 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
          ...this.definition,
          ingredient: replaceOrKeep(from, to, this.definition.ingredient),
          transitionalItem: replaceOrKeep(from, to, this.definition.ingredient),
-         sequence: this.sequence.map(it => it.replaceIngredient(from, to).toDefinition()),
+         sequence: this.sequence.map(it => it.replaceIngredient(from, to).toJSON()),
       })
    }
 
@@ -46,7 +46,7 @@ class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       return new AssemblyRecipe({
          ...this.definition,
          results: this.definition.results.map(replace(from, to)),
-         sequence: this.sequence.map(it => it.replaceResult(from, to).toDefinition()),
+         sequence: this.sequence.map(it => it.replaceResult(from, to).toJSON()),
       })
    }
 }

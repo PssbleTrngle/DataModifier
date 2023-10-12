@@ -7,15 +7,19 @@ import TagsLoader from './tags'
 import RecipeEmitter, { RecipeRules } from '../emit/recipe'
 import TagEmitter, { TagRules } from '../emit/tags'
 import { IngredientTest } from '../common/ingredient'
+import LootTableLoader from './loot'
+import LootTableEmitter, { LootRules } from '../emit/loot'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
 
    private readonly tagLoader = new TagsLoader(this.logger)
    private readonly recipesLoader = new RecipeLoader(this.logger)
+   private readonly lootLoader = new LootTableLoader(this.logger)
 
-   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
    private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
+   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
+   private readonly lootEmitter = new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader)
 
    registerRegistry(key: string) {
       this.tagLoader.registerRegistry(key)
@@ -25,12 +29,16 @@ export default class PackLoader implements Loader {
       return this.tagLoader.registry(key)
    }
 
+   get tags(): TagRules {
+      return this.tagEmitter
+   }
+
    get recipes(): RecipeRules {
       return this.recipeEmitter
    }
 
-   get tags(): TagRules {
-      return this.tagEmitter
+   get loot(): LootRules {
+      return this.lootEmitter
    }
 
    resolveIngredientTest(test: IngredientTest) {
@@ -40,6 +48,7 @@ export default class PackLoader implements Loader {
    private acceptors: Record<string, Acceptor> = {
       'data/*/tags/**/*.json': this.tagLoader.accept,
       'data/*/recipes/**/*.json': this.recipesLoader.accept,
+      'data/*/loot_tables/**/*.json': this.lootLoader.accept,
    }
 
    async loadFrom(resolver: IResolver) {
@@ -55,11 +64,16 @@ export default class PackLoader implements Loader {
    clear() {
       this.recipesLoader.clear()
       this.recipeEmitter.clear()
+      this.lootEmitter.clear()
       this.tagEmitter.clear()
    }
 
    async emit(acceptor: Acceptor) {
-      await Promise.all([this.recipeEmitter.emit(acceptor), this.tagEmitter.emit(acceptor)])
+      await Promise.all([
+         this.recipeEmitter.emit(acceptor),
+         this.lootEmitter.emit(acceptor),
+         this.tagEmitter.emit(acceptor),
+      ])
    }
 
    async run(from: IResolver, to: Acceptor) {

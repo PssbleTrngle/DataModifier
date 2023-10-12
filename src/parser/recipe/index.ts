@@ -24,7 +24,7 @@ export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefini
 
    abstract replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe
 
-   toDefinition(): TDefinition {
+   toJSON(): TDefinition {
       return this.definition
    }
 }

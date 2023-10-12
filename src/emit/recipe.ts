@@ -1,6 +1,3 @@
-import { RecipeRegistry } from '../loader/recipe'
-import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { toJson } from '../textHelper'
 import {
    CommonTest,
    Ingredient,
@@ -12,12 +9,15 @@ import {
 import RecipeRule from '../rule/recipe'
 import { Logger } from '../logger'
 import TagsLoader from '../loader/tags'
-import { createId, Id, IdInput, NormalizedId } from '../common/id'
+import { Id, IdInput, NormalizedId } from '../common/id'
 import { Recipe } from '../parser/recipe'
 import { RecipeDefinition } from '../schema/recipe'
-import Registry from '../common/registry'
 import { resolveIDTest } from '../common/predicates'
 import { Result } from '../common/result'
+import RuledEmitter from './ruled'
+import { RegistryProvider } from './index'
+import CustomEmitter from './custom'
+import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
@@ -39,67 +39,47 @@ export interface RecipeRules {
    removeRecipe(test: RecipeTest): void
 }
 
-export default class RecipeEmitter implements RecipeRules {
-   // TODO conditions
-   static readonly EMPTY_RECIPE: RecipeDefinition = {
-      type: 'noop',
-      conditions: [
-         {
-            type: 'forge:false',
+export const EMPTY_RECIPE: RecipeDefinition = {
+   type: 'noop',
+   conditions: [
+      {
+         type: 'forge:false',
+      },
+   ],
+   'fabric:load_conditions': [
+      {
+         condition: 'fabric:not',
+         value: {
+            condition: 'fabric:all_mods_loaded',
+            values: ['minecraft'],
          },
-      ],
-      'fabric:load_conditions': [
-         {
-            condition: 'fabric:not',
-            value: {
-               condition: 'fabric:all_mods_loaded',
-               values: ['minecraft'],
-            },
-         },
-      ],
-   }
+      },
+   ],
+}
 
-   private rules: RecipeRule[] = []
-   private customRecipe = new Registry<RecipeDefinition>()
+export default class RecipeEmitter implements RecipeRules {
+   private readonly custom = new CustomEmitter<RecipeDefinition>(this.recipePath)
+
+   private readonly ruled = new RuledEmitter<Recipe, RecipeRule>(
+      this.logger,
+      this.registry,
+      this.recipePath,
+      EMPTY_RECIPE,
+      id => this.custom.has(id)
+   )
 
    constructor(
       private readonly logger: Logger,
-      private readonly registry: RecipeRegistry,
+      private readonly registry: RegistryProvider<Recipe>,
       private readonly tags: TagsLoader
    ) {}
-
-   clear() {
-      this.rules = []
-   }
 
    private recipePath(id: Id) {
       return `data/${id.namespace}/recipe/${id.path}.json`
    }
 
-   private async modifyRecipes(acceptor: Acceptor) {
-      this.registry.forEach((recipe, id) => {
-         if (this.customRecipe.has(id)) return
-
-         const path = this.recipePath(id)
-
-         const rules = this.rules.filter(it => it.matches(id, recipe, this.logger))
-         if (rules.length === 0) return
-
-         const modified = rules.reduce<Recipe | null>((previous, rule) => previous && rule.modify(previous), recipe)
-
-         acceptor(path, toJson(modified?.toDefinition() ?? RecipeEmitter.EMPTY_RECIPE))
-      })
-   }
-
-   private async createRecipes(acceptor: Acceptor) {
-      this.customRecipe.forEach((recipe, id) => {
-         const path = this.recipePath(id)
-         acceptor(path, toJson(recipe))
-      })
-   }
-
    async emit(acceptor: Acceptor) {
-      await Promise.all([this.modifyRecipes(acceptor), this.createRecipes(acceptor)])
+      await Promise.all([this.ruled.emit(acceptor), this.custom.emit(acceptor)])
    }
 
    resolveIngredientTest(test: IngredientTest) {
@@ -119,21 +99,17 @@ export default class RecipeEmitter implements RecipeRules {
       return { recipe, ingredient, result }
    }
 
-   addRule(rule: RecipeRule) {
-      this.rules.push(rule)
-   }
-
    addRecipe<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
       id: IdInput,
       value: TDefinition | TRecipe
    ) {
-      if (value instanceof Recipe) this.addRecipe(id, value.toDefinition())
-      else this.customRecipe.set(createId(id), value)
+      if (value instanceof Recipe) this.custom.add(id, value.toJSON())
+      else this.custom.add(id, value)
    }
 
    removeRecipe(test: RecipeTest) {
       const recipePredicates = this.resolveRecipeTest(test)
-      this.addRule(
+      this.ruled.addRule(
          new RecipeRule(recipePredicates.recipe, recipePredicates.ingredient, recipePredicates.result, () => null)
       )
    }
@@ -141,7 +117,7 @@ export default class RecipeEmitter implements RecipeRules {
    replaceResult(test: IngredientTest, value: Result, additionalTest: RecipeTest = {}) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest)
-      this.addRule(
+      this.ruled.addRule(
          new RecipeRule(
             recipePredicates.recipe,
             recipePredicates.ingredient,
@@ -154,7 +130,7 @@ export default class RecipeEmitter implements RecipeRules {
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTest: RecipeTest = {}) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest)
-      this.addRule(
+      this.ruled.addRule(
          new RecipeRule(
             recipePredicates.recipe,
             [predicate, ...recipePredicates.ingredient],
@@ -162,5 +138,10 @@ export default class RecipeEmitter implements RecipeRules {
             recipe => recipe.replaceIngredient(predicate, value)
          )
       )
+   }
+
+   clear() {
+      this.custom.clear()
+      this.ruled.clear()
    }
 }

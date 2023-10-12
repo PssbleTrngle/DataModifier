@@ -1,4 +1,5 @@
 import { Logger } from './logger'
+import { ZodError } from 'zod'
 
 export class IllegalShapeError extends Error {
    constructor(message: string, readonly input?: unknown) {
@@ -15,7 +16,10 @@ export function tryCatching<T>(logger: Logger | undefined, run: () => T): T | nu
          return null
       }
 
-      // TODO catch zod errors?
+      if (error instanceof ZodError) {
+         logger?.warn(`unknown shape`, error)
+         return null
+      }
 
       throw error
    }

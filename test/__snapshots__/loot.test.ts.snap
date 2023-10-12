@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates custom loot tables: parsed loot table 1`] = `
+{
+  "pools": [
+    {
+      "entries": [
+        {
+          "children": [
+            {
+              "name": "minecraft:diamond",
+              "type": "minecraft:item",
+            },
+          ],
+          "type": "minecraft:alternatives",
+        },
+        {
+          "name": "minecraft:logs",
+          "type": "minecraft:tag",
+        },
+      ],
+      "rolls": 4,
+    },
+  ],
+  "type": "minecraft:block",
+}
+`;
