@@ -22,7 +22,7 @@ it('has no unknown recipe loaders', () => {
    expect(logger.error).not.toHaveBeenCalled()
 })
 
-describe('replace ingredient replacement', () => {
+describe('recipe ingredient replacement', () => {
    it('replaces ingredients', async () => {
       const acceptor = createTestAcceptor()
 

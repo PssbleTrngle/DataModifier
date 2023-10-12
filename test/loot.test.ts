@@ -2,18 +2,14 @@ import PackLoader from '../src/loader/pack'
 import createTestLogger from './mock/TestLogger'
 import createTestResolver from './mock/TestResolver'
 import createTestAcceptor from './mock/TestAcceptor'
-import {
-   LootEntryAlternativeSchema,
-   LootEntryItemSchema,
-   LootEntryTagSchema,
-   LootTableSchema,
-} from '../src/schema/loot'
+import { LootEntrySchema, LootTableSchema } from '../src/schema/loot'
+import { EMPTY_LOOT_TABLE } from '../src/emit/loot'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 
 beforeAll(async () => {
-   const resolver = createTestResolver({ include: ['data/*/loot_tables/**/*.json'] })
+   const resolver = createTestResolver({ include: ['data/*/loot_tables/**/*.json', 'data/*/tags/**/*.json'] })
    await loader.loadFrom(resolver)
 }, 10_000)
 
@@ -28,6 +24,79 @@ describe('loading of loot tables', () => {
    })
 })
 
+describe('loot tables output replacements', () => {
+   it('removes outputs', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.loot.removeOutput('#minecraft:iron_ores')
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/iron_ore.json')).toMatchSnapshot(
+         'modified deepslate_iron_ore loot table'
+      )
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/deepslate_iron_ore.json')).toMatchSnapshot(
+         'modified iron_ore loot table'
+      )
+   })
+
+   it('replaces outputs with additional tests', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.loot.replaceOutput('#forge:ingots/iron', { tag: 'forge:ingots/lead' }, { id: /minecraft:entities\/.+/ })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.paths().length).toBe(4)
+
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/entities/husk.json')).toMatchSnapshot(
+         'modified husk loot table'
+      )
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/entities/iron_golem.json')).toMatchSnapshot(
+         'modified iron_golem loot table'
+      )
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/entities/zombie.json')).toMatchSnapshot(
+         'modified zombie loot table'
+      )
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/entities/zombie_villager.json')).toMatchSnapshot(
+         'modified zombie_villager loot table'
+      )
+   })
+})
+
+describe('loot table removal', () => {
+   it('removes loot table with id filter', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.loot.disableLootTable({
+         id: /minecraft:.*oak_log/,
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.paths().length).toBe(4)
+
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/oak_log.json')).toMatchObject(EMPTY_LOOT_TABLE)
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/stripped_oak_log.json')).toMatchObject(EMPTY_LOOT_TABLE)
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/dark_oak_log.json')).toMatchObject(EMPTY_LOOT_TABLE)
+      expect(acceptor.jsonAt('data/minecraft/loot_tables/blocks/stripped_dark_oak_log.json')).toMatchObject(
+         EMPTY_LOOT_TABLE
+      )
+   })
+
+   it('removes loot table with output filter', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.loot.disableLootTable({
+         output: '#minecraft:logs',
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.paths()).toMatchSnapshot('loot tables containing any log')
+   })
+})
+
 it('creates custom loot tables', async () => {
    const acceptor = createTestAcceptor()
 
@@ -37,16 +106,16 @@ it('creates custom loot tables', async () => {
          {
             rolls: 4,
             entries: [
-               LootEntryAlternativeSchema.parse({
+               LootEntrySchema.parse({
                   type: 'minecraft:alternatives',
                   children: [
-                     LootEntryItemSchema.parse({
+                     LootEntrySchema.parse({
                         type: 'minecraft:item',
                         name: 'minecraft:diamond',
                      }),
                   ],
                }),
-               LootEntryTagSchema.parse({
+               LootEntrySchema.parse({
                   type: 'minecraft:tag',
                   name: 'minecraft:logs',
                }),

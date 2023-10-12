@@ -1,27 +1,33 @@
 import { Logger } from '../logger'
 import TagsLoader from '../loader/tags'
-import { LootTable, LootTableSchema } from '../schema/loot'
+import { EmptyLootEntry, LootTable, LootTableSchema } from '../schema/loot'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import RuledEmitter from './ruled'
 import CustomEmitter from './custom'
-import { Id, IdInput } from '../common/id'
+import { Id, IdInput, NormalizedId } from '../common/id'
 import LootTableRule from '../rule/lootTable'
 import { RegistryProvider } from './index'
-import { Predicate } from '../common/ingredient'
+import { CommonTest, IngredientInput, IngredientTest, Predicate, resolveIngredientTest } from '../common/ingredient'
+import { resolveIDTest } from '../common/predicates'
+import { createLootEntry, LootItemInput, replaceItemInTable } from '../parser/lootTable'
 
 export const EMPTY_LOOT_TABLE: LootTable = {
    type: 'minecraft:empty',
    pools: [],
 }
 
-type LootTableTest = Predicate<Id>
+type LootTableTest = Readonly<{
+   id?: CommonTest<NormalizedId>
+   output?: IngredientTest
+}>
 
 export interface LootRules {
-   //  replace(test: IngredientTest, to: Item | ItemTag): void
+   replaceOutput(from: IngredientTest, to: LootItemInput, additionalTests?: LootTableTest): void
+   removeOutput(from: IngredientTest, additionalTests?: LootTableTest): void
 
    addLootTable(id: IdInput, value: LootTable): void
 
-   removeLootTable(test: LootTableTest): void
+   disableLootTable(test: LootTableTest): void
 }
 
 export default class LootTableEmitter implements LootRules {
@@ -49,12 +55,38 @@ export default class LootTableEmitter implements LootRules {
       await Promise.all([this.ruled.emit(acceptor), this.custom.emit(acceptor)])
    }
 
+   resolveIngredientTest(test: IngredientTest) {
+      return resolveIngredientTest(test, this.tags)
+   }
+
+   private resolveLootTableTest(test: LootTableTest) {
+      const id: Predicate<Id>[] = []
+      const output: Predicate<IngredientInput>[] = []
+
+      if (test.id) id.push(resolveIDTest(test.id))
+      if (test.output) output.push(this.resolveIngredientTest(test.output))
+
+      return { id, output }
+   }
+
    addLootTable(id: IdInput, value: LootTable): void {
       this.custom.add(id, LootTableSchema.parse(value))
    }
 
-   removeLootTable(test: LootTableTest): void {
-      this.ruled.addRule(new LootTableRule([test], () => null))
+   disableLootTable(test: LootTableTest): void {
+      const predicates = this.resolveLootTableTest(test)
+      this.ruled.addRule(new LootTableRule(predicates.id, predicates.output, () => null))
+   }
+
+   replaceOutput(from: IngredientTest, to: LootItemInput, additionalTests: LootTableTest = {}): void {
+      const predicates = this.resolveLootTableTest(additionalTests)
+      const outputPredicate = this.resolveIngredientTest(from)
+      const replacer = replaceItemInTable(outputPredicate, createLootEntry(to))
+      this.ruled.addRule(new LootTableRule(predicates.id, [outputPredicate, ...predicates.output], replacer))
+   }
+
+   removeOutput(from: IngredientTest, additionalTests?: LootTableTest) {
+      this.replaceOutput(from, EmptyLootEntry, additionalTests)
    }
 
    clear() {

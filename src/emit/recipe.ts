@@ -87,16 +87,16 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    private resolveRecipeTest(test: RecipeTest) {
-      const recipe: Predicate<Id>[] = []
+      const id: Predicate<Id>[] = []
       const ingredient: Predicate<IngredientInput>[] = []
       const result: Predicate<IngredientInput>[] = []
 
-      if (test.id) recipe.push(resolveIDTest(test.id))
-      if (test.namespace) recipe.push(id => id.namespace === test.namespace)
+      if (test.id) id.push(resolveIDTest(test.id))
+      if (test.namespace) id.push(id => id.namespace === test.namespace)
       if (test.output) result.push(this.resolveIngredientTest(test.output))
       if (test.input) ingredient.push(this.resolveIngredientTest(test.input))
 
-      return { recipe, ingredient, result }
+      return { id, ingredient, result }
    }
 
    addRecipe<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
@@ -110,7 +110,7 @@ export default class RecipeEmitter implements RecipeRules {
    removeRecipe(test: RecipeTest) {
       const recipePredicates = this.resolveRecipeTest(test)
       this.ruled.addRule(
-         new RecipeRule(recipePredicates.recipe, recipePredicates.ingredient, recipePredicates.result, () => null)
+         new RecipeRule(recipePredicates.id, recipePredicates.ingredient, recipePredicates.result, () => null)
       )
    }
 
@@ -119,7 +119,7 @@ export default class RecipeEmitter implements RecipeRules {
       const recipePredicates = this.resolveRecipeTest(additionalTest)
       this.ruled.addRule(
          new RecipeRule(
-            recipePredicates.recipe,
+            recipePredicates.id,
             recipePredicates.ingredient,
             [predicate, ...recipePredicates.result],
             recipe => recipe.replaceResult(predicate, value)
@@ -132,7 +132,7 @@ export default class RecipeEmitter implements RecipeRules {
       const recipePredicates = this.resolveRecipeTest(additionalTest)
       this.ruled.addRule(
          new RecipeRule(
-            recipePredicates.recipe,
+            recipePredicates.id,
             [predicate, ...recipePredicates.ingredient],
             recipePredicates.result,
             recipe => recipe.replaceIngredient(predicate, value)
