@@ -33,6 +33,6 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
          - run: pnpm run build
-         - run: pnpm publish
+         - run: pnpm publish --no-git-checks
            env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
