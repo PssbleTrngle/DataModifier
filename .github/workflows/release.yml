@@ -4,7 +4,7 @@ on:
       types: [created]
 
 jobs:
-   build:
+   release:
       permissions:
          contents: read
          packages: write

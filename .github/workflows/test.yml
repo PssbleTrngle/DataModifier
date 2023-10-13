@@ -1,4 +1,4 @@
-name: Release
+name: Test
 on:
   pull_request:
     types: [opened, synchronize]
@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     permissions:
       contents: read
       packages: read
