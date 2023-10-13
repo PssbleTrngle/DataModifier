@@ -1,7 +1,7 @@
 import createTestAcceptor from './mock/TestAcceptor.js'
-import setupLoader from './shared/loaderSetup'
+import setupLoader from './shared/loaderSetup.js'
 
-const { logger, loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })
+const { loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })
 
 describe('loading of tags', () => {
    it('loads tags correctly', async () => {

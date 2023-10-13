@@ -1,6 +1,6 @@
-import createTestLogger from '../mock/TestLogger'
-import { PackLoader } from '../../src'
-import createTestResolver from '../mock/TestResolver'
+import createTestLogger from '../mock/TestLogger.js'
+import { PackLoader } from '../../src/index.js'
+import createTestResolver from '../mock/TestResolver.js'
 import { Options } from '@pssbletrngle/pack-resolver'
 
 export default function setupLoader(options?: Partial<Options>) {

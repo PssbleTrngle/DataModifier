@@ -1,7 +1,7 @@
 import { EMPTY_RECIPE } from '../src/emit/recipe.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
-import setupLoader from './shared/loaderSetup'
+import setupLoader from './shared/loaderSetup.js'
 
 const { logger, loader } = setupLoader()
 

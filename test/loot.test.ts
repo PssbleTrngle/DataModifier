@@ -1,7 +1,7 @@
 import createTestAcceptor from './mock/TestAcceptor.js'
 import { LootEntrySchema, LootTableSchema } from '../src/schema/loot.js'
 import { EMPTY_LOOT_TABLE } from '../src/emit/loot.js'
-import setupLoader from './shared/loaderSetup'
+import setupLoader from './shared/loaderSetup.js'
 
 const { logger, loader } = setupLoader({ include: ['data/*/loot_tables/**/*.json', 'data/*/tags/**/*.json'] })
 
