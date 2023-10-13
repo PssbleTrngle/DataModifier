@@ -1,8 +1,8 @@
 {
    "root": true,
    "parser": "@typescript-eslint/parser",
-   "plugins": ["@typescript-eslint"],
-   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+   "plugins": ["@typescript-eslint", "require-extensions"],
+   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:require-extensions/recommended"],
    "rules": {
       "no-console": "error",
       "@typescript-eslint/explicit-module-boundary-types": "off",

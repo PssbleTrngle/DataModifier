@@ -1,8 +1,8 @@
-import { FluidTag, IngredientInput, ItemTagSchema } from '../../../common/ingredient'
+import { FluidTag, IngredientInput, ItemTagSchema } from '../../../common/ingredient.js'
 import zod from 'zod'
-import { ItemSchema } from '../../../common/result'
+import { ItemSchema } from '../../../common/result.js'
 import { omit } from 'lodash-es'
-import { IllegalShapeError } from '../../../error'
+import { IllegalShapeError } from '../../../error.js'
 
 const ThermalFluidTagSchema = zod.object({
    fluid_tag: zod.string(),

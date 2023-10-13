@@ -1,9 +1,9 @@
-import { EMPTY_RECIPE } from '../src/emit/recipe'
-import PackLoader from '../src/loader/pack'
-import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped'
-import createTestAcceptor from './mock/TestAcceptor'
-import createTestLogger from './mock/TestLogger'
-import createTestResolver from './mock/TestResolver'
+import { EMPTY_RECIPE } from '../src/emit/recipe.js'
+import PackLoader from '../src/loader/pack.js'
+import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
+import createTestLogger from './mock/TestLogger.js'
+import createTestResolver from './mock/TestResolver.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)

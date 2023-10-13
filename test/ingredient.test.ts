@@ -1,10 +1,10 @@
-import { PackLoader } from '../src'
-import createTestLogger from './mock/TestLogger'
-import createTestResolver from './mock/TestResolver'
-import createTestAcceptor from './mock/TestAcceptor'
-import { createIngredient } from '../src/common/ingredient'
-import { createResult } from '../src/common/result'
-import { tryCatching } from '../src/error'
+import { PackLoader } from '../src/index.js'
+import createTestLogger from './mock/TestLogger.js'
+import createTestResolver from './mock/TestResolver.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
+import { createIngredient } from '../src/common/ingredient.js'
+import { createResult } from '../src/common/result.js'
+import { tryCatching } from '../src/error.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)

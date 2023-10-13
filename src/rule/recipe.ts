@@ -1,8 +1,8 @@
-import { IngredientInput, Predicate } from '../common/ingredient'
-import { Recipe } from '../parser/recipe'
-import { encodeId, Id } from '../common/id'
-import { Logger } from '../logger'
-import Rule, { Modifier } from './index'
+import { IngredientInput, Predicate } from '../common/ingredient.js'
+import { Recipe } from '../parser/recipe/index.js'
+import { encodeId, Id } from '../common/id.js'
+import { Logger } from '../logger.js'
+import Rule, { Modifier } from './index.js'
 
 export default class RecipeRule extends Rule<Recipe> {
    constructor(

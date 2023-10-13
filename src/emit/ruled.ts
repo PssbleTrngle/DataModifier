@@ -1,10 +1,10 @@
-import Rule from '../rule'
+import Rule from '../rule/index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { toJson } from '../textHelper'
-import Registry from '../common/registry'
-import { PathProvider, RegistryProvider } from './index'
-import { Logger } from '../logger'
-import { Id } from '../common/id'
+import { toJson } from '../textHelper.js'
+import Registry from '../common/registry.js'
+import { PathProvider, RegistryProvider } from './index.js'
+import { Logger } from '../logger.js'
+import { Id } from '../common/id.js'
 
 export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
    constructor(

@@ -1,12 +1,12 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { toJson } from '../textHelper'
-import { CommonTest } from '../common/ingredient'
-import { Logger } from '../logger'
-import TagsLoader, { entryId, orderTagEntries, TagRegistry } from '../loader/tags'
-import { TagDefinition, TagEntry } from '../schema/tag'
-import { createId, Id, NormalizedId, TagInput } from '../common/id'
-import Registry from '../common/registry'
-import { resolveIDTest } from '../common/predicates'
+import { toJson } from '../textHelper.js'
+import { CommonTest } from '../common/ingredient.js'
+import { Logger } from '../logger.js'
+import TagsLoader, { entryId, orderTagEntries, TagRegistry } from '../loader/tags.js'
+import { TagDefinition, TagEntry } from '../schema/tag.js'
+import { createId, Id, NormalizedId, TagInput } from '../common/id.js'
+import Registry from '../common/registry.js'
+import { resolveIDTest } from '../common/predicates.js'
 
 export interface TagRules {
    add(registry: string, id: `#${string}`, value: TagEntry): void

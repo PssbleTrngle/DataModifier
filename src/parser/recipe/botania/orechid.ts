@@ -1,9 +1,9 @@
-import RecipeParser, { Recipe } from '..'
-import { BlockTag, createIngredient, IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
-import { encodeId } from '../../../common/id'
-import { Block, createResult, ResultInput } from '../../../common/result'
-import { IllegalShapeError } from '../../../error'
+import RecipeParser, { Recipe } from '../index.js'
+import { BlockTag, createIngredient, IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
+import { encodeId } from '../../../common/id.js'
+import { Block, createResult, ResultInput } from '../../../common/result.js'
+import { IllegalShapeError } from '../../../error.js'
 
 export type BlockOutput =
    | string

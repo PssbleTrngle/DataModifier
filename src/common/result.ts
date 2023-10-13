@@ -1,5 +1,5 @@
 import zod from 'zod'
-import { IllegalShapeError } from '../error'
+import { IllegalShapeError } from '../error.js'
 
 export const ItemSchema = zod.object({
    item: zod.string(),

@@ -1,11 +1,11 @@
-import { TagRegistry, TagRegistryHolder } from '../loader/tags'
-import { createId, encodeId, Id, NormalizedId } from './id'
-import { Logger } from '../logger'
-import { resolveCommonTest } from './predicates'
-import { Block, BlockSchema, Fluid, FluidSchema, Item, ItemSchema } from './result'
+import { TagRegistry, TagRegistryHolder } from '../loader/tags.js'
+import { createId, encodeId, Id, NormalizedId } from './id.js'
+import { Logger } from '../logger.js'
+import { resolveCommonTest } from './predicates.js'
+import { Block, BlockSchema, Fluid, FluidSchema, Item, ItemSchema } from './result.js'
 import zod from 'zod'
 import { exists } from '@pssbletrngle/pack-resolver'
-import { IllegalShapeError, tryCatching } from '../error'
+import { IllegalShapeError, tryCatching } from '../error.js'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),

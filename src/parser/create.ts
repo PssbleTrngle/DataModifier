@@ -1,2 +1,2 @@
-export { AssemblyRecipeDefinition, AssemblyRecipe, default as AssemblyRecipeParser } from './recipe/create/assembly'
-export { CreateProcessingRecipeDefinition, CreateProcessingRecipe, default as CreateProcessingRecipeParser } from './recipe/create/processing'
+export { AssemblyRecipeDefinition, AssemblyRecipe, default as AssemblyRecipeParser } from './recipe/create/assembly.js'
+export { CreateProcessingRecipeDefinition, CreateProcessingRecipe, default as CreateProcessingRecipeParser } from './recipe/create/processing.js'

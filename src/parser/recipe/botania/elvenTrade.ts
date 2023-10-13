@@ -1,7 +1,7 @@
-import RecipeParser, { Recipe, replace } from '..'
-import { IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
-import { ResultInput } from '../../../common/result'
+import RecipeParser, { Recipe, replace } from '../index.js'
+import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
+import { ResultInput } from '../../../common/result.js'
 
 export type ElvenTradeRecipeDefinition = RecipeDefinition &
    Readonly<{

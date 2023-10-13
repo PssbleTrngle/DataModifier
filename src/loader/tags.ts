@@ -1,10 +1,10 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { orderBy, uniqBy } from 'lodash-es'
-import { IdInput, TagInput, encodeId } from '../common/id'
-import Registry from '../common/registry'
-import { Logger } from '../logger'
-import { TagDefinition, TagEntry } from '../schema/tag'
-import { fromJson } from '../textHelper'
+import { IdInput, TagInput, encodeId } from '../common/id.js'
+import Registry from '../common/registry.js'
+import { Logger } from '../logger.js'
+import { TagDefinition, TagEntry } from '../schema/tag.js'
+import { fromJson } from '../textHelper.js'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry

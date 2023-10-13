@@ -1,6 +1,6 @@
-import RecipeParser, { Recipe } from '..'
-import { IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
+import RecipeParser, { Recipe } from '../index.js'
+import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
 import {
    BlockInput,
    BlockOutput,
@@ -8,8 +8,8 @@ import {
    createBlockOutput,
    fromBlockInput,
    fromBlockOutput,
-} from './orechid'
-import { ResultInput } from '../../../common/result'
+} from './orechid.js'
+import { ResultInput } from '../../../common/result.js'
 
 export type PureDaisyRecipeDefinition = RecipeDefinition &
    Readonly<{

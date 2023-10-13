@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { jest } from '@jest/globals'
-import { Logger, wrapLogMethods } from '../../src/logger'
+import { Logger, wrapLogMethods } from '../../src/logger.js'
 
 export interface TestLogger extends Logger {
    reset(): void

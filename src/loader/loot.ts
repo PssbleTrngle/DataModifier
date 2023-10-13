@@ -1,11 +1,11 @@
-import { Logger } from '../logger'
+import { Logger } from '../logger.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { encodeId, Id } from '../common/id'
-import { fromJson } from '../textHelper'
-import Registry from '../common/registry'
-import { tryCatching } from '../error'
-import { RegistryProvider } from '../emit'
-import { LootTable, LootTableSchema } from '../schema/loot'
+import { encodeId, Id } from '../common/id.js'
+import { fromJson } from '../textHelper.js'
+import Registry from '../common/registry.js'
+import { tryCatching } from '../error.js'
+import { RegistryProvider } from '../emit/index.js'
+import { LootTable, LootTableSchema } from '../schema/loot.js'
 
 export default class LootTableLoader implements RegistryProvider<LootTable> {
    private readonly registry = new Registry<LootTable>()

@@ -1,14 +1,14 @@
 import { Acceptor, IResolver } from '@pssbletrngle/pack-resolver'
 import match from 'minimatch'
-import { Logger } from '../logger'
-import Loader from './index'
-import RecipeLoader from './recipe'
-import TagsLoader from './tags'
-import RecipeEmitter, { RecipeRules } from '../emit/recipe'
-import TagEmitter, { TagRules } from '../emit/tags'
-import { IngredientTest } from '../common/ingredient'
-import LootTableLoader from './loot'
-import LootTableEmitter, { LootRules } from '../emit/loot'
+import { Logger } from '../logger.js'
+import Loader from './index.js'
+import RecipeLoader from './recipe.js'
+import TagsLoader from './tags.js'
+import RecipeEmitter, { RecipeRules } from '../emit/recipe.js'
+import TagEmitter, { TagRules } from '../emit/tags.js'
+import { IngredientTest } from '../common/ingredient.js'
+import LootTableLoader from './loot.js'
+import LootTableEmitter, { LootRules } from '../emit/loot.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}

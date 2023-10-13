@@ -1,9 +1,9 @@
-import PackLoader from '../src/loader/pack'
-import createTestLogger from './mock/TestLogger'
-import createTestResolver from './mock/TestResolver'
-import createTestAcceptor from './mock/TestAcceptor'
-import { LootEntrySchema, LootTableSchema } from '../src/schema/loot'
-import { EMPTY_LOOT_TABLE } from '../src/emit/loot'
+import PackLoader from '../src/loader/pack.js'
+import createTestLogger from './mock/TestLogger.js'
+import createTestResolver from './mock/TestResolver.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
+import { LootEntrySchema, LootTableSchema } from '../src/schema/loot.js'
+import { EMPTY_LOOT_TABLE } from '../src/emit/loot.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)

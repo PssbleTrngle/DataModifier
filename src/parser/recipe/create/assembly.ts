@@ -1,8 +1,8 @@
-import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
-import { IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
-import { CreateProcessingRecipe, CreateProcessingRecipeDefinition } from './processing'
-import { ResultInput } from '../../../common/result'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '../index.js'
+import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
+import { CreateProcessingRecipe, CreateProcessingRecipeDefinition } from './processing.js'
+import { ResultInput } from '../../../common/result.js'
 
 export type AssemblyRecipeDefinition = RecipeDefinition &
    Readonly<{

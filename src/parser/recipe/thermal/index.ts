@@ -1,9 +1,9 @@
-import RecipeParser, { Recipe, replace, replaceOrKeep } from '..'
-import { IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '../index.js'
+import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
 import { arrayOrSelf, exists } from '@pssbletrngle/pack-resolver'
-import { ResultInput } from '../../../common/result'
-import { fromThermalIngredient, ThermalIngredientInput, toThermalIngredient } from './ingredient'
+import { ResultInput } from '../../../common/result.js'
+import { fromThermalIngredient, ThermalIngredientInput, toThermalIngredient } from './ingredient.js'
 
 export type ThermalRecipeDefinition = RecipeDefinition &
    Readonly<{

@@ -1,8 +1,8 @@
-import RecipeParser, { Recipe, replace } from '..'
-import { IngredientInput, Predicate } from '../../../common/ingredient'
-import { RecipeDefinition } from '../../../schema/recipe'
+import RecipeParser, { Recipe, replace } from '../index.js'
+import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import { RecipeDefinition } from '../../../schema/recipe.js'
 import { mapValues } from 'lodash-es'
-import { ResultInput } from '../../../common/result'
+import { ResultInput } from '../../../common/result.js'
 
 export type ShapedRecipeDefinition = RecipeDefinition &
    Readonly<{

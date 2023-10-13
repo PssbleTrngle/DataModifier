@@ -1,8 +1,8 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { toJson } from '../textHelper'
-import { createId, IdInput } from '../common/id'
-import Registry from '../common/registry'
-import { PathProvider } from './index'
+import { toJson } from '../textHelper.js'
+import { createId, IdInput } from '../common/id.js'
+import Registry from '../common/registry.js'
+import { PathProvider } from './index.js'
 
 export default class CustomEmitter<TEntry> {
    constructor(private readonly pathProvider: PathProvider) {}

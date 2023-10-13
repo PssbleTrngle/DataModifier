@@ -1,7 +1,7 @@
-import { encodeId, IdInput, NormalizedId, TagInput } from './id'
-import { TagRegistry } from '../loader/tags'
-import { CommonTest, Predicate } from './ingredient'
-import { Logger } from '../logger'
+import { encodeId, IdInput, NormalizedId, TagInput } from './id.js'
+import { TagRegistry } from '../loader/tags.js'
+import { CommonTest, Predicate } from './ingredient.js'
+import { Logger } from '../logger.js'
 
 export function resolveCommonTest<TEntry, TId extends string>(
    test: CommonTest<NormalizedId<TId>>,

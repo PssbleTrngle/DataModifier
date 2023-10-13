@@ -5,18 +5,18 @@ import {
    IngredientTest,
    Predicate,
    resolveIngredientTest,
-} from '../common/ingredient'
-import RecipeRule from '../rule/recipe'
-import { Logger } from '../logger'
-import TagsLoader from '../loader/tags'
-import { Id, IdInput, NormalizedId } from '../common/id'
-import { Recipe } from '../parser/recipe'
-import { RecipeDefinition } from '../schema/recipe'
-import { resolveIDTest } from '../common/predicates'
-import { Result } from '../common/result'
-import RuledEmitter from './ruled'
-import { RegistryProvider } from './index'
-import CustomEmitter from './custom'
+} from '../common/ingredient.js'
+import RecipeRule from '../rule/recipe.js'
+import { Logger } from '../logger.js'
+import TagsLoader from '../loader/tags.js'
+import { Id, IdInput, NormalizedId } from '../common/id.js'
+import { Recipe } from '../parser/recipe/index.js'
+import { RecipeDefinition } from '../schema/recipe.js'
+import { resolveIDTest } from '../common/predicates.js'
+import { Result } from '../common/result.js'
+import RuledEmitter from './ruled.js'
+import { RegistryProvider } from './index.js'
+import CustomEmitter from './custom.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 type RecipeTest = Readonly<{

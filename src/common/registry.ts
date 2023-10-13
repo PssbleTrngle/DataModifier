@@ -1,4 +1,4 @@
-import { createId, encodeId, Id, IdInput, NormalizedId } from './id'
+import { createId, encodeId, Id, IdInput, NormalizedId } from './id.js'
 
 export default class Registry<TEntry, TId extends string = string> {
    private readonly entries = new Map<NormalizedId<TId>, TEntry>

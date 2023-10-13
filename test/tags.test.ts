@@ -1,7 +1,7 @@
-import PackLoader from '../src/loader/pack'
-import createTestAcceptor from './mock/TestAcceptor'
-import createTestLogger from './mock/TestLogger'
-import createTestResolver from './mock/TestResolver'
+import PackLoader from '../src/loader/pack.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
+import createTestLogger from './mock/TestLogger.js'
+import createTestResolver from './mock/TestResolver.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
