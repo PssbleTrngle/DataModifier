@@ -1,22 +1,10 @@
-import { PackLoader } from '../src/index.js'
-import createTestLogger from './mock/TestLogger.js'
-import createTestResolver from './mock/TestResolver.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import { createIngredient } from '../src/common/ingredient.js'
 import { createResult } from '../src/common/result.js'
 import { tryCatching } from '../src/error.js'
+import setupLoader from './shared/loaderSetup'
 
-const logger = createTestLogger()
-const loader = new PackLoader(logger)
-beforeAll(async () => {
-   const resolver = createTestResolver()
-   await loader.loadFrom(resolver)
-}, 10_000)
-
-afterEach(() => {
-   loader.clear()
-   logger.reset()
-})
+const { logger, loader } = setupLoader()
 
 describe('tests regarding ingredient/result shapes', () => {
    it('warns about unknown ingredient shape', async () => {

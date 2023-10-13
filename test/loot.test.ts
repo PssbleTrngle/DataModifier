@@ -1,17 +1,9 @@
-import PackLoader from '../src/loader/pack.js'
-import createTestLogger from './mock/TestLogger.js'
-import createTestResolver from './mock/TestResolver.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import { LootEntrySchema, LootTableSchema } from '../src/schema/loot.js'
 import { EMPTY_LOOT_TABLE } from '../src/emit/loot.js'
+import setupLoader from './shared/loaderSetup'
 
-const logger = createTestLogger()
-const loader = new PackLoader(logger)
-
-beforeAll(async () => {
-   const resolver = createTestResolver({ include: ['data/*/loot_tables/**/*.json', 'data/*/tags/**/*.json'] })
-   await loader.loadFrom(resolver)
-}, 10_000)
+const { logger, loader } = setupLoader({ include: ['data/*/loot_tables/**/*.json', 'data/*/tags/**/*.json'] })
 
 afterEach(() => {
    loader.clear()

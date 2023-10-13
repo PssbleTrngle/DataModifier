@@ -2,6 +2,6 @@
 // @ts-ignore
 import { jest } from '@jest/globals'
 
-beforeAll(() => {
+beforeAll(async () => {
    global.jest = jest
 })

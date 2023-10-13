@@ -1,5 +1,5 @@
-import { createResolver, Options } from '@pssbletrngle/pack-resolver'
+import { createResolver, IResolver, Options } from '@pssbletrngle/pack-resolver'
 
-export default function createTestResolver(options: Partial<Options> = {}) {
+export default function createTestResolver(options: Partial<Options> = {}): IResolver {
    return createResolver({ from: 'test/resources', silent: true, ...options })
 }

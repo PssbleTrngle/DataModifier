@@ -1,18 +1,7 @@
-import PackLoader from '../src/loader/pack.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
-import createTestLogger from './mock/TestLogger.js'
-import createTestResolver from './mock/TestResolver.js'
+import setupLoader from './shared/loaderSetup'
 
-const logger = createTestLogger()
-const loader = new PackLoader(logger)
-beforeAll(async () => {
-   const resolver = createTestResolver({ include: ['data/*/tags/**/*.json'] })
-   await loader.loadFrom(resolver)
-}, 10_000)
-
-afterEach(() => {
-   loader.clear()
-})
+const { logger, loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })
 
 describe('loading of tags', () => {
    it('loads tags correctly', async () => {

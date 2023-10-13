@@ -1,21 +1,9 @@
 import { EMPTY_RECIPE } from '../src/emit/recipe.js'
-import PackLoader from '../src/loader/pack.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
-import createTestLogger from './mock/TestLogger.js'
-import createTestResolver from './mock/TestResolver.js'
+import setupLoader from './shared/loaderSetup'
 
-const logger = createTestLogger()
-const loader = new PackLoader(logger)
-
-beforeAll(async () => {
-   const resolver = createTestResolver()
-   await loader.loadFrom(resolver)
-}, 10_000)
-
-afterEach(() => {
-   loader.clear()
-})
+const { logger, loader } = setupLoader()
 
 it('has no unknown recipe loaders', () => {
    expect(logger.warn).not.toHaveBeenCalled()
