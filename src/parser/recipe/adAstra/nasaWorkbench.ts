@@ -1,41 +1,44 @@
-import RecipeParser, { Recipe, replace } from '../index.js'
+import RecipeParser, { Recipe, replace, replaceOrKeep } from '../index.js'
 import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
-export type ElvenTradeRecipeDefinition = RecipeDefinition &
+export type NasaWorkbenchRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: IngredientInput[]
-      output: ResultInput[]
+      output: ResultInput
       mana?: number
    }>
 
-export class ElvenTradeRecipe extends Recipe<ElvenTradeRecipeDefinition> {
+export class NasaWorkbenchRecipe extends Recipe<NasaWorkbenchRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
 
    getResults(): ResultInput[] {
-      return this.definition.output
+      return [this.definition.output]
    }
 
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
-      return new ElvenTradeRecipe({
+      return new NasaWorkbenchRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
    replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
-      return new ElvenTradeRecipe({
+      return new NasaWorkbenchRecipe({
          ...this.definition,
-         output: this.definition.output.map(replace(from, to)),
+         output: replaceOrKeep(from, to, this.definition.output),
       })
    }
 }
 
-export default class ElvenTradeRecipeParser extends RecipeParser<ElvenTradeRecipeDefinition, ElvenTradeRecipe> {
-   create(definition: ElvenTradeRecipeDefinition): ElvenTradeRecipe | null {
-      return new ElvenTradeRecipe(definition)
+export default class NasaWorkbenchRecipeParser extends RecipeParser<
+   NasaWorkbenchRecipeDefinition,
+   NasaWorkbenchRecipe
+> {
+   create(definition: NasaWorkbenchRecipeDefinition): NasaWorkbenchRecipe | null {
+      return new NasaWorkbenchRecipe(definition)
    }
 }

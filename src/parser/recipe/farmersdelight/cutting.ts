@@ -35,7 +35,7 @@ export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
 }
 
 export default class CuttingRecipeParser extends RecipeParser<CuttingRecipeDefinition, CuttingRecipe> {
-   create(definition: CuttingRecipeDefinition): CuttingRecipe {
+   create(definition: CuttingRecipeDefinition): CuttingRecipe | null {
       return new CuttingRecipe(definition)
    }
 }

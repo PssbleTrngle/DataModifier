@@ -35,7 +35,7 @@ export class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
 }
 
 export default class SmeltingParser extends RecipeParser<SmeltingRecipeDefinition, SmeltingRecipe> {
-   create(definition: SmeltingRecipeDefinition): SmeltingRecipe {
+   create(definition: SmeltingRecipeDefinition): SmeltingRecipe | null {
       return new SmeltingRecipe(definition)
    }
 }

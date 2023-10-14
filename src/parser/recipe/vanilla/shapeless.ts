@@ -34,7 +34,7 @@ export class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
 }
 
 export default class ShapelessParser extends RecipeParser<ShapelessRecipeDefinition, ShapelessRecipe> {
-   create(definition: ShapelessRecipeDefinition): ShapelessRecipe {
+   create(definition: ShapelessRecipeDefinition): ShapelessRecipe | null {
       return new ShapelessRecipe(definition)
    }
 }

@@ -3,6 +3,7 @@ import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import RecipeLoader from '../../../loader/recipe.js'
 import { ResultInput } from '../../../common/result.js'
+import { Logger } from '../../../logger.js'
 
 export type NbtWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -10,9 +11,12 @@ export type NbtWrapperRecipeDefinition = RecipeDefinition &
       recipe: RecipeDefinition
    }>
 
-export class NbtWrapperRecipe extends Recipe<Omit<NbtWrapperRecipeDefinition, 'recipe'>> {
+export class NbtWrapperRecipe extends Recipe<NbtWrapperRecipeDefinition> {
    constructor(definition: Omit<NbtWrapperRecipeDefinition, 'recipe'>, private readonly recipe: Recipe) {
-      super(definition)
+      super({
+         ...definition,
+         recipe: recipe.toJSON(),
+      })
    }
 
    getIngredients(): IngredientInput[] {
@@ -37,8 +41,8 @@ export default class NbtWrapperRecipeParser extends RecipeParser<NbtWrapperRecip
       super()
    }
 
-   create(definition: NbtWrapperRecipeDefinition): NbtWrapperRecipe | null {
-      const recipe = this.loader.parse(definition.recipe)
+   create(definition: NbtWrapperRecipeDefinition, logger: Logger): NbtWrapperRecipe | null {
+      const recipe = this.loader.parse(logger, definition.recipe)
       if (!recipe) return null
       return new NbtWrapperRecipe(definition, recipe)
    }

@@ -3,13 +3,13 @@ import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
-export type BrewRecipeDefinition = RecipeDefinition &
+export type SpaceStationRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: IngredientInput[]
-      brew: string
+      mana?: number
    }>
 
-export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
+export class SpaceStationRecipe extends Recipe<SpaceStationRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
@@ -19,19 +19,19 @@ export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
    }
 
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
-      return new BrewRecipe({
+      return new SpaceStationRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(): BrewRecipe {
-      return new BrewRecipe(this.definition)
+   replaceResult(): Recipe {
+      return new SpaceStationRecipe(this.definition)
    }
 }
 
-export default class BrewRecipeParser extends RecipeParser<BrewRecipeDefinition, BrewRecipe> {
-   create(definition: BrewRecipeDefinition): BrewRecipe | null {
-      return new BrewRecipe(definition)
+export default class SpaceStationRecipeParser extends RecipeParser<SpaceStationRecipeDefinition, SpaceStationRecipe> {
+   create(definition: SpaceStationRecipeDefinition): SpaceStationRecipe | null {
+      return new SpaceStationRecipe(definition)
    }
 }

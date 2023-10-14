@@ -43,7 +43,7 @@ export class PureDaisyRecipe extends Recipe<PureDaisyRecipeDefinition> {
 }
 
 export default class PureDaisyRecipeParser extends RecipeParser<PureDaisyRecipeDefinition, PureDaisyRecipe> {
-   create(definition: PureDaisyRecipeDefinition): PureDaisyRecipe {
+   create(definition: PureDaisyRecipeDefinition): PureDaisyRecipe | null {
       return new PureDaisyRecipe(definition)
    }
 }

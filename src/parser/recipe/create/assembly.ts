@@ -13,7 +13,7 @@ export type AssemblyRecipeDefinition = RecipeDefinition &
       sequence: CreateProcessingRecipeDefinition[]
    }>
 
-export  class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
+export class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
    private readonly sequence: CreateProcessingRecipe[]
 
    constructor(protected readonly definition: AssemblyRecipeDefinition) {
@@ -52,7 +52,7 @@ export  class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
 }
 
 export default class AssemblyRecipeParser extends RecipeParser<AssemblyRecipeDefinition, AssemblyRecipe> {
-   create(definition: AssemblyRecipeDefinition): AssemblyRecipe {
+   create(definition: AssemblyRecipeDefinition): AssemblyRecipe | null {
       return new AssemblyRecipe(definition)
    }
 }

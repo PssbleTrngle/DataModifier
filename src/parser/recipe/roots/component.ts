@@ -3,13 +3,13 @@ import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
-export type BrewRecipeDefinition = RecipeDefinition &
+export type RootComponentRecipeDefinition = RecipeDefinition &
    Readonly<{
+      effect: string
       ingredients: IngredientInput[]
-      brew: string
    }>
 
-export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
+export class RootComponentRecipe extends Recipe<RootComponentRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
@@ -19,19 +19,22 @@ export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
    }
 
    replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
-      return new BrewRecipe({
+      return new RootComponentRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace(from, to)),
       })
    }
 
-   replaceResult(): BrewRecipe {
-      return new BrewRecipe(this.definition)
+   replaceResult(): RootComponentRecipe {
+      return new RootComponentRecipe(this.definition)
    }
 }
 
-export default class BrewRecipeParser extends RecipeParser<BrewRecipeDefinition, BrewRecipe> {
-   create(definition: BrewRecipeDefinition): BrewRecipe | null {
-      return new BrewRecipe(definition)
+export default class RootComponentRecipeParser extends RecipeParser<
+   RootComponentRecipeDefinition,
+   RootComponentRecipe
+> {
+   create(definition: RootComponentRecipeDefinition): RootComponentRecipe | null {
+      return new RootComponentRecipe(definition)
    }
 }

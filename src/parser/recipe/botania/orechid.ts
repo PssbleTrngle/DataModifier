@@ -109,7 +109,7 @@ export class OrechidRecipe extends Recipe<OrechidRecipeDefinition> {
 }
 
 export default class OrechidRecipeParser extends RecipeParser<OrechidRecipeDefinition, OrechidRecipe> {
-   create(definition: OrechidRecipeDefinition): OrechidRecipe {
+   create(definition: OrechidRecipeDefinition): OrechidRecipe | null {
       return new OrechidRecipe(definition)
    }
 }

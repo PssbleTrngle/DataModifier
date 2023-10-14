@@ -34,8 +34,11 @@ export class CreateProcessingRecipe extends Recipe<CreateProcessingRecipeDefinit
    }
 }
 
-export default class CreateProcessingRecipeParser extends RecipeParser<CreateProcessingRecipeDefinition, CreateProcessingRecipe> {
-   create(definition: CreateProcessingRecipeDefinition): CreateProcessingRecipe {
+export default class CreateProcessingRecipeParser extends RecipeParser<
+   CreateProcessingRecipeDefinition,
+   CreateProcessingRecipe
+> {
+   create(definition: CreateProcessingRecipeDefinition): CreateProcessingRecipe | null {
       return new CreateProcessingRecipe(definition)
    }
 }

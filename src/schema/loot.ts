@@ -3,7 +3,7 @@ import zod from 'zod'
 const NumberProviderSchema = zod.union([
    zod.number(),
    zod.object({
-      type: zod.string(),
+      type: zod.string().optional(),
    }),
 ])
 
@@ -75,7 +75,7 @@ export const LootPoolSchema = zod.object({
 export type LootPool = zod.infer<typeof LootPoolSchema>
 
 export const LootTableSchema = zod.object({
-   type: zod.string(),
+   type: zod.string().optional(),
    pools: zod.array(LootPoolSchema).default([]),
 })
 

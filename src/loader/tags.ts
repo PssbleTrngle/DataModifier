@@ -1,10 +1,9 @@
-import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { orderBy, uniqBy } from 'lodash-es'
-import { IdInput, TagInput, encodeId } from '../common/id.js'
+import { encodeId, IdInput, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
-import { Logger } from '../logger.js'
 import { TagDefinition, TagEntry } from '../schema/tag.js'
 import { fromJson } from '../textHelper.js'
+import { AcceptorWithLoader } from './index.js'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
@@ -103,7 +102,7 @@ class WriteableTagRegistry implements TagRegistry {
 export default class TagsLoader implements TagRegistryHolder {
    private registries: Record<string, WriteableTagRegistry> = {}
 
-   constructor(private readonly logger: Logger) {
+   constructor() {
       this.registerRegistry('items')
       this.registerRegistry('blocks')
       this.registerRegistry('fluids')
@@ -133,7 +132,7 @@ export default class TagsLoader implements TagRegistryHolder {
       return { namespace, registry: registry[1], path, isTag: true }
    }
 
-   readonly accept: Acceptor = (path, content) => {
+   readonly accept: AcceptorWithLoader = (_, path, content) => {
       const info = this.parsePath(path)
       if (!info) return false
 

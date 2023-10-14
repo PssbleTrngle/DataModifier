@@ -2,7 +2,7 @@ import { format } from 'prettier'
 import json from 'json5'
 
 export function fromJson(input: string) {
-   return json.parse(input)
+   return json.parse(input.replaceAll('\r\n', ''))
 }
 
 export function toJson(input: unknown) {

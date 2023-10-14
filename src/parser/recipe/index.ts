@@ -1,6 +1,7 @@
 import { IngredientInput, Predicate } from '../../common/ingredient.js'
 import { RecipeDefinition } from '../../schema/recipe.js'
 import { ResultInput } from '../../common/result.js'
+import { Logger } from '../../logger.js'
 
 export function replace<T>(from: Predicate<T>, to: T) {
    return (it: T) => {
@@ -30,5 +31,5 @@ export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefini
 }
 
 export default abstract class RecipeParser<TDefinition extends RecipeDefinition, TRecipe extends Recipe> {
-   abstract create(definition: TDefinition): TRecipe | null
+   abstract create(definition: TDefinition, logger: Logger): TRecipe | null
 }

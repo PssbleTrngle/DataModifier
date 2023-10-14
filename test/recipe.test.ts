@@ -6,6 +6,10 @@ import setupLoader from './shared/loaderSetup.js'
 const { logger, loader } = setupLoader()
 
 it('has no unknown recipe loaders', () => {
+   expect(loader.recipeLoader.unknownRecipeTypes()).toMatchObject([])
+})
+
+it('does not encounter any errors', () => {
    expect(logger.warn).not.toHaveBeenCalled()
    expect(logger.error).not.toHaveBeenCalled()
 })

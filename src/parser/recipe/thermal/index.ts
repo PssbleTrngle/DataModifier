@@ -59,7 +59,7 @@ export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
 }
 
 export default class ThermalRecipeParser extends RecipeParser<ThermalRecipeDefinition, ThermalRecipe> {
-   create(definition: ThermalRecipeDefinition): ThermalRecipe {
+   create(definition: ThermalRecipeDefinition): ThermalRecipe | null {
       return new ThermalRecipe(definition)
    }
 }
