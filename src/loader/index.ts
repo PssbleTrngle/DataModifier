@@ -4,7 +4,7 @@ import { fromJson } from '../textHelper.js'
 import Registry from '../common/registry.js'
 import { RegistryProvider } from '../emit/index.js'
 import { Logger } from '../logger.js'
-import { tryCatching } from '../error'
+import { tryCatching } from '../error.js'
 
 export type AcceptorWithLoader = (logger: Logger, ...paramenters: Parameters<Acceptor>) => ReturnType<Acceptor>
 
@@ -34,7 +34,7 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
    }
 
    readonly accept: AcceptorWithLoader = (logger, path, content) => {
-      const match = /data\/(?<namespace>[\w-]+)\/\w+\/(?<rest>[\w-/]+).json/.exec(path)
+      const match = /(data|assets)\/(?<namespace>[\w-]+)\/\w+\/(?<rest>[\w-/]+).json/.exec(path)
       if (!match?.groups) return false
 
       const { namespace, rest } = match.groups

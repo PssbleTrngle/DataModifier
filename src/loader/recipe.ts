@@ -35,7 +35,7 @@ import RootComponentRecipeParser from '../parser/recipe/roots/component.js'
 import RootRitualRecipeParser from '../parser/recipe/roots/ritual.js'
 import { ShapelessRecipeParser } from '../parser/index.js'
 import { Logger } from '../logger.js'
-import { IllegalShapeError } from '../error'
+import { IllegalShapeError } from '../error.js'
 
 export interface RecipeLoaderAccessor {
    unknownRecipeTypes(): RecipeDefinition[]

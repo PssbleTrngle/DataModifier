@@ -9,6 +9,8 @@ import TagEmitter, { TagRules } from '../emit/tags.js'
 import { IngredientTest } from '../common/ingredient.js'
 import LootTableLoader from './loot.js'
 import LootTableEmitter, { LootRules } from '../emit/loot.js'
+import LangLoader from './lang.js'
+import LangEmitter, { LangRules } from '../emit/lang.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
@@ -16,10 +18,12 @@ export default class PackLoader implements Loader {
    private readonly tagLoader = new TagsLoader()
    private readonly recipesLoader = new RecipeLoader()
    private readonly lootLoader = new LootTableLoader()
+   private readonly langLoader = new LangLoader()
 
    private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
    private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
    private readonly lootEmitter = new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader)
+   private readonly langEmitter = new LangEmitter(this.langLoader)
 
    registerRegistry(key: string) {
       this.tagLoader.registerRegistry(key)
@@ -41,6 +45,10 @@ export default class PackLoader implements Loader {
       return this.lootEmitter
    }
 
+   get lang(): LangRules {
+      return this.langEmitter
+   }
+
    get recipeLoader(): RecipeLoaderAccessor {
       return this.recipesLoader
    }
@@ -53,6 +61,7 @@ export default class PackLoader implements Loader {
       'data/*/tags/**/*.json': this.tagLoader.accept,
       'data/*/recipes/**/*.json': this.recipesLoader.accept,
       'data/*/loot_tables/**/*.json': this.lootLoader.accept,
+      'assets/*/lang/*.json': this.langLoader.accept,
    }
 
    private loadInternal(resolver: IResolver, logger: Logger) {
@@ -88,6 +97,7 @@ export default class PackLoader implements Loader {
       this.recipeEmitter.clear()
       this.lootEmitter.clear()
       this.tagEmitter.clear()
+      this.langEmitter.clear()
    }
 
    async emit(acceptor: Acceptor) {
@@ -95,6 +105,7 @@ export default class PackLoader implements Loader {
          this.recipeEmitter.emit(acceptor),
          this.lootEmitter.emit(acceptor),
          this.tagEmitter.emit(acceptor),
+         this.langEmitter.emit(acceptor),
       ])
    }
 

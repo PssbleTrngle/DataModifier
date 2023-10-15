@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`replacing translation entries replaces requires the case to match: replaced matched case values 1`] = `
+{
+  "advancements.story.mine_stone.title": "Rock Age",
+  "block.minecraft.chiseled_stone_bricks": "Chiseled Rock Bricks",
+  "block.minecraft.cracked_stone_bricks": "Cracked Rock Bricks",
+  "block.minecraft.end_stone": "End Rock",
+  "block.minecraft.end_stone_brick_slab": "End Rock Brick Slab",
+  "block.minecraft.end_stone_brick_stairs": "End Rock Brick Stairs",
+  "block.minecraft.end_stone_brick_wall": "End Rock Brick Wall",
+  "block.minecraft.end_stone_bricks": "End Rock Bricks",
+  "block.minecraft.infested_chiseled_stone_bricks": "Infested Chiseled Rock Bricks",
+  "block.minecraft.infested_cracked_stone_bricks": "Infested Cracked Rock Bricks",
+  "block.minecraft.infested_mossy_stone_bricks": "Infested Mossy Rock Bricks",
+  "block.minecraft.infested_stone": "Infested Rock",
+  "block.minecraft.infested_stone_bricks": "Infested Rock Bricks",
+  "block.minecraft.mossy_stone_brick_slab": "Mossy Rock Brick Slab",
+  "block.minecraft.mossy_stone_brick_stairs": "Mossy Rock Brick Stairs",
+  "block.minecraft.mossy_stone_brick_wall": "Mossy Rock Brick Wall",
+  "block.minecraft.mossy_stone_bricks": "Mossy Rock Bricks",
+  "block.minecraft.smooth_stone": "Smooth Rock",
+  "block.minecraft.smooth_stone_slab": "Smooth Rock Slab",
+  "block.minecraft.stone": "Rock",
+  "block.minecraft.stone_brick_slab": "Rock Brick Slab",
+  "block.minecraft.stone_brick_stairs": "Rock Brick Stairs",
+  "block.minecraft.stone_brick_wall": "Rock Brick Wall",
+  "block.minecraft.stone_bricks": "Rock Bricks",
+  "block.minecraft.stone_button": "Rock Button",
+  "block.minecraft.stone_pressure_plate": "Rock Pressure Plate",
+  "block.minecraft.stone_slab": "Rock Slab",
+  "block.minecraft.stone_stairs": "Rock Stairs",
+  "block.minecraft.stonecutter": "Rockcutter",
+  "container.stonecutter": "Rockcutter",
+  "item.minecraft.stone_axe": "Rock Axe",
+  "item.minecraft.stone_hoe": "Rock Hoe",
+  "item.minecraft.stone_pickaxe": "Rock Pickaxe",
+  "item.minecraft.stone_shovel": "Rock Shovel",
+  "item.minecraft.stone_sword": "Rock Sword",
+  "stat.minecraft.interact_with_stonecutter": "Interactions with Rockcutter",
+  "subtitles.ui.stonecutter.take_result": "Rockcutter used",
+}
+`;
+
+exports[`replacing translation entries replaces using string value: replaced diorite values 1`] = `
+{
+  "block.minecraft.diorite": "Bird poop",
+  "block.minecraft.diorite_slab": "Bird poop Slab",
+  "block.minecraft.diorite_stairs": "Bird poop Stairs",
+  "block.minecraft.diorite_wall": "Bird poop Wall",
+  "block.minecraft.polished_diorite": "Polished Bird poop",
+  "block.minecraft.polished_diorite_slab": "Polished Bird poop Slab",
+  "block.minecraft.polished_diorite_stairs": "Polished Bird poop Stairs",
+}
+`;
