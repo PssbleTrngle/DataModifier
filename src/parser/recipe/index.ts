@@ -2,15 +2,13 @@ import { IngredientInput, Predicate } from '../../common/ingredient.js'
 import { RecipeDefinition } from '../../schema/recipe.js'
 import { ResultInput } from '../../common/result.js'
 
-export function replace<T>(from: Predicate<T>, to: T) {
+export type Replacer<T> = (value: T) => T
+
+export function createReplacer<T>(from: Predicate<T>, to: T): Replacer<T> {
    return (it: T) => {
       if (from(it)) return to
       return it
    }
-}
-
-export function replaceOrKeep<T>(from: Predicate<T>, to: T, value: T) {
-   return replace(from, to)(value)
 }
 
 export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefinition> {
@@ -18,11 +16,11 @@ export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefini
 
    abstract getIngredients(): IngredientInput[]
 
-   abstract replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe
+   abstract replaceIngredient(replace: Replacer<IngredientInput>): Recipe
 
    abstract getResults(): ResultInput[]
 
-   abstract replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe
+   abstract replaceResult(replace: Replacer<ResultInput>): Recipe
 
    toJSON(): TDefinition {
       return this.definition

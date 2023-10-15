@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replace, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { arrayOrSelf, exists } from '@pssbletrngle/pack-resolver'
 import { ResultInput } from '../../../common/result.js'
@@ -14,18 +14,6 @@ export type ThermalRecipeDefinition = RecipeDefinition &
       experience?: number
    }>
 
-/*
-TODO seen Ingredient in form
-[
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "thermal:quartz_dust"
-    }
-]
-*/
-
 export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
    getIngredients(): IngredientInput[] {
       return [this.definition.ingredient, ...(this.definition.ingredients ?? [])]
@@ -37,23 +25,20 @@ export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
       return arrayOrSelf(this.definition.result)
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ThermalRecipe({
          ...this.definition,
          ingredient:
             this.definition.ingredient &&
-            toThermalIngredient(replaceOrKeep(from, to, fromThermalIngredient(this.definition.ingredient))),
-         ingredients: this.definition.ingredients
-            ?.map(fromThermalIngredient)
-            ?.map(replace(from, to))
-            ?.map(toThermalIngredient),
+            toThermalIngredient(replace(fromThermalIngredient(this.definition.ingredient))),
+         ingredients: this.definition.ingredients?.map(fromThermalIngredient)?.map(replace)?.map(toThermalIngredient),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new ThermalRecipe({
          ...this.definition,
-         result: arrayOrSelf(this.definition.result).map(replace(from, to)),
+         result: arrayOrSelf(this.definition.result).map(replace),
       })
    }
 }

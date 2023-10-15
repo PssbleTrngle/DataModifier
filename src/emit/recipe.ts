@@ -10,10 +10,10 @@ import RecipeRule from '../rule/recipe.js'
 import { Logger } from '../logger.js'
 import TagsLoader from '../loader/tags.js'
 import { Id, IdInput, NormalizedId } from '../common/id.js'
-import { Recipe } from '../parser/recipe/index.js'
+import { createReplacer, Recipe } from '../parser/recipe/index.js'
 import { RecipeDefinition } from '../schema/recipe.js'
 import { resolveIDTest } from '../common/predicates.js'
-import { Result } from '../common/result.js'
+import { Result, ResultInput } from '../common/result.js'
 import RuledEmitter from './ruled.js'
 import { RegistryProvider } from './index.js'
 import CustomEmitter from './custom.js'
@@ -117,12 +117,13 @@ export default class RecipeEmitter implements RecipeRules {
    replaceResult(test: IngredientTest, value: Result, additionalTest: RecipeTest = {}) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest)
+      const replacer = createReplacer<ResultInput>(predicate, value)
       this.ruled.addRule(
          new RecipeRule(
             recipePredicates.id,
             recipePredicates.ingredient,
             [predicate, ...recipePredicates.result],
-            recipe => recipe.replaceResult(predicate, value)
+            recipe => recipe.replaceResult(replacer)
          )
       )
    }
@@ -130,12 +131,13 @@ export default class RecipeEmitter implements RecipeRules {
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTest: RecipeTest = {}) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest)
+      const replacer = createReplacer<IngredientInput>(predicate, value)
       this.ruled.addRule(
          new RecipeRule(
             recipePredicates.id,
             [predicate, ...recipePredicates.ingredient],
             recipePredicates.result,
-            recipe => recipe.replaceIngredient(predicate, value)
+            recipe => recipe.replaceIngredient(replacer)
          )
       )
    }

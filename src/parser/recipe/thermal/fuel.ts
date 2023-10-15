@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -18,10 +18,10 @@ export class ThermalFuelRecipe extends Recipe<ThermalFuelRecipeDefinition> {
       return []
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ThermalFuelRecipe({
          ...this.definition,
-         ingredient: replaceOrKeep(from, to, this.definition.ingredient),
+         ingredient: replace(this.definition.ingredient),
       })
    }
 

@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
 import { createResult, ResultInput } from '../../../common/result.js'
@@ -21,15 +21,15 @@ export class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
       return [{ item: encodeId(this.definition.result), count: this.definition.count }]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new StonecuttingRecipe({
          ...this.definition,
-         ingredient: to,
+         ingredient: replace(this.definition.ingredient),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
-      const result = createResult(to)
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
+      const result = createResult(replace)
       if (!('item' in result)) throw new IllegalShapeError('stonecutting does only support item results', result)
 
       return new StonecuttingRecipe({

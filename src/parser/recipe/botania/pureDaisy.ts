@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import {
    BlockInput,
@@ -27,17 +27,17 @@ export class PureDaisyRecipe extends Recipe<PureDaisyRecipeDefinition> {
       return [fromBlockOutput(this.definition.output)]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new PureDaisyRecipe({
          ...this.definition,
-         input: createBlockInput(to) ?? this.definition.input,
+         input: createBlockInput(replace(fromBlockInput(this.definition.input))) ?? this.definition.input,
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new PureDaisyRecipe({
          ...this.definition,
-         output: createBlockOutput(to) ?? this.definition.output,
+         output: createBlockOutput(replace(fromBlockOutput(this.definition.output))) ?? this.definition.output,
       })
    }
 }

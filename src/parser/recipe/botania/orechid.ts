@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe } from '../index.js'
-import { BlockTag, createIngredient, IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { BlockTag, createIngredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
 import { Block, createResult, ResultInput } from '../../../common/result.js'
@@ -93,17 +93,18 @@ export class OrechidRecipe extends Recipe<OrechidRecipeDefinition> {
       return [fromBlockInput(this.definition.output) as Block]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new OrechidRecipe({
          ...this.definition,
-         input: createBlockInput(to) ?? this.definition.input,
+         input: createBlockInput(replace(fromBlockInput(this.definition.input))) ?? this.definition.input,
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new OrechidRecipe({
          ...this.definition,
-         output: createBlockInput(to) ?? this.definition.output,
+         output:
+            createBlockInput(replace(fromBlockInput(this.definition.output) as ResultInput)) ?? this.definition.output,
       })
    }
 }

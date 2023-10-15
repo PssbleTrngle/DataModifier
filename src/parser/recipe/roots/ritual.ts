@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replace } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -21,11 +21,11 @@ export class RootRitualRecipe extends Recipe<RootRitualRecipeDefinition> {
       return []
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new RootRitualRecipe({
          ...this.definition,
-         ingredients: this.definition.ingredients?.map(replace(from, to)),
-         incenses: this.definition.incenses?.map(replace(from, to)),
+         ingredients: this.definition.ingredients?.map(replace),
+         incenses: this.definition.incenses?.map(replace),
       })
    }
 

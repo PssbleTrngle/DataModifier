@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -19,17 +19,17 @@ export class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
-         ingredient: to,
+         ingredient: replace(this.definition.ingredient),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
-         result: to,
+         result: replace(this.definition.result),
       })
    }
 }

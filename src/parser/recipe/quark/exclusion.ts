@@ -1,5 +1,5 @@
-import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -30,12 +30,12 @@ export class QuarkExclusionRecipe<
       return this.trueRecipe.getResults()
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): QuarkExclusionRecipe {
-      return new QuarkExclusionRecipe(this.definition, this.trueRecipe.replaceIngredient(from, to) as TRecipe)
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+      return new QuarkExclusionRecipe(this.definition, this.trueRecipe.replaceIngredient(replace) as TRecipe)
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): QuarkExclusionRecipe {
-      return new QuarkExclusionRecipe(this.definition, this.trueRecipe.replaceResult(from, to) as TRecipe)
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
+      return new QuarkExclusionRecipe(this.definition, this.trueRecipe.replaceResult(replace) as TRecipe)
    }
 }
 

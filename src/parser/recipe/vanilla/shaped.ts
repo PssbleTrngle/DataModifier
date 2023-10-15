@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replace } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { mapValues } from 'lodash-es'
 import { ResultInput } from '../../../common/result.js'
@@ -20,17 +20,17 @@ export class ShapedRecipe extends Recipe<ShapedRecipeDefinition> {
       return [this.definition.result]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ShapedRecipe({
          ...this.definition,
-         key: mapValues(this.definition.key, replace(from, to)),
+         key: mapValues(this.definition.key, replace),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new ShapedRecipe({
          ...this.definition,
-         result: to,
+         result: replace(this.definition.result),
       })
    }
 }

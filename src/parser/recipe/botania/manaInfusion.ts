@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { BlockInput, createBlockInput, fromBlockInput } from './orechid.js'
 import { ResultInput } from '../../../common/result.js'
@@ -22,21 +22,20 @@ export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
       return [this.definition.output]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
-         input: replaceOrKeep(from, to, this.definition.input),
+         input: replace(this.definition.input),
          catalyst:
-            (this.definition.catalyst &&
-               createBlockInput(replaceOrKeep(from, to, fromBlockInput(this.definition.catalyst)))) ??
+            (this.definition.catalyst && createBlockInput(replace(fromBlockInput(this.definition.catalyst)))) ??
             this.definition.catalyst,
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
-         output: to,
+         output: replace(this.definition.output),
       })
    }
 }

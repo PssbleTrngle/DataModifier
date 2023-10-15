@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -19,17 +19,17 @@ export class InputOutputRecipe extends Recipe<InputOutputRecipeDefinition> {
       return [this.definition.output]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new InputOutputRecipe({
          ...this.definition,
-         input: replaceOrKeep(from, to, this.definition.input),
+         input: replace(this.definition.input),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new InputOutputRecipe({
          ...this.definition,
-         output: replaceOrKeep(from, to, this.definition.output),
+         output: replace(this.definition.output),
       })
    }
 }

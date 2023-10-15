@@ -1,5 +1,5 @@
-import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -35,17 +35,17 @@ export class ForgeConditionalRecipe extends Recipe<ForgeConditionalRecipeDefinit
       return this.recipes.flatMap(it => it.recipe.getResults())
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ForgeConditionalRecipe(
          this.definition,
-         this.recipes.map(it => ({ ...it, recipe: it.recipe.replaceIngredient(from, to) }))
+         this.recipes.map(it => ({ ...it, recipe: it.recipe.replaceIngredient(replace) }))
       )
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): ForgeConditionalRecipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new ForgeConditionalRecipe(
          this.definition,
-         this.recipes.map(it => ({ ...it, recipe: it.recipe.replaceResult(from, to) }))
+         this.recipes.map(it => ({ ...it, recipe: it.recipe.replaceResult(replace) }))
       )
    }
 }

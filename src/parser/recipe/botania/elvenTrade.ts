@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replace } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -19,17 +19,17 @@ export class ElvenTradeRecipe extends Recipe<ElvenTradeRecipeDefinition> {
       return this.definition.output
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new ElvenTradeRecipe({
          ...this.definition,
-         ingredients: this.definition.ingredients.map(replace(from, to)),
+         ingredients: this.definition.ingredients.map(replace),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new ElvenTradeRecipe({
          ...this.definition,
-         output: this.definition.output.map(replace(from, to)),
+         output: this.definition.output.map(replace),
       })
    }
 }

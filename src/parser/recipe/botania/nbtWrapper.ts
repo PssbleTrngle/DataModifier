@@ -1,5 +1,5 @@
-import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
@@ -25,12 +25,12 @@ export class NbtWrapperRecipe extends Recipe<NbtWrapperRecipeDefinition> {
       return this.recipe.getResults()
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
-      return new NbtWrapperRecipe(this.definition, this.recipe.replaceIngredient(from, to))
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+      return new NbtWrapperRecipe(this.definition, this.recipe.replaceIngredient(replace))
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
-      return new NbtWrapperRecipe(this.definition, this.recipe.replaceResult(from, to))
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
+      return new NbtWrapperRecipe(this.definition, this.recipe.replaceResult(replace))
    }
 }
 

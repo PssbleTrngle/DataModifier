@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 import { IllegalShapeError } from '../../../error.js'
@@ -28,19 +28,28 @@ function ingredientToBlock(input: IngredientInput): ExtractionBlockInput {
 }
 
 export class TreeExtractionRecipe extends Recipe<TreeExtractionRecipeDefinition> {
+   private readonly trunk
+   private readonly leaves
+
+   constructor(definition: TreeExtractionRecipeDefinition) {
+      super(definition)
+      this.trunk = blockToIngredient(definition.trunk)
+      this.leaves = blockToIngredient(definition.leaves)
+   }
+
    getIngredients(): IngredientInput[] {
-      return [blockToIngredient(this.definition.leaves), blockToIngredient(this.definition.trunk)]
+      return [this.trunk, this.leaves]
    }
 
    getResults(): ResultInput[] {
       return []
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new TreeExtractionRecipe({
          ...this.definition,
-         leaves: ingredientToBlock(replaceOrKeep(from, to, this.definition.leaves)),
-         trunk: ingredientToBlock(replaceOrKeep(from, to, this.definition.trunk)),
+         leaves: ingredientToBlock(replace(this.leaves)),
+         trunk: ingredientToBlock(replace(this.trunk)),
       })
    }
 

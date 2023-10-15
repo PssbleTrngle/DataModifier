@@ -1,5 +1,5 @@
-import RecipeParser, { Recipe, replace, replaceOrKeep } from '../index.js'
-import { IngredientInput, Predicate } from '../../../common/ingredient.js'
+import RecipeParser, { Recipe, Replacer } from '../index.js'
+import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { CreateProcessingRecipe, CreateProcessingRecipeDefinition } from './processing.js'
 import { ResultInput } from '../../../common/result.js'
@@ -33,20 +33,20 @@ export class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       return [...this.definition.results, ...this.sequence.flatMap(it => it.getResults())]
    }
 
-   replaceIngredient(from: Predicate<IngredientInput>, to: IngredientInput): Recipe {
+   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
-         ingredient: replaceOrKeep(from, to, this.definition.ingredient),
-         transitionalItem: replaceOrKeep(from, to, this.definition.ingredient),
-         sequence: this.sequence.map(it => it.replaceIngredient(from, to).toJSON()),
+         ingredient: replace(this.definition.ingredient),
+         transitionalItem: replace(this.definition.ingredient),
+         sequence: this.sequence.map(it => it.replaceIngredient(replace).toJSON()),
       })
    }
 
-   replaceResult(from: Predicate<IngredientInput>, to: ResultInput): Recipe {
+   replaceResult(replace: Replacer<ResultInput>): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
-         results: this.definition.results.map(replace(from, to)),
-         sequence: this.sequence.map(it => it.replaceResult(from, to).toJSON()),
+         results: this.definition.results.map(replace),
+         sequence: this.sequence.map(it => it.replaceResult(replace).toJSON()),
       })
    }
 }
