@@ -94,6 +94,18 @@ describe('recipe removal', () => {
       expect(acceptor.jsonAt('data/minecraft/recipe/sticky_piston.json')).toMatchObject(EMPTY_RECIPE)
    })
 
+   it('removes recipes with type filter', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.recipes.removeRecipe({
+         type: 'minecraft:smelting',
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.paths().length).toBe(118)
+   })
+
    it('removes recipes with result filter', async () => {
       const acceptor = createTestAcceptor()
 

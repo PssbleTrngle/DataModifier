@@ -19,7 +19,7 @@ export {
 } from './common/ingredient.js'
 export { TagInput, Id, IdInput, NormalizedId, encodeId, createId } from './common/id.js'
 export { default as Registry } from './common/registry.js'
-export { Item, Block, ItemStack, Fluid, FluidStack, createResult, ResultInput, Result } from './common/result.js'
+export { Block, ItemStack, FluidStack, createResult, ResultInput, Result } from './common/result.js'
 export { default as createLogger, Logger, createSilentLogger, wrapLogMethods } from './logger.js'
 export { RecipeDefinition, FabricCondition, ForgeCondition } from './schema/recipe.js'
 export { TagEntry, TagDefinition } from './schema/tag.js'

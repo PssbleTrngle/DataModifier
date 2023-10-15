@@ -1,6 +1,6 @@
 import { FluidTag, IngredientInput, ItemTagSchema } from '../../../common/ingredient.js'
 import zod from 'zod'
-import { ItemSchema } from '../../../common/result.js'
+import { ItemStackSchema } from '../../../common/result.js'
 import { omit } from 'lodash-es'
 import { IllegalShapeError } from '../../../error.js'
 
@@ -21,7 +21,7 @@ export type ThermalIngredientInput = Exclude<IngredientInput, FluidTag> | Therma
 function fromThermalList(input: ThermalItemList): IngredientInput {
    return input.value.map(it => {
       if (it && typeof it === 'object') {
-         if ('item' in it) return { ...ItemSchema.parse(it), count: input.count }
+         if ('item' in it) return { ...ItemStackSchema.parse(it), count: input.count }
          if ('tag' in it) return { ...ItemTagSchema.parse(it), count: input.count }
       }
       throw new IllegalShapeError('thermal array ingredients may only be of type item/itemtag', it)

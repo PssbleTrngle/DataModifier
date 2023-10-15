@@ -4,11 +4,34 @@
    "description": "Data Modifier",
    "main": "dist/index.js",
    "exports": {
-      ".": "./dist/index.js",
-      "./parser": "./dist/parser/index.js",
-      "./parser/create": "./dist/parser/create.js",
-      "./parser/thermal": "./dist/parser/thermal.js",
-      "./parser/farmersdelight": "./dist/parser/farmersdelight.js"
+     ".": {
+       "types": "./dist/index.d.ts",
+       "default": "./dist/index.js"
+     },
+      "./parser": {
+         "types": "./dist/parser/index.d.ts",
+         "default": "./dist/parser/index.js"
+      },
+      "./parser/create": {
+         "types": "./dist/parser/create.d.ts",
+         "default": "./dist/parser/create.js"
+      },
+      "./parser/thermal": {
+         "types": "./dist/parser/thermal.d.ts",
+         "default": "./dist/parser/thermal.js"
+      },
+      "./parser/farmersdelight": {
+         "types": "./dist/parser/farmersdelight.d.ts",
+         "default": "./dist/parser/farmersdelight.js"
+      },
+      "./parser/adAstra": {
+         "types": "./dist/parser/adAstra.d.ts",
+         "default": "./dist/parser/adAstra.js"
+      },
+      "./parser/roots": {
+         "types": "./dist/parser/roots.d.ts",
+         "default": "./dist/parser/roots.js"
+      }
    },
    "types": "./dist/index.d.ts",
    "files": [

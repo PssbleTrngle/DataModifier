@@ -1,37 +1,24 @@
 import zod from 'zod'
 import { IllegalShapeError } from '../error.js'
 
-export const ItemSchema = zod.object({
+export const ItemStackSchema = zod.object({
    item: zod.string(),
+   count: zod.number().optional(),
+   chance: zod.number().optional(),
 })
 
-export type Item = zod.infer<typeof ItemSchema>
-
-export const FluidSchema = zod.object({
+export const FluidStackSchema = zod.object({
    fluid: zod.string(),
+   amount: zod.number().optional(),
+   chance: zod.number().optional(),
 })
-
-export type Fluid = zod.infer<typeof FluidSchema>
-
-export const ItemStackSchema = ItemSchema.and(
-   zod.object({
-      count: zod.number().optional(),
-   })
-)
 
 export type ItemStack = zod.infer<typeof ItemStackSchema>
-
-export const FluidStackSchema = FluidSchema.and(
-   zod.object({
-      amount: zod.number().optional(),
-   })
-)
 
 export type FluidStack = zod.infer<typeof FluidStackSchema>
 
 export const BlockSchema = zod.object({
    block: zod.string(),
-   weight: zod.number().optional(),
 })
 
 export type Block = zod.infer<typeof BlockSchema>

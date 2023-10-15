@@ -21,6 +21,7 @@ import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
+   type?: CommonTest<NormalizedId>
    namespace?: string
    output?: IngredientTest
    input?: IngredientTest
@@ -88,15 +89,17 @@ export default class RecipeEmitter implements RecipeRules {
 
    private resolveRecipeTest(test: RecipeTest) {
       const id: Predicate<Id>[] = []
+      const type: Predicate<Id>[] = []
       const ingredient: Predicate<IngredientInput>[] = []
       const result: Predicate<IngredientInput>[] = []
 
       if (test.id) id.push(resolveIDTest(test.id))
+      if (test.type) type.push(resolveIDTest(test.type))
       if (test.namespace) id.push(id => id.namespace === test.namespace)
       if (test.output) result.push(this.resolveIngredientTest(test.output))
       if (test.input) ingredient.push(this.resolveIngredientTest(test.input))
 
-      return { id, ingredient, result }
+      return { id, type, ingredient, result }
    }
 
    addRecipe<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
@@ -110,7 +113,13 @@ export default class RecipeEmitter implements RecipeRules {
    removeRecipe(test: RecipeTest) {
       const recipePredicates = this.resolveRecipeTest(test)
       this.ruled.addRule(
-         new RecipeRule(recipePredicates.id, recipePredicates.ingredient, recipePredicates.result, () => null)
+         new RecipeRule(
+            recipePredicates.id,
+            recipePredicates.type,
+            recipePredicates.ingredient,
+            recipePredicates.result,
+            () => null
+         )
       )
    }
 
@@ -121,6 +130,7 @@ export default class RecipeEmitter implements RecipeRules {
       this.ruled.addRule(
          new RecipeRule(
             recipePredicates.id,
+            recipePredicates.type,
             recipePredicates.ingredient,
             [predicate, ...recipePredicates.result],
             recipe => recipe.replaceResult(replacer)
@@ -135,6 +145,7 @@ export default class RecipeEmitter implements RecipeRules {
       this.ruled.addRule(
          new RecipeRule(
             recipePredicates.id,
+            recipePredicates.type,
             [predicate, ...recipePredicates.ingredient],
             recipePredicates.result,
             recipe => recipe.replaceIngredient(replacer)

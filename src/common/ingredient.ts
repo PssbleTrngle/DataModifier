@@ -2,19 +2,21 @@ import { TagRegistry, TagRegistryHolder } from '../loader/tags.js'
 import { createId, encodeId, Id, NormalizedId } from './id.js'
 import { Logger } from '../logger.js'
 import { resolveCommonTest } from './predicates.js'
-import { Block, BlockSchema, Fluid, FluidSchema, Item, ItemSchema } from './result.js'
+import { Block, BlockSchema, FluidStack, FluidStackSchema, ItemStack, ItemStackSchema } from './result.js'
 import zod from 'zod'
 import { exists } from '@pssbletrngle/pack-resolver'
 import { IllegalShapeError, tryCatching } from '../error.js'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),
+   count: zod.number().optional(),
 })
 
 export type ItemTag = zod.infer<typeof ItemTagSchema>
 
 export const FluidTagSchema = zod.object({
    fluidTag: zod.string(),
+   amount: zod.number().optional(),
 })
 
 export type FluidTag = zod.infer<typeof FluidTagSchema>
@@ -26,7 +28,7 @@ export const BlockTagSchema = zod.object({
 
 export type BlockTag = zod.infer<typeof BlockTagSchema>
 
-export type Ingredient = Item | ItemTag | Fluid | FluidTag | Block | BlockTag | IngredientInput[]
+export type Ingredient = ItemStack | ItemTag | FluidStack | FluidTag | Block | BlockTag | IngredientInput[]
 export type IngredientInput = Ingredient | string
 
 export function createIngredient(input: unknown): Ingredient {
@@ -42,8 +44,8 @@ export function createIngredient(input: unknown): Ingredient {
    }
 
    if (typeof input === 'object') {
-      if ('item' in input) return ItemSchema.parse(input)
-      if ('fluid' in input) return FluidSchema.parse(input)
+      if ('item' in input) return ItemStackSchema.parse(input)
+      if ('fluid' in input) return FluidStackSchema.parse(input)
       if ('block' in input) return BlockSchema.parse(input)
 
       if ('tag' in input) return ItemTagSchema.parse(input)

@@ -15,19 +15,19 @@ export type BlockInput =
    | Readonly<{
         type: 'block'
         block: string
-        weight?: number
      }>
    | Readonly<{
         type: 'tag'
         tag: string
-        weight?: number
      }>
 
 export type OrechidRecipeDefinition = RecipeDefinition &
    Readonly<{
       input: BlockInput
       output: BlockInput
-      result: ResultInput
+      biome_bonus?: number
+      biome_bonus_tag?: string
+      weight?: number
    }>
 
 export function createBlockInput(input: IngredientInput): BlockInput | null {
@@ -37,14 +37,12 @@ export function createBlockInput(input: IngredientInput): BlockInput | null {
       return {
          type: 'block',
          block: ingredient.block,
-         weight: ingredient.weight,
       }
 
    if ('blockTag' in ingredient)
       return {
          type: 'tag',
          tag: ingredient.blockTag,
-         weight: ingredient.weight,
       }
 
    return null
@@ -65,12 +63,10 @@ export function fromBlockInput(input: BlockInput): Block | BlockTag {
       case 'block':
          return {
             block: encodeId(input.block),
-            weight: input.weight,
          }
       case 'tag':
          return {
             blockTag: encodeId(input.tag),
-            weight: input.weight,
          }
       default:
          throw new IllegalShapeError(`Unknown block input type`, input)
