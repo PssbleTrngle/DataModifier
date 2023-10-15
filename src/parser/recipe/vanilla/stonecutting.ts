@@ -41,7 +41,7 @@ export class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
 }
 
 export default class StonecuttingParser extends RecipeParser<StonecuttingRecipeDefinition, StonecuttingRecipe> {
-   create(definition: StonecuttingRecipeDefinition): StonecuttingRecipe | null {
+   create(definition: StonecuttingRecipeDefinition): StonecuttingRecipe {
       return new StonecuttingRecipe(definition)
    }
 }

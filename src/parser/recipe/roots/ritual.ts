@@ -35,7 +35,7 @@ export class RootRitualRecipe extends Recipe<RootRitualRecipeDefinition> {
 }
 
 export default class RootRitualRecipeParser extends RecipeParser<RootRitualRecipeDefinition, RootRitualRecipe> {
-   create(definition: RootRitualRecipeDefinition): RootRitualRecipe | null {
+   create(definition: RootRitualRecipeDefinition): RootRitualRecipe {
       return new RootRitualRecipe(definition)
    }
 }

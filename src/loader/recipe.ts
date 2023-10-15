@@ -35,6 +35,7 @@ import RootComponentRecipeParser from '../parser/recipe/roots/component.js'
 import RootRitualRecipeParser from '../parser/recipe/roots/ritual.js'
 import { ShapelessRecipeParser } from '../parser/index.js'
 import { Logger } from '../logger.js'
+import { IllegalShapeError } from '../error'
 
 export interface RecipeLoaderAccessor {
    unknownRecipeTypes(): RecipeDefinition[]
@@ -104,7 +105,7 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.registerParser('thermal:gourmand_fuel', new ThermalFuelRecipeParser())
       this.registerParser('thermal:numismatic_fuel', new ThermalFuelRecipeParser())
 
-      this.registerParser('botania:nbt_output_wrapper', new NbtWrapperRecipeParser(this))
+      this.registerParser('botania:nbt_output_wrapper', new NbtWrapperRecipeParser())
       this.registerParser('botania:orechid', new OrechidRecipeParser())
       this.registerParser('botania:orechid_ignem', new OrechidRecipeParser())
       this.registerParser('botania:marimorphosis', new OrechidRecipeParser())
@@ -121,12 +122,12 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.registerParser('botania:mana_infusion', new ManaInfusionRecipeParser())
       this.registerParser('botania:mana_upgrade_shapeless', new ShapelessParser())
       this.registerParser('botania:armor_upgrade', new ShapedParser())
-      this.registerParser('botania:gog_alternation', new GogWrapperRecipeParser(this))
+      this.registerParser('botania:gog_alternation', new GogWrapperRecipeParser())
       this.registerParser('botania:petal_apothecary', new ApothecaryRecipeParser())
 
       this.registerParser('theoneprobe:probe_helmet', new ShapedParser())
 
-      this.registerParser('forge:conditional', new ForgeConditionalRecipeParser(this))
+      this.registerParser('forge:conditional', new ForgeConditionalRecipeParser())
 
       this.registerParser('sullysmod:grindstone_polishing', new SmeltingParser())
 
@@ -139,7 +140,7 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.registerParser('ad_astra:nasa_workbench', new NasaWorkbenchRecipeParser())
       this.registerParser('ad_astra:space_station', new SpaceStationRecipeParser())
 
-      this.registerParser('quark:exclusion', new QuarkExclusionRecipeParser(this))
+      this.registerParser('quark:exclusion', new QuarkExclusionRecipeParser())
       this.registerParser('patchouli:shapeless_book_recipe', new ShapelessRecipeParser())
 
       this.registerParser('cofh_core:crafting_shaped_potion', new ShapedParser())
@@ -156,14 +157,6 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.ignoreType('refinedstorage:upgrade_with_enchanted_book')
 
       this.ignoreType('forge:ore_shaped')
-
-      // TODO could to in the future
-      this.ignoreType('ad_astra:lunarian_trade_simple')
-      this.ignoreType('ad_astra:lunarian_trade_enchanted_item')
-      this.ignoreType('ad_astra:lunarian_trade_suspicious_stew')
-      this.ignoreType('ad_astra:lunarian_trade_enchanted_book')
-      this.ignoreType('ad_astra:lunarian_trade_dyed_item')
-      this.ignoreType('ad_astra:lunarian_trade_potioned_item')
 
       this.ignoreType('supplementaries:trapped_present')
       this.ignoreType('supplementaries:weathered_map')
@@ -183,6 +176,14 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.ignoreType('quark:mixed_exclusion')
       this.ignoreType('quark:elytra_duplication')
       this.ignoreType('quark:slab_to_block')
+
+      // TODO could to in the future
+      this.ignoreType('ad_astra:lunarian_trade_simple')
+      this.ignoreType('ad_astra:lunarian_trade_enchanted_item')
+      this.ignoreType('ad_astra:lunarian_trade_suspicious_stew')
+      this.ignoreType('ad_astra:lunarian_trade_enchanted_book')
+      this.ignoreType('ad_astra:lunarian_trade_dyed_item')
+      this.ignoreType('ad_astra:lunarian_trade_potioned_item')
 
       this.ignoreType('immersiveengineering:cloche')
       this.ignoreType('immersiveengineering:crusher')
@@ -206,22 +207,26 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
    ): TRecipe | null {
       const parser = this.recipeParsers.get(encodeId(definition.type))
 
-      if (!('type' in definition)) return null
+      if (!('type' in definition)) throw new IllegalShapeError('recipe type missing')
       if (Object.keys(definition).length <= 1) return null
       if (this.ignoredRecipeTypes.has(definition.type)) return null
 
       if (!parser) {
          if (!this._unknownRecipeTypes.has(definition.type)) {
-            logger.warn(`unknown recipe type: '${definition.type}'`, definition)
             this._unknownRecipeTypes.set(definition.type, definition)
+            throw new IllegalShapeError(`unknown recipe type: '${definition.type}'`, definition)
          }
          return null
       }
 
       try {
-         return parser.create(definition, logger) as TRecipe
-      } catch (e) {
-         throw new Error(`Failed to parse recipe with type '${definition.type}'`, { cause: e })
+         return parser.create(definition, it => {
+            const parsed = this.parse(logger, it)
+            if (parsed) return parsed
+            throw new IllegalShapeError('unable to parse sub-recipe', it)
+         }) as TRecipe
+      } catch (error) {
+         throw new IllegalShapeError(`Failed to parse recipe with type '${definition.type}'`, error)
       }
    }
 

@@ -31,7 +31,7 @@ export class ThermalFuelRecipe extends Recipe<ThermalFuelRecipeDefinition> {
 }
 
 export default class ThermalFuelRecipeParser extends RecipeParser<ThermalFuelRecipeDefinition, ThermalFuelRecipe> {
-   create(definition: ThermalFuelRecipeDefinition): ThermalFuelRecipe | null {
+   create(definition: ThermalFuelRecipeDefinition): ThermalFuelRecipe {
       return new ThermalFuelRecipe(definition)
    }
 }

@@ -35,7 +35,7 @@ export class TerraPlateRecipe extends Recipe<TerraPlateRecipeDefinition> {
 }
 
 export default class TerraPlateRecipeParser extends RecipeParser<TerraPlateRecipeDefinition, TerraPlateRecipe> {
-   create(definition: TerraPlateRecipeDefinition): TerraPlateRecipe | null {
+   create(definition: TerraPlateRecipeDefinition): TerraPlateRecipe {
       return new TerraPlateRecipe(definition)
    }
 }

@@ -35,7 +35,7 @@ export class RunicAltarRecipe extends Recipe<RunicAltarRecipeDefinition> {
 }
 
 export default class RunicAltarRecipeParser extends RecipeParser<RunicAltarRecipeDefinition, RunicAltarRecipe> {
-   create(definition: RunicAltarRecipeDefinition): RunicAltarRecipe | null {
+   create(definition: RunicAltarRecipeDefinition): RunicAltarRecipe {
       return new RunicAltarRecipe(definition)
    }
 }

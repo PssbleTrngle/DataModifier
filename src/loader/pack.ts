@@ -55,15 +55,19 @@ export default class PackLoader implements Loader {
       'data/*/loot_tables/**/*.json': this.lootLoader.accept,
    }
 
+   private loadInternal(resolver: IResolver, logger: Logger) {
+      return resolver.extract((path, content) => {
+         const acceptor = Object.entries(this.acceptors).find(([pattern]) => match(path, pattern))?.[1]
+         if (!acceptor) return false
+         return acceptor(logger, path, content)
+      })
+   }
+
    async loadFromMultiple(resolvers: ResolverInfo[]) {
       await Promise.all(
          resolvers.map(({ resolver, name }) => {
             const logger = this.logger.group(name)
-            return resolver.extract((path, content) => {
-               const acceptor = Object.entries(this.acceptors).find(([pattern]) => match(path, pattern))?.[1]
-               if (!acceptor) return false
-               return acceptor(logger, path, content)
-            })
+            return this.loadInternal(resolver, logger)
          })
       )
 
@@ -71,12 +75,7 @@ export default class PackLoader implements Loader {
    }
 
    async loadFrom(resolver: IResolver) {
-      await resolver.extract((path, content) => {
-         const acceptor = Object.entries(this.acceptors).find(([pattern]) => match(path, pattern))?.[1]
-         if (!acceptor) return false
-         return acceptor(this.logger, path, content)
-      })
-
+      await this.loadInternal(resolver, this.logger)
       this.freeze()
    }
 

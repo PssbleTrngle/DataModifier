@@ -1,9 +1,7 @@
-import RecipeParser, { Recipe } from '../index.js'
+import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
 import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
-import RecipeLoader from '../../../loader/recipe.js'
-import { Logger } from '../../../logger.js'
 
 export type QuarkExclusionRecipeDefinition<T extends RecipeDefinition = RecipeDefinition> = T &
    Readonly<{
@@ -45,15 +43,8 @@ export default class QuarkExclusionRecipeParser extends RecipeParser<
    QuarkExclusionRecipeDefinition,
    QuarkExclusionRecipe
 > {
-   constructor(private readonly loader: RecipeLoader) {
-      super()
-   }
-
-   create(definition: QuarkExclusionRecipeDefinition, logger: Logger): QuarkExclusionRecipe | null {
-      const trueRecipe = this.loader.parse(logger, { ...definition, type: definition.true_type })
-
-      if (!trueRecipe) return null
-
+   create(definition: QuarkExclusionRecipeDefinition, parser: InlineRecipeParser): QuarkExclusionRecipe {
+      const trueRecipe = parser({ ...definition, type: definition.true_type })
       return new QuarkExclusionRecipe(definition, trueRecipe)
    }
 }

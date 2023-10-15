@@ -1,9 +1,7 @@
-import RecipeParser, { Recipe } from '../index.js'
+import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
 import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import RecipeLoader from '../../../loader/recipe.js'
 import { ResultInput } from '../../../common/result.js'
-import { Logger } from '../../../logger.js'
 
 export type GogWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -47,14 +45,9 @@ export class GogWrapperRecipe extends Recipe<GogWrapperRecipeDefinition> {
 }
 
 export default class GogWrapperRecipeParser extends RecipeParser<GogWrapperRecipeDefinition, GogWrapperRecipe> {
-   constructor(private readonly loader: RecipeLoader) {
-      super()
-   }
-
-   create(definition: GogWrapperRecipeDefinition, logger: Logger): GogWrapperRecipe | null {
-      const base = this.loader.parse(logger, definition.base)
-      const gog = this.loader.parse(logger, definition.gog)
-      if (!base || !gog) return null
+   create(definition: GogWrapperRecipeDefinition, parser: InlineRecipeParser): GogWrapperRecipe {
+      const base = parser(definition.base)
+      const gog = parser(definition.gog)
       return new GogWrapperRecipe(definition, base, gog)
    }
 }

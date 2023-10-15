@@ -1,9 +1,7 @@
-import RecipeParser, { Recipe } from '../index.js'
+import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
 import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import RecipeLoader from '../../../loader/recipe.js'
 import { ResultInput } from '../../../common/result.js'
-import { Logger } from '../../../logger.js'
 
 export type NbtWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -37,13 +35,8 @@ export class NbtWrapperRecipe extends Recipe<NbtWrapperRecipeDefinition> {
 }
 
 export default class NbtWrapperRecipeParser extends RecipeParser<NbtWrapperRecipeDefinition, NbtWrapperRecipe> {
-   constructor(private readonly loader: RecipeLoader) {
-      super()
-   }
-
-   create(definition: NbtWrapperRecipeDefinition, logger: Logger): NbtWrapperRecipe | null {
-      const recipe = this.loader.parse(logger, definition.recipe)
-      if (!recipe) return null
+   create(definition: NbtWrapperRecipeDefinition, parser: InlineRecipeParser): NbtWrapperRecipe {
+      const recipe = parser(definition.recipe)
       return new NbtWrapperRecipe(definition, recipe)
    }
 }

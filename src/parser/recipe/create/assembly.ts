@@ -52,7 +52,7 @@ export class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
 }
 
 export default class AssemblyRecipeParser extends RecipeParser<AssemblyRecipeDefinition, AssemblyRecipe> {
-   create(definition: AssemblyRecipeDefinition): AssemblyRecipe | null {
+   create(definition: AssemblyRecipeDefinition): AssemblyRecipe {
       return new AssemblyRecipe(definition)
    }
 }

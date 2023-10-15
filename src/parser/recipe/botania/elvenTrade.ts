@@ -35,7 +35,7 @@ export class ElvenTradeRecipe extends Recipe<ElvenTradeRecipeDefinition> {
 }
 
 export default class ElvenTradeRecipeParser extends RecipeParser<ElvenTradeRecipeDefinition, ElvenTradeRecipe> {
-   create(definition: ElvenTradeRecipeDefinition): ElvenTradeRecipe | null {
+   create(definition: ElvenTradeRecipeDefinition): ElvenTradeRecipe {
       return new ElvenTradeRecipe(definition)
    }
 }

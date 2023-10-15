@@ -42,7 +42,7 @@ export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
 }
 
 export default class ManaInfusionRecipeParser extends RecipeParser<ManaInfusionRecipeDefinition, ManaInfusionRecipe> {
-   create(definition: ManaInfusionRecipeDefinition): ManaInfusionRecipe | null {
+   create(definition: ManaInfusionRecipeDefinition): ManaInfusionRecipe {
       return new ManaInfusionRecipe(definition)
    }
 }

@@ -35,7 +35,7 @@ export class HammeringRecipe extends Recipe<HammeringRecipeDefinition> {
 }
 
 export default class HammeringRecipeParser extends RecipeParser<HammeringRecipeDefinition, HammeringRecipe> {
-   create(definition: HammeringRecipeDefinition): HammeringRecipe | null {
+   create(definition: HammeringRecipeDefinition): HammeringRecipe {
       return new HammeringRecipe(definition)
    }
 }

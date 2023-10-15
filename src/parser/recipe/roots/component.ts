@@ -34,7 +34,7 @@ export default class RootComponentRecipeParser extends RecipeParser<
    RootComponentRecipeDefinition,
    RootComponentRecipe
 > {
-   create(definition: RootComponentRecipeDefinition): RootComponentRecipe | null {
+   create(definition: RootComponentRecipeDefinition): RootComponentRecipe {
       return new RootComponentRecipe(definition)
    }
 }

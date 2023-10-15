@@ -31,7 +31,7 @@ export class SpaceStationRecipe extends Recipe<SpaceStationRecipeDefinition> {
 }
 
 export default class SpaceStationRecipeParser extends RecipeParser<SpaceStationRecipeDefinition, SpaceStationRecipe> {
-   create(definition: SpaceStationRecipeDefinition): SpaceStationRecipe | null {
+   create(definition: SpaceStationRecipeDefinition): SpaceStationRecipe {
       return new SpaceStationRecipe(definition)
    }
 }

@@ -40,7 +40,7 @@ export class CookingRecipe extends Recipe<CookingRecipeDefinition> {
 }
 
 export default class CookingRecipeParser extends RecipeParser<CookingRecipeDefinition, CookingRecipe> {
-   create(definition: CookingRecipeDefinition): CookingRecipe | null {
+   create(definition: CookingRecipeDefinition): CookingRecipe {
       return new CookingRecipe(definition)
    }
 }

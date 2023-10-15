@@ -38,7 +38,7 @@ export default class CreateProcessingRecipeParser extends RecipeParser<
    CreateProcessingRecipeDefinition,
    CreateProcessingRecipe
 > {
-   create(definition: CreateProcessingRecipeDefinition): CreateProcessingRecipe | null {
+   create(definition: CreateProcessingRecipeDefinition): CreateProcessingRecipe {
       return new CreateProcessingRecipe(definition)
    }
 }

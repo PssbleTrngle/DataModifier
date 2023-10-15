@@ -35,7 +35,7 @@ export class InputOutputRecipe extends Recipe<InputOutputRecipeDefinition> {
 }
 
 export default class InputOutputRecipeParser extends RecipeParser<InputOutputRecipeDefinition, InputOutputRecipe> {
-   create(definition: InputOutputRecipeDefinition): InputOutputRecipe | null {
+   create(definition: InputOutputRecipeDefinition): InputOutputRecipe {
       return new InputOutputRecipe(definition)
    }
 }

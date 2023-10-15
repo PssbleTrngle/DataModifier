@@ -38,7 +38,7 @@ export default class ThermalCatalystRecipeParser extends RecipeParser<
    ThermalCatalystRecipeDefinition,
    ThermalCatalystRecipe
 > {
-   create(definition: ThermalCatalystRecipeDefinition): ThermalCatalystRecipe | null {
+   create(definition: ThermalCatalystRecipeDefinition): ThermalCatalystRecipe {
       return new ThermalCatalystRecipe(definition)
    }
 }

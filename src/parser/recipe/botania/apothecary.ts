@@ -36,7 +36,7 @@ export class ApothecaryRecipe extends Recipe<ApothecaryRecipeDefinition> {
 }
 
 export default class ApothecaryRecipeParser extends RecipeParser<ApothecaryRecipeDefinition, ApothecaryRecipe> {
-   create(definition: ApothecaryRecipeDefinition): ApothecaryRecipe | null {
+   create(definition: ApothecaryRecipeDefinition): ApothecaryRecipe {
       return new ApothecaryRecipe(definition)
    }
 }

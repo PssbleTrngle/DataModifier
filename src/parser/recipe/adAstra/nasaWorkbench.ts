@@ -38,7 +38,7 @@ export default class NasaWorkbenchRecipeParser extends RecipeParser<
    NasaWorkbenchRecipeDefinition,
    NasaWorkbenchRecipe
 > {
-   create(definition: NasaWorkbenchRecipeDefinition): NasaWorkbenchRecipe | null {
+   create(definition: NasaWorkbenchRecipeDefinition): NasaWorkbenchRecipe {
       return new NasaWorkbenchRecipe(definition)
    }
 }

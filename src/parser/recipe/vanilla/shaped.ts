@@ -36,7 +36,7 @@ export class ShapedRecipe extends Recipe<ShapedRecipeDefinition> {
 }
 
 export default class ShapedParser extends RecipeParser<ShapedRecipeDefinition, ShapedRecipe> {
-   create(definition: ShapedRecipeDefinition): ShapedRecipe | null {
+   create(definition: ShapedRecipeDefinition): ShapedRecipe {
       return new ShapedRecipe(definition)
    }
 }

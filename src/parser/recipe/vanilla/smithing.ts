@@ -36,7 +36,7 @@ export class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
 }
 
 export default class SmithingParser extends RecipeParser<SmithingRecipeDefinition, SmithingRecipe> {
-   create(definition: SmithingRecipeDefinition): SmithingRecipe | null {
+   create(definition: SmithingRecipeDefinition): SmithingRecipe {
       return new SmithingRecipe(definition)
    }
 }

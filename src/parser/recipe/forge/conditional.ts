@@ -1,9 +1,7 @@
-import RecipeParser, { Recipe } from '../index.js'
+import RecipeParser, { InlineRecipeParser, Recipe } from '../index.js'
 import { IngredientInput, Predicate } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
-import RecipeLoader from '../../../loader/recipe.js'
-import { Logger } from '../../../logger.js'
 
 type WithConditions<T> = {
    conditions: unknown[]
@@ -56,18 +54,12 @@ export default class ForgeConditionalRecipeParser extends RecipeParser<
    ForgeConditionalRecipeDefinition,
    ForgeConditionalRecipe
 > {
-   constructor(private readonly loader: RecipeLoader) {
-      super()
-   }
-
-   create(definition: ForgeConditionalRecipeDefinition, logger: Logger): ForgeConditionalRecipe | null {
-      const recipes = definition.recipes.map<WithConditions<Recipe | null>>(it => ({
+   create(definition: ForgeConditionalRecipeDefinition, parser: InlineRecipeParser): ForgeConditionalRecipe {
+      const recipes = definition.recipes.map<WithConditions<Recipe>>(it => ({
          conditions: it.conditions,
-         recipe: this.loader.parse(logger, it.recipe),
+         recipe: parser(it.recipe),
       }))
 
-      if (recipes.some(it => !it.recipe)) return null
-
-      return new ForgeConditionalRecipe(definition, recipes as WithConditions<Recipe>[])
+      return new ForgeConditionalRecipe(definition, recipes)
    }
 }

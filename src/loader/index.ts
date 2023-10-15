@@ -4,6 +4,7 @@ import { fromJson } from '../textHelper.js'
 import Registry from '../common/registry.js'
 import { RegistryProvider } from '../emit/index.js'
 import { Logger } from '../logger.js'
+import { tryCatching } from '../error'
 
 export type AcceptorWithLoader = (logger: Logger, ...paramenters: Parameters<Acceptor>) => ReturnType<Acceptor>
 
@@ -42,7 +43,7 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
       const json = this.tryParseJson(logger.group(path), content.toString())
       if (!json) return false
 
-      const parsed = this.parse(logger, json, id)
+      const parsed = tryCatching(logger, () => this.parse(logger, json, id))
       if (!parsed) return false
 
       this.registry.set(id, parsed)

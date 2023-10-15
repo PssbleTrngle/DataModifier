@@ -53,7 +53,7 @@ export default class TreeExtractionRecipeParser extends RecipeParser<
    TreeExtractionRecipeDefinition,
    TreeExtractionRecipe
 > {
-   create(definition: TreeExtractionRecipeDefinition): TreeExtractionRecipe | null {
+   create(definition: TreeExtractionRecipeDefinition): TreeExtractionRecipe {
       return new TreeExtractionRecipe(definition)
    }
 }

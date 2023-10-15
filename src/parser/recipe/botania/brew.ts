@@ -31,7 +31,7 @@ export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
 }
 
 export default class BrewRecipeParser extends RecipeParser<BrewRecipeDefinition, BrewRecipe> {
-   create(definition: BrewRecipeDefinition): BrewRecipe | null {
+   create(definition: BrewRecipeDefinition): BrewRecipe {
       return new BrewRecipe(definition)
    }
 }
