@@ -36,7 +36,7 @@ export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
 
          const path = this.pathProvider(id)
 
-         const rules = this.rules.filter(it => it.matches(id, recipe, this.logger))
+         const rules = this.rules.filter(it => it.matches(id, recipe, this.logger.group(path)))
          if (rules.length === 0) return
 
          const modified = rules.reduce<TEntry | null>((previous, rule) => previous && rule.modify(previous), recipe)

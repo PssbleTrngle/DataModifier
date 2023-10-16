@@ -24,7 +24,17 @@ export {
    NbtWrapperRecipe,
    default as NbtWrapperRecipeParser,
 } from './recipe/botania/nbtWrapper.js'
-export { OrechidRecipeDefinition, OrechidRecipe, default as OrechidRecipeParser } from './recipe/botania/orechid.js'
+export {
+   OrechidRecipeDefinition,
+   OrechidRecipe,
+   default as OrechidRecipeParser,
+   createBlockInput,
+   createBlockOutput,
+   fromBlockInput,
+   fromBlockOutput,
+   BlockInput,
+   BlockOutput,
+} from './recipe/botania/orechid.js'
 export {
    PureDaisyRecipeDefinition,
    PureDaisyRecipe,

@@ -26,7 +26,7 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
          return fromJson(content)
       } catch (error) {
          if (error instanceof SyntaxError) {
-            logger.warn(`unable to parse json: ${error.message}`, content)
+            logger.warn(`unable to parse json: ${error.message}`)
             return null
          }
          throw error
@@ -40,10 +40,12 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
       const { namespace, rest } = match.groups
       const id: Id = { namespace, path: rest }
 
-      const json = this.tryParseJson(logger.group(path), content.toString())
+      const grouped = logger.group(path)
+
+      const json = this.tryParseJson(grouped, content.toString())
       if (!json) return false
 
-      const parsed = tryCatching(logger, () => this.parse(logger, json, id))
+      const parsed = tryCatching(grouped, () => this.parse(grouped, json, id))
       if (!parsed) return false
 
       this.registry.set(id, parsed)

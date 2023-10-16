@@ -18,7 +18,7 @@ export function wrapLogMethods(logMethods: LogMethods): Logger {
 }
 
 function grouped(prefix: string | undefined, message: Logable) {
-   if (prefix) return `${prefix}:   ${message}`
+   if (prefix) return `${prefix} -> ${message}`
    return `   ${message}`
 }
 

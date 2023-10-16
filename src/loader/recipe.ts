@@ -36,6 +36,7 @@ import RootRitualRecipeParser from '../parser/recipe/roots/ritual.js'
 import { ShapelessRecipeParser } from '../parser/index.js'
 import { Logger } from '../logger.js'
 import { IllegalShapeError } from '../error.js'
+import IgnoredRecipe from '../parser/recipe/ignored.js'
 
 export interface RecipeLoaderAccessor {
    unknownRecipeTypes(): RecipeDefinition[]
@@ -219,15 +220,11 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
          return null
       }
 
-      try {
-         return parser.create(definition, it => {
-            const parsed = this.parse(logger, it)
-            if (parsed) return parsed
-            throw new IllegalShapeError('unable to parse sub-recipe', it)
-         }) as TRecipe
-      } catch (error) {
-         throw new IllegalShapeError(`Failed to parse recipe with type '${definition.type}'`, error)
-      }
+      return parser.create(definition, it => {
+         const parsed = this.parse(logger, it)
+         if (parsed) return parsed
+         return new IgnoredRecipe(it)
+      }) as TRecipe
    }
 
    registerParser(recipeType: string, parser: RecipeParser<RecipeDefinition, Recipe>) {

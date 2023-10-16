@@ -1,6 +1,6 @@
 import Rule, { Modifier } from './index.js'
 import { extendLootEntry, LootEntryBase, LootTable } from '../schema/loot.js'
-import { encodeId, Id } from '../common/id.js'
+import { Id } from '../common/id.js'
 import { Logger } from '../logger.js'
 import { IngredientInput, Predicate } from '../common/ingredient.js'
 
@@ -36,7 +36,7 @@ export default class LootTableRule extends Rule<LootTable> {
    }
 
    matches(id: Id, table: LootTable, logger: Logger): boolean {
-      const prefixed = logger.group(encodeId(id))
+      const prefixed = logger
       return this.idTests.every(test => test(id, prefixed)) && this.outputTests.every(test => hasOutput(test, table))
    }
 }

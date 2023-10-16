@@ -52,9 +52,9 @@ describe('tests regarding the logger', () => {
       logger.warn('Some Warning')
       logger.error('An Error Occured', error)
 
-      expect(console.log).toHaveBeenCalledWith(chalk.green('prefix:   Info Test'))
-      expect(console.warn).toHaveBeenCalledWith(chalk.yellow('prefix:   Some Warning'))
-      expect(console.error).toHaveBeenCalledWith(chalk.red('prefix:   An Error Occured'), error)
+      expect(console.log).toHaveBeenCalledWith(chalk.green('prefix -> Info Test'))
+      expect(console.warn).toHaveBeenCalledWith(chalk.yellow('prefix -> Some Warning'))
+      expect(console.error).toHaveBeenCalledWith(chalk.red('prefix -> An Error Occured'), error)
    })
 })
 
