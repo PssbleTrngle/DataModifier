@@ -3,7 +3,7 @@ import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
 
-const { logger, loader } = setupLoader()
+const { logger, loader } = setupLoader({ include: ['data/**/*.json'] })
 
 it('has no unknown recipe loaders', () => {
    expect(loader.recipeLoader.unknownRecipeTypes()).toMatchObject([])

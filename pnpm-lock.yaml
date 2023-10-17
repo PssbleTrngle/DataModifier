@@ -6,10 +6,10 @@ settings:
 
 dependencies:
   '@pssbletrngle/pack-resolver':
-    specifier: 1.2.2
-    version: 1.2.2
+    specifier: ^1.2.3
+    version: 1.2.3
   '@pssbletrngle/resource-merger':
-    specifier: 1.2.4
+    specifier: ^1.2.4
     version: 1.2.4
   '@types/minimatch':
     specifier: ^3.0.5
@@ -771,8 +771,8 @@ packages:
       typescript: 4.8.2
     dev: false
 
-  /@pssbletrngle/pack-resolver@1.2.2:
-    resolution: {integrity: sha512-uk+UNRHONChS9OFy2G4KJmDxffGQF6loFx6saZlF8boVlEOZYf06rT+d1IxTdPxt6pCd8nThrYzjWgYzM637pw==, tarball: https://npm.pkg.github.com/download/@pssbletrngle/pack-resolver/1.2.2/dad6928004f006cb15912c82e059e10742374100}
+  /@pssbletrngle/pack-resolver@1.2.3:
+    resolution: {integrity: sha512-D8xDdSP3GgHqnRrE/H+1jwRdENrBWkRcwhRS1L8v8n1BDBMVuXOZFf7Qhz1Mv1nPT41bWzpu7dXfNrVQpVGwJQ==, tarball: https://npm.pkg.github.com/download/@pssbletrngle/pack-resolver/1.2.3/035148abc748c82aed68c5427eb39d1e4d764d4e}
     dependencies:
       fs-extra: 10.1.0
       lodash: 4.17.21

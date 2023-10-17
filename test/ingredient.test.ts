@@ -4,7 +4,7 @@ import { createResult } from '../src/common/result.js'
 import { tryCatching } from '../src/error.js'
 import setupLoader from './shared/loaderSetup.js'
 
-const { logger, loader } = setupLoader()
+const { logger, loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })
 
 describe('tests regarding ingredient/result shapes', () => {
    it('warns about unknown ingredient shape', async () => {
