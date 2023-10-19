@@ -3,15 +3,25 @@ import { IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
+export type ToolInput = Readonly<{
+   type: 'farmersdelight:tool_action'
+   action: 'string'
+}>
+
 export type CuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: IngredientInput[]
       result: ResultInput[]
-      tool: IngredientInput
+      tool: IngredientInput | ToolInput
    }>
+
+function isToolInput<T>(input: T | ToolInput): input is ToolInput {
+   return !!input && typeof input === 'object' && 'type' in input && input.type === 'farmersdelight:tool_action'
+}
 
 export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
    getIngredients(): IngredientInput[] {
+      if (isToolInput(this.definition.tool)) return this.definition.ingredients
       return [...this.definition.ingredients, this.definition.tool]
    }
 
@@ -23,7 +33,7 @@ export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
       return new CuttingRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
-         tool: replace(this.definition.tool),
+         tool: isToolInput(this.definition.tool) ? this.definition.tool : replace(this.definition.tool),
       })
    }
 
