@@ -39,4 +39,8 @@ export default class LootTableRule extends Rule<LootTable> {
       const prefixed = logger
       return this.idTests.every(test => test(id, prefixed)) && this.outputTests.every(test => hasOutput(test, table))
    }
+
+   printWarning(logger: Logger) {
+      logger.error('Could not find any loot table matching', this)
+   }
 }

@@ -8,6 +8,7 @@ export type CreateProcessingRecipeDefinition = RecipeDefinition &
       ingredients: IngredientInput[]
       results: ResultInput[]
       heatRequirement?: string
+      processingTime?: number
    }>
 
 export class CreateProcessingRecipe extends Recipe<CreateProcessingRecipeDefinition> {

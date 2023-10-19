@@ -39,7 +39,6 @@ describe('tests regarding ingredient/result shapes', () => {
       await loader.emit(acceptor)
 
       expect(logger.warn).not.toHaveBeenCalled()
-      expect(logger.error).not.toHaveBeenCalled()
    })
 
    it('does not encounter any unknown result shapes', async () => {
@@ -53,7 +52,6 @@ describe('tests regarding ingredient/result shapes', () => {
       await loader.emit(acceptor)
 
       expect(logger.warn).not.toHaveBeenCalled()
-      expect(logger.error).not.toHaveBeenCalled()
    })
 })
 

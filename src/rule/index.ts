@@ -8,6 +8,8 @@ export default abstract class Rule<T> {
 
    abstract matches(id: Id, recipe: T, logger: Logger): boolean
 
+   abstract printWarning(logger: Logger): void
+
    modify(value: T) {
       return this.modifier(value)
    }

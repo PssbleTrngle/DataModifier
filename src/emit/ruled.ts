@@ -31,6 +31,7 @@ export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
    }
 
    async emit(acceptor: Acceptor) {
+      const missingRules = new Set<TRule>(this.rules)
       this.provider.forEach((recipe, id) => {
          if (this.shouldSkip(id)) return
 
@@ -39,9 +40,15 @@ export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
          const rules = this.rules.filter(it => it.matches(id, recipe, this.logger.group(path)))
          if (rules.length === 0) return
 
+         rules.forEach(it => missingRules.delete(it))
+
          const modified = rules.reduce<TEntry | null>((previous, rule) => previous && rule.modify(previous), recipe)
 
          acceptor(path, toJson(modified ?? this.emptyValue))
+      })
+
+      missingRules.forEach(rule => {
+         rule.printWarning(this.logger)
       })
    }
 }

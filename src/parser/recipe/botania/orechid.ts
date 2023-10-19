@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { BlockTag, createIngredient, IngredientInput } from '../../../common/ingredient.js'
+import { BlockIngredient, createIngredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
 import { Block, createResult, ResultInput } from '../../../common/result.js'
@@ -58,7 +58,7 @@ export function createBlockOutput(input: ResultInput): BlockOutput | null {
    return null
 }
 
-export function fromBlockInput(input: BlockInput): Block | BlockTag {
+export function fromBlockInput(input: BlockInput): BlockIngredient {
    switch (input.type) {
       case 'block':
          return {

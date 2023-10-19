@@ -28,7 +28,11 @@ export const BlockTagSchema = zod.object({
 
 export type BlockTag = zod.infer<typeof BlockTagSchema>
 
-export type Ingredient = ItemStack | ItemTag | FluidStack | FluidTag | Block | BlockTag | IngredientInput[]
+export type ItemIngredient = ItemStack | ItemTag
+export type FluidIngredient = FluidStack | FluidTag
+export type BlockIngredient = Block | BlockTag
+
+export type Ingredient = ItemIngredient | FluidIngredient | BlockIngredient | IngredientInput[]
 export type IngredientInput = Ingredient | string
 
 export function createIngredient(input: unknown): Ingredient {

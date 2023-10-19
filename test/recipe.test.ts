@@ -1,7 +1,8 @@
-import { EMPTY_RECIPE } from '../src/emit/recipe.js'
+import { EMPTY_RECIPE, RecipeTest } from '../src/emit/recipe.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
+import { NormalizedId } from '../src/index.js'
 
 const { logger, loader } = setupLoader({ include: ['data/**/*.json'] })
 
@@ -82,7 +83,7 @@ describe('recipe removal', () => {
    it('removes recipes with id filter', async () => {
       const acceptor = createTestAcceptor()
 
-      loader.recipes.removeRecipe({
+      loader.recipes.remove({
          id: /minecraft:.*piston/,
       })
 
@@ -97,7 +98,7 @@ describe('recipe removal', () => {
    it('removes recipes with type filter', async () => {
       const acceptor = createTestAcceptor()
 
-      loader.recipes.removeRecipe({
+      loader.recipes.remove({
          type: 'minecraft:smelting',
       })
 
@@ -109,7 +110,7 @@ describe('recipe removal', () => {
    it('removes recipes with result filter', async () => {
       const acceptor = createTestAcceptor()
 
-      loader.recipes.removeRecipe({
+      loader.recipes.remove({
          output: 'minecraft:cooked_beef',
       })
 
@@ -144,9 +145,40 @@ it('creates custom recipes', async () => {
       pattern: ['A ', ' B'],
    }
 
-   loader.recipes.addRecipe('example:custom', recipe)
+   loader.recipes.add('example:custom', recipe)
 
    await loader.emit(acceptor)
 
    expect(acceptor.jsonAt('data/example/recipe/custom.json')).toMatchObject(recipe)
+})
+
+it('warns about duplicate custom recipe IDs', () => {
+   const id: NormalizedId = 'example:recipe'
+
+   loader.recipes.add(id, { type: 'example:something' })
+   loader.recipes.add(id, { type: 'example:something_else' })
+
+   expect(logger.error).toHaveBeenCalledWith(`Overwriting custom recipe with ID ${id}`)
+})
+
+it('warns about missing recipe removal matches', async () => {
+   const filter: RecipeTest = {
+      type: 'example:not_existing',
+   }
+
+   loader.recipes.remove(filter)
+
+   await loader.emit(createTestAcceptor())
+
+   expect(logger.error).toHaveBeenCalledWith('Could not find any recipes matching', filter)
+})
+
+it('warns about missing recipe replacement matches', async () => {
+   const from = 'minecraft:nothing'
+   const to = { item: 'minecraft:dirt' }
+   loader.recipes.replaceResult(from, to)
+
+   await loader.emit(createTestAcceptor())
+
+   expect(logger.error).toHaveBeenCalledWith('Could not find any recipes matching', 'replace result', from, 'with', to)
 })

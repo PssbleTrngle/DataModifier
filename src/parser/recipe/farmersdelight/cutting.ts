@@ -7,12 +7,12 @@ export type CuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: IngredientInput[]
       result: ResultInput[]
-      tool: unknown
+      tool: IngredientInput
    }>
 
 export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
    getIngredients(): IngredientInput[] {
-      return this.definition.ingredients
+      return [...this.definition.ingredients, this.definition.tool]
    }
 
    getResults(): ResultInput[] {
@@ -23,6 +23,7 @@ export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
       return new CuttingRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
+         tool: replace(this.definition.tool),
       })
    }
 

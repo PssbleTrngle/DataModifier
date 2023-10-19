@@ -15,6 +15,9 @@ export {
    CommonTest,
    BlockTag,
    FluidTag,
+   ItemIngredient,
+   FluidIngredient,
+   BlockIngredient,
    createIngredient,
 } from './common/ingredient.js'
 export { TagInput, Id, IdInput, NormalizedId, encodeId, createId } from './common/id.js'

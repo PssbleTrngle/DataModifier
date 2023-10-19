@@ -1,9 +1,8 @@
 import { extendLootEntry, LootEntry, LootEntryBase, LootEntrySchema, LootTable } from '../schema/loot.js'
 import { IllegalShapeError } from '../error.js'
-import { IngredientInput, ItemTag, Predicate } from '../common/ingredient.js'
-import { ItemStack } from '../common/result.js'
+import { IngredientInput, ItemIngredient, Predicate } from '../common/ingredient.js'
 
-export type LootItemInput = ItemStack | ItemTag | LootEntry
+export type LootItemInput = ItemIngredient | LootEntry
 
 export function createLootEntry(input: LootItemInput): LootEntry {
    if (input && typeof input === 'object') {
