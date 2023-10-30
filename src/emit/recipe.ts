@@ -76,7 +76,7 @@ export default class RecipeEmitter implements RecipeRules {
    ) {}
 
    private recipePath(id: Id) {
-      return `data/${id.namespace}/recipe/${id.path}.json`
+      return `data/${id.namespace}/recipes/${id.path}.json`
    }
 
    async emit(acceptor: Acceptor) {

@@ -25,8 +25,8 @@ describe('recipe ingredient replacement', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot('modified piston recipe')
-      expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toMatchSnapshot('modified compass recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipes/piston.json')).toMatchSnapshot('modified piston recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipes/compass.json')).toMatchSnapshot('modified compass recipe')
 
       expect(acceptor.paths()).toMatchSnapshot('recipes including redstone as an ingredient')
    })
@@ -48,9 +48,9 @@ describe('recipe ingredient replacement', () => {
 
       expect(acceptor.paths().length).toBe(2)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchSnapshot('modified piston recipe')
-      expect(acceptor.jsonAt('data/minecraft/recipe/note_block.json')).toMatchSnapshot('modified note_block recipe')
-      expect(acceptor.jsonAt('data/minecraft/recipe/compass.json')).toBeNull()
+      expect(acceptor.jsonAt('data/minecraft/recipes/piston.json')).toMatchSnapshot('modified piston recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipes/note_block.json')).toMatchSnapshot('modified note_block recipe')
+      expect(acceptor.jsonAt('data/minecraft/recipes/compass.json')).toBeNull()
    })
 
    it('replaces ingredients in create recipes', async () => {
@@ -64,16 +64,16 @@ describe('recipe ingredient replacement', () => {
 
       expect(acceptor.paths().length).toBe(4)
 
-      expect(acceptor.jsonAt('data/create/recipe/crafting/materials/raw_zinc_block.json')).toMatchSnapshot(
+      expect(acceptor.jsonAt('data/create/recipes/crafting/materials/raw_zinc_block.json')).toMatchSnapshot(
          'modified create:raw_zinc_block recipe'
       )
-      expect(acceptor.jsonAt('data/create/recipe/crushing/raw_zinc.json')).toMatchSnapshot(
+      expect(acceptor.jsonAt('data/create/recipes/crushing/raw_zinc.json')).toMatchSnapshot(
          'modified create:raw_zinc recipe'
       )
-      expect(acceptor.jsonAt('data/create/recipe/blasting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
+      expect(acceptor.jsonAt('data/create/recipes/blasting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
          'modified create:zinc_ingot_from_raw_ore recipe'
       )
-      expect(acceptor.jsonAt('data/create/recipe/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
+      expect(acceptor.jsonAt('data/create/recipes/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
          'modified create:zinc_ingot_from_raw_ore recipe'
       )
    })
@@ -91,8 +91,8 @@ describe('recipe removal', () => {
 
       expect(acceptor.paths().length).toBe(2)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/piston.json')).toMatchObject(EMPTY_RECIPE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/sticky_piston.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipes/piston.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipes/sticky_piston.json')).toMatchObject(EMPTY_RECIPE)
    })
 
    it('removes recipes with type filter', async () => {
@@ -118,9 +118,9 @@ describe('recipe removal', () => {
 
       expect(acceptor.paths().length).toBe(3)
 
-      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef.json')).toMatchObject(EMPTY_RECIPE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef_from_smoking.json')).toMatchObject(EMPTY_RECIPE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/cooked_beef_from_campfire_cooking.json')).toMatchObject(
+      expect(acceptor.jsonAt('data/minecraft/recipes/cooked_beef.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipes/cooked_beef_from_smoking.json')).toMatchObject(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/minecraft/recipes/cooked_beef_from_campfire_cooking.json')).toMatchObject(
          EMPTY_RECIPE
       )
    })
@@ -149,7 +149,7 @@ it('creates custom recipes', async () => {
 
    await loader.emit(acceptor)
 
-   expect(acceptor.jsonAt('data/example/recipe/custom.json')).toMatchObject(recipe)
+   expect(acceptor.jsonAt('data/example/recipes/custom.json')).toMatchObject(recipe)
 })
 
 it('warns about duplicate custom recipe IDs', () => {
