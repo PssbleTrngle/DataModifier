@@ -1,12 +1,12 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type SmeltingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: IngredientInput
-      result: ResultInput
+      ingredient: Ingredient
+      result: Result
       experience?: number
    }>
 
@@ -19,14 +19,14 @@ export class SmeltingRecipe extends Recipe<SmeltingRecipeDefinition> {
       return [this.definition.result]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
          ingredient: replace(this.definition.ingredient),
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new SmeltingRecipe({
          ...this.definition,
          result: replace(this.definition.result),

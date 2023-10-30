@@ -1,11 +1,11 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
 export type BrewRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
+      ingredients: Ingredient[]
       brew: string
    }>
 
@@ -18,7 +18,7 @@ export class BrewRecipe extends Recipe<BrewRecipeDefinition> {
       return []
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new BrewRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),

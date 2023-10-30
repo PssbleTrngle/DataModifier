@@ -119,7 +119,7 @@ export default class TagsLoader implements TagRegistryHolder {
    }
 
    private parsePath(input: string) {
-      const match = /data\/(?<namespace>[\w-]+)\/tags\/(?<rest>[\w-/]+).json/.exec(input)
+      const match = /data[\\/](?<namespace>[\w-]+)[\\/]tags[\\/](?<rest>[\w-\\/]+).json/.exec(input)
       if (!match?.groups) return null
 
       const { namespace, rest } = match.groups

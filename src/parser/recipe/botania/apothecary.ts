@@ -1,13 +1,13 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type ApothecaryRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
-      output: ResultInput
-      reagent: IngredientInput
+      ingredients: Ingredient[]
+      output: Result
+      reagent: Ingredient
    }>
 
 export class ApothecaryRecipe extends Recipe<ApothecaryRecipeDefinition> {
@@ -19,7 +19,7 @@ export class ApothecaryRecipe extends Recipe<ApothecaryRecipeDefinition> {
       return [this.definition.output]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ApothecaryRecipe({
          ...this.definition,
          reagent: replace(this.definition.reagent),
@@ -27,7 +27,7 @@ export class ApothecaryRecipe extends Recipe<ApothecaryRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new ApothecaryRecipe({
          ...this.definition,
          output: replace(this.definition.output),

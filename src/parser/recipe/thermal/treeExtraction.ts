@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 import { IllegalShapeError } from '../../../error.js'
@@ -13,7 +13,7 @@ export type TreeExtractionRecipeDefinition = RecipeDefinition &
       result: ResultInput
    }>
 
-function blockToIngredient(input: ExtractionBlockInput): IngredientInput {
+function blockToIngredient(input: ExtractionBlockInput): Ingredient {
    if (typeof input !== 'string') throw new IllegalShapeError('unknown block input shape', input)
    return {
       block: input,
@@ -45,7 +45,7 @@ export class TreeExtractionRecipe extends Recipe<TreeExtractionRecipeDefinition>
       return []
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new TreeExtractionRecipe({
          ...this.definition,
          leaves: ingredientToBlock(replace(this.leaves)),

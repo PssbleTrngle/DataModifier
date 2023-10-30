@@ -37,6 +37,9 @@ import { ShapelessRecipeParser } from '../parser/index.js'
 import { Logger } from '../logger.js'
 import { IllegalShapeError } from '../error.js'
 import IgnoredRecipe from '../parser/recipe/ignored.js'
+import { createResult } from '../common/result.js'
+import { createIngredient } from '../common/ingredient.js'
+import FluidConversionRecipeParser from '../parser/recipe/adAstra/conversion.js'
 
 export interface RecipeLoaderAccessor {
    unknownRecipeTypes(): RecipeDefinition[]
@@ -133,9 +136,9 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       this.registerParser('sullysmod:grindstone_polishing', new SmeltingParser())
 
       this.registerParser('ad_astra:hammering', new HammeringRecipeParser())
-      this.registerParser('ad_astra:cryo_fuel_conversion', new InputOutputRecipeParser())
-      this.registerParser('ad_astra:fuel_conversion', new InputOutputRecipeParser())
-      this.registerParser('ad_astra:oxygen_conversion', new InputOutputRecipeParser())
+      this.registerParser('ad_astra:cryo_fuel_conversion', new FluidConversionRecipeParser())
+      this.registerParser('ad_astra:fuel_conversion', new FluidConversionRecipeParser())
+      this.registerParser('ad_astra:oxygen_conversion', new FluidConversionRecipeParser())
       this.registerParser('ad_astra:compressing', new InputOutputRecipeParser())
       this.registerParser('ad_astra:crafting_shaped_space_suit', new ShapedParser())
       this.registerParser('ad_astra:nasa_workbench', new NasaWorkbenchRecipeParser())
@@ -220,11 +223,17 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
          return null
       }
 
-      return parser.create(definition, it => {
+      const parsed = parser.create(definition, it => {
          const parsed = this.parse(logger, it)
          if (parsed) return parsed
          return new IgnoredRecipe(it)
       }) as TRecipe
+
+      // Catch warnings early
+      parsed.getResults().forEach(createResult)
+      parsed.getIngredients().forEach(createIngredient)
+
+      return parsed
    }
 
    registerParser(recipeType: string, parser: RecipeParser<RecipeDefinition, Recipe>) {

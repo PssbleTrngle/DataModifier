@@ -1,13 +1,13 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
-import { createResult, ResultInput } from '../../../common/result.js'
+import { createResult, Result, ResultInput } from '../../../common/result.js'
 import { IllegalShapeError } from '../../../error.js'
 
 export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: IngredientInput
+      ingredient: Ingredient
       result: string
       count?: number
    }>
@@ -21,14 +21,14 @@ export class StonecuttingRecipe extends Recipe<StonecuttingRecipeDefinition> {
       return [{ item: encodeId(this.definition.result), count: this.definition.count }]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new StonecuttingRecipe({
          ...this.definition,
          ingredient: replace(this.definition.ingredient),
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       const result = createResult(replace)
       if (!('item' in result)) throw new IllegalShapeError('stonecutting does only support item results', result)
 

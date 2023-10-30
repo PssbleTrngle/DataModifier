@@ -1,12 +1,12 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
 export type ThermalFuelRecipeDefinition = RecipeDefinition &
    Readonly<{
       energy: number
-      ingredient: IngredientInput
+      ingredient: Ingredient
    }>
 
 export class ThermalFuelRecipe extends Recipe<ThermalFuelRecipeDefinition> {
@@ -18,7 +18,7 @@ export class ThermalFuelRecipe extends Recipe<ThermalFuelRecipeDefinition> {
       return []
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ThermalFuelRecipe({
          ...this.definition,
          ingredient: replace(this.definition.ingredient),

@@ -1,7 +1,7 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type ToolInput = Readonly<{
    type: 'farmersdelight:tool_action'
@@ -10,9 +10,9 @@ export type ToolInput = Readonly<{
 
 export type CuttingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
-      result: ResultInput[]
-      tool: IngredientInput | ToolInput
+      ingredients: Ingredient[]
+      result: Result[]
+      tool: Ingredient | ToolInput
    }>
 
 function isToolInput<T>(input: T | ToolInput): input is ToolInput {
@@ -29,7 +29,7 @@ export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
       return this.definition.result
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new CuttingRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
@@ -37,7 +37,7 @@ export class CuttingRecipe extends Recipe<CuttingRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new CuttingRecipe({
          ...this.definition,
          result: this.definition.result.map(replace),

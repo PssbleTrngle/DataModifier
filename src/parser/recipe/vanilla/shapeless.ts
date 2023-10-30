@@ -1,12 +1,12 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type ShapelessRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
-      result: ResultInput
+      ingredients: Ingredient[]
+      result: Result
    }>
 
 export class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
@@ -18,14 +18,14 @@ export class ShapelessRecipe extends Recipe<ShapelessRecipeDefinition> {
       return [this.definition.result]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ShapelessRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new ShapelessRecipe({
          ...this.definition,
          result: replace(this.definition.result),

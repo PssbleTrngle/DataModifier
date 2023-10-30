@@ -1,5 +1,6 @@
 import {
    CommonTest,
+   createIngredient,
    Ingredient,
    IngredientInput,
    IngredientTest,
@@ -10,10 +11,10 @@ import RecipeRule from '../rule/recipe.js'
 import { Logger } from '../logger.js'
 import TagsLoader from '../loader/tags.js'
 import { encodeId, Id, IdInput, NormalizedId } from '../common/id.js'
-import { createReplacer, Recipe } from '../parser/recipe/index.js'
+import { createReplacer, Recipe, Replacer } from '../parser/recipe/index.js'
 import { RecipeDefinition } from '../schema/recipe.js'
 import { resolveIDTest } from '../common/predicates.js'
-import { Result, ResultInput } from '../common/result.js'
+import { createResult, Result, ResultInput } from '../common/result.js'
 import RuledEmitter from './ruled.js'
 import { RegistryProvider } from './index.js'
 import CustomEmitter from './custom.js'
@@ -125,10 +126,12 @@ export default class RecipeEmitter implements RecipeRules {
       )
    }
 
-   replaceResult(test: IngredientTest, value: Result, additionalTest?: RecipeTest) {
+   replaceResult(test: IngredientTest, value: ResultInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest ?? {})
       const replacer = createReplacer<ResultInput>(predicate, value)
+      const replace: Replacer<Result> = it => createResult(replacer(it))
+
       this.ruled.addRule(
          new RecipeRule(
             ['replace result', test, 'with', value, additionalTest],
@@ -136,15 +139,17 @@ export default class RecipeEmitter implements RecipeRules {
             recipePredicates.type,
             recipePredicates.ingredient,
             [predicate, ...recipePredicates.result],
-            recipe => recipe.replaceResult(replacer)
+            recipe => recipe.replaceResult(replace)
          )
       )
    }
 
-   replaceIngredient(test: IngredientTest, value: Ingredient, additionalTest?: RecipeTest) {
+   replaceIngredient(test: IngredientTest, value: IngredientInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
       const recipePredicates = this.resolveRecipeTest(additionalTest ?? {})
       const replacer = createReplacer<IngredientInput>(predicate, value)
+      const replace: Replacer<Ingredient> = it => createIngredient(replacer(it))
+
       this.ruled.addRule(
          new RecipeRule(
             ['replace ingredient', test, 'with', value, additionalTest],
@@ -152,7 +157,7 @@ export default class RecipeEmitter implements RecipeRules {
             recipePredicates.type,
             [predicate, ...recipePredicates.ingredient],
             recipePredicates.result,
-            recipe => recipe.replaceIngredient(replacer)
+            recipe => recipe.replaceIngredient(replace)
          )
       )
    }

@@ -1,14 +1,14 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { CreateProcessingRecipe, CreateProcessingRecipeDefinition } from './processing.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type AssemblyRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: IngredientInput
-      transitionalItem: IngredientInput
-      results: ResultInput[]
+      ingredient: Ingredient
+      transitionalItem: Ingredient
+      results: Result[]
       loops?: number
       sequence: CreateProcessingRecipeDefinition[]
    }>
@@ -33,7 +33,7 @@ export class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       return [...this.definition.results, ...this.sequence.flatMap(it => it.getResults())]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
          ingredient: replace(this.definition.ingredient),
@@ -42,7 +42,7 @@ export class AssemblyRecipe extends Recipe<AssemblyRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new AssemblyRecipe({
          ...this.definition,
          results: this.definition.results.map(replace),

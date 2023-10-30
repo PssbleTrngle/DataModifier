@@ -1,27 +1,31 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
+import { WrappedIngredient } from './index.js'
 
 export type SpaceStationRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
+      ingredients: WrappedIngredient[]
       mana?: number
    }>
 
 export class SpaceStationRecipe extends Recipe<SpaceStationRecipeDefinition> {
    getIngredients(): IngredientInput[] {
-      return this.definition.ingredients
+      return this.definition.ingredients.map(it => it.ingredient)
    }
 
    getResults(): ResultInput[] {
       return []
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new SpaceStationRecipe({
          ...this.definition,
-         ingredients: this.definition.ingredients.map(replace),
+         ingredients: this.definition.ingredients.map(it => ({
+            ...it,
+            ingredient: replace(it.ingredient),
+         })),
       })
    }
 

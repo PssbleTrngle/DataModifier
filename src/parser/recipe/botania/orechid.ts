@@ -1,8 +1,8 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { BlockIngredient, createIngredient, IngredientInput } from '../../../common/ingredient.js'
+import { BlockIngredient, createIngredient, Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
-import { Block, createResult, ResultInput } from '../../../common/result.js'
+import { Block, createResult, Result, ResultInput } from '../../../common/result.js'
 import { IllegalShapeError } from '../../../error.js'
 
 export type BlockOutput =
@@ -89,18 +89,17 @@ export class OrechidRecipe extends Recipe<OrechidRecipeDefinition> {
       return [fromBlockInput(this.definition.output) as Block]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new OrechidRecipe({
          ...this.definition,
          input: createBlockInput(replace(fromBlockInput(this.definition.input))) ?? this.definition.input,
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new OrechidRecipe({
          ...this.definition,
-         output:
-            createBlockInput(replace(fromBlockInput(this.definition.output) as ResultInput)) ?? this.definition.output,
+         output: createBlockInput(replace(fromBlockInput(this.definition.output) as Block)) ?? this.definition.output,
       })
    }
 }

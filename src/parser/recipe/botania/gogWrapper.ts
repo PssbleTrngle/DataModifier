@@ -1,7 +1,7 @@
 import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type GogWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -31,7 +31,7 @@ export class GogWrapperRecipe extends Recipe<GogWrapperRecipeDefinition> {
       return [...this.base.getResults(), ...this.gog.getResults()]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new GogWrapperRecipe(
          this.definition,
          this.base.replaceIngredient(replace),
@@ -39,7 +39,7 @@ export class GogWrapperRecipe extends Recipe<GogWrapperRecipeDefinition> {
       )
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new GogWrapperRecipe(this.definition, this.base.replaceResult(replace), this.gog.replaceResult(replace))
    }
 }

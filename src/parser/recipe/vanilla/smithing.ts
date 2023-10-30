@@ -1,13 +1,13 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type SmithingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      base: IngredientInput
-      addition: IngredientInput
-      result: ResultInput
+      base: Ingredient
+      addition: Ingredient
+      result: Result
    }>
 
 export class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
@@ -19,7 +19,7 @@ export class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
       return [this.definition.result]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new SmithingRecipe({
          ...this.definition,
          base: replace(this.definition.base),
@@ -27,7 +27,7 @@ export class SmithingRecipe extends Recipe<SmithingRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new SmithingRecipe({
          ...this.definition,
          result: replace(this.definition.result),

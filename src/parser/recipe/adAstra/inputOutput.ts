@@ -1,13 +1,34 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
+
+export type IdResult = {
+   id: string
+   count?: number
+}
+
+export function fromIdResult({ id, ...result }: IdResult): Result {
+   return {
+      item: id,
+      ...result,
+   }
+}
+
+export function toIdResult(result: Result): IdResult | null {
+   if ('item' in result)
+      return {
+         id: result.item,
+         count: result.count,
+      }
+
+   return null
+}
 
 export type InputOutputRecipeDefinition = RecipeDefinition &
    Readonly<{
-      input: IngredientInput
-      output: ResultInput
-      mana?: number
+      input: Ingredient
+      output: IdResult
    }>
 
 export class InputOutputRecipe extends Recipe<InputOutputRecipeDefinition> {
@@ -16,20 +37,20 @@ export class InputOutputRecipe extends Recipe<InputOutputRecipeDefinition> {
    }
 
    getResults(): ResultInput[] {
-      return [this.definition.output]
+      return [this.definition.output].map(fromIdResult)
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new InputOutputRecipe({
          ...this.definition,
          input: replace(this.definition.input),
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new InputOutputRecipe({
          ...this.definition,
-         output: replace(this.definition.output),
+         output: toIdResult(replace(fromIdResult(this.definition.output))) ?? this.definition.output,
       })
    }
 }

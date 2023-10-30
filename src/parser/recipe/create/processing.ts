@@ -1,14 +1,15 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type CreateProcessingRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredients: IngredientInput[]
-      results: ResultInput[]
+      ingredients: Ingredient[]
+      results: Result[]
       heatRequirement?: string
       processingTime?: number
+      keepHeldItem?: boolean
    }>
 
 export class CreateProcessingRecipe extends Recipe<CreateProcessingRecipeDefinition> {
@@ -20,14 +21,14 @@ export class CreateProcessingRecipe extends Recipe<CreateProcessingRecipeDefinit
       return this.definition.results
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): CreateProcessingRecipe {
+   replaceIngredient(replace: Replacer<Ingredient>): CreateProcessingRecipe {
       return new CreateProcessingRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): CreateProcessingRecipe {
+   replaceResult(replace: Replacer<Result>): CreateProcessingRecipe {
       return new CreateProcessingRecipe({
          ...this.definition,
          results: this.definition.results.map(replace),

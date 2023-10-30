@@ -1,11 +1,11 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 
 export type ThermalCatalystRecipeDefinition = RecipeDefinition &
    Readonly<{
-      ingredient: IngredientInput
+      ingredient: Ingredient
       primary_mod?: number
       secondary_mod?: number
       energy_mod?: number
@@ -22,7 +22,7 @@ export class ThermalCatalystRecipe extends Recipe<ThermalCatalystRecipeDefinitio
       return []
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ThermalCatalystRecipe({
          ...this.definition,
          ingredient: replace(this.definition.ingredient),

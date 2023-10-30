@@ -1,4 +1,4 @@
-import { FluidTag, IngredientInput, ItemTagSchema } from '../../../common/ingredient.js'
+import { createIngredient, FluidTag, Ingredient, IngredientInput, ItemTagSchema } from '../../../common/ingredient.js'
 import zod from 'zod'
 import { ItemStackSchema } from '../../../common/result.js'
 import { omit } from 'lodash-es'
@@ -18,7 +18,7 @@ type ThermalItemList = Readonly<{
 
 export type ThermalIngredientInput = Exclude<IngredientInput, FluidTag> | ThermalFluidTag | ThermalItemList
 
-function fromThermalList(input: ThermalItemList): IngredientInput {
+function fromThermalList(input: ThermalItemList): Ingredient {
    return input.value.map(it => {
       if (it && typeof it === 'object') {
          if ('item' in it) return { ...ItemStackSchema.parse(it), count: input.count }
@@ -28,7 +28,7 @@ function fromThermalList(input: ThermalItemList): IngredientInput {
    })
 }
 
-export function fromThermalIngredient(input: ThermalIngredientInput): IngredientInput {
+export function fromThermalIngredient(input: ThermalIngredientInput): Ingredient {
    if (input && typeof input === 'object') {
       if ('value' in input) return fromThermalList(input)
 
@@ -37,15 +37,17 @@ export function fromThermalIngredient(input: ThermalIngredientInput): Ingredient
       }
    }
 
-   return input
+   return createIngredient(input)
 }
 
 export function toThermalIngredient(input: IngredientInput): ThermalIngredientInput {
-   if (input && typeof input === 'object') {
-      if ('fluidTag' in input) {
-         return <ThermalFluidTag>{ ...omit(input, 'fluidTag'), fluid_tag: input.fluidTag }
+   const resolved = createIngredient(input)
+
+   if (typeof resolved === 'object') {
+      if ('fluidTag' in resolved) {
+         return <ThermalFluidTag>{ ...omit(resolved, 'fluidTag'), fluid_tag: resolved.fluidTag }
       }
    }
 
-   return input
+   return resolved
 }

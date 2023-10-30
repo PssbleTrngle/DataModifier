@@ -1,5 +1,5 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import {
    BlockInput,
@@ -9,7 +9,7 @@ import {
    fromBlockInput,
    fromBlockOutput,
 } from './orechid.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type PureDaisyRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -27,14 +27,14 @@ export class PureDaisyRecipe extends Recipe<PureDaisyRecipeDefinition> {
       return [fromBlockOutput(this.definition.output)]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new PureDaisyRecipe({
          ...this.definition,
          input: createBlockInput(replace(fromBlockInput(this.definition.input))) ?? this.definition.input,
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new PureDaisyRecipe({
          ...this.definition,
          output: createBlockOutput(replace(fromBlockOutput(this.definition.output))) ?? this.definition.output,

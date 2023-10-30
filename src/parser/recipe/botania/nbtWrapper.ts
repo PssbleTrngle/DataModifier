@@ -1,7 +1,7 @@
 import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type NbtWrapperRecipeDefinition = RecipeDefinition &
    Readonly<{
@@ -25,11 +25,11 @@ export class NbtWrapperRecipe extends Recipe<NbtWrapperRecipeDefinition> {
       return this.recipe.getResults()
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new NbtWrapperRecipe(this.definition, this.recipe.replaceIngredient(replace))
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new NbtWrapperRecipe(this.definition, this.recipe.replaceResult(replace))
    }
 }

@@ -1,15 +1,17 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
+import { exists } from '@pssbletrngle/pack-resolver'
 
 export type RootRitualRecipeDefinition = RecipeDefinition &
    Readonly<{
       color: string
       effect: string
       level: number
-      incenses?: IngredientInput[]
-      ingredients?: IngredientInput[]
+      incenses?: Ingredient[]
+      ingredients?: Ingredient[]
+      result?: Result
    }>
 
 export class RootRitualRecipe extends Recipe<RootRitualRecipeDefinition> {
@@ -18,10 +20,10 @@ export class RootRitualRecipe extends Recipe<RootRitualRecipeDefinition> {
    }
 
    getResults(): ResultInput[] {
-      return []
+      return [this.definition.result].filter(exists)
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new RootRitualRecipe({
          ...this.definition,
          ingredients: this.definition.ingredients?.map(replace),
@@ -29,8 +31,11 @@ export class RootRitualRecipe extends Recipe<RootRitualRecipeDefinition> {
       })
    }
 
-   replaceResult(): RootRitualRecipe {
-      return new RootRitualRecipe(this.definition)
+   replaceResult(replace: Replacer<Result>): RootRitualRecipe {
+      return new RootRitualRecipe({
+         ...this.definition,
+         result: this.definition.result && replace(this.definition.result),
+      })
    }
 }
 

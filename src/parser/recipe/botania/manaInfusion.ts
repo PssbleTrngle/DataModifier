@@ -1,13 +1,13 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { BlockInput, createBlockInput, fromBlockInput } from './orechid.js'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 
 export type ManaInfusionRecipeDefinition = RecipeDefinition &
    Readonly<{
-      input: IngredientInput
-      output: ResultInput
+      input: Ingredient
+      output: Result
       catalyst?: BlockInput
       mana?: number
    }>
@@ -22,7 +22,7 @@ export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
       return [this.definition.output]
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
          input: replace(this.definition.input),
@@ -32,7 +32,7 @@ export class ManaInfusionRecipe extends Recipe<ManaInfusionRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new ManaInfusionRecipe({
          ...this.definition,
          output: replace(this.definition.output),

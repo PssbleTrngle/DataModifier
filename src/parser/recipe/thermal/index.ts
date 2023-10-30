@@ -1,15 +1,15 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
-import { IngredientInput } from '../../../common/ingredient.js'
+import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
 import { RecipeDefinition } from '../../../schema/recipe.js'
 import { arrayOrSelf, exists } from '@pssbletrngle/pack-resolver'
-import { ResultInput } from '../../../common/result.js'
+import { Result, ResultInput } from '../../../common/result.js'
 import { fromThermalIngredient, ThermalIngredientInput, toThermalIngredient } from './ingredient.js'
 
 export type ThermalRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredient?: ThermalIngredientInput
       ingredients?: ThermalIngredientInput[]
-      result: ResultInput[] | ResultInput
+      result: Result[] | Result
       energy?: number
       experience?: number
    }>
@@ -25,7 +25,7 @@ export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
       return arrayOrSelf(this.definition.result)
    }
 
-   replaceIngredient(replace: Replacer<IngredientInput>): Recipe {
+   replaceIngredient(replace: Replacer<Ingredient>): Recipe {
       return new ThermalRecipe({
          ...this.definition,
          ingredient:
@@ -35,7 +35,7 @@ export class ThermalRecipe extends Recipe<ThermalRecipeDefinition> {
       })
    }
 
-   replaceResult(replace: Replacer<ResultInput>): Recipe {
+   replaceResult(replace: Replacer<Result>): Recipe {
       return new ThermalRecipe({
          ...this.definition,
          result: arrayOrSelf(this.definition.result).map(replace),
