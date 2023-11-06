@@ -182,3 +182,13 @@ it('warns about missing recipe replacement matches', async () => {
 
    expect(logger.error).toHaveBeenCalledWith('Could not find any recipes matching', 'replace result', from, 'with', to)
 })
+
+it('does not warn about optional missing recipe matches', async () => {
+   const from = 'minecraft:nothing'
+   const to = { item: 'minecraft:dirt' }
+   loader.recipes.replaceResult(from, to, { optional: true })
+
+   await loader.emit(createTestAcceptor())
+
+   expect(logger.error).not.toHaveBeenCalled()
+})

@@ -7,7 +7,7 @@ import { AcceptorWithLoader } from './index.js'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
-   else return entry.value
+   else return entry.id
 }
 
 export function orderTagEntries(entries: TagEntry[]) {
@@ -78,7 +78,7 @@ class WriteableTagRegistry implements TagRegistry {
             const step = this.resolve(entry as TagInput)
             if (required) return step
             return step.map(it => {
-               if (typeof it === 'string') return { required: false, value: it }
+               if (typeof it === 'string') return { required: false, id: it }
                return { ...it, required: false }
             })
          }
@@ -90,7 +90,7 @@ class WriteableTagRegistry implements TagRegistry {
       const entryId = encodeId(entry)
       return (
          this.get(id)?.some(it => {
-            const value = encodeId(typeof it === 'string' ? it : it.value)
+            const value = encodeId(typeof it === 'string' ? it : it.id)
             if (value === entryId) return true
             if (value.startsWith('#')) return this.contains(value as TagInput, entryId)
             return false

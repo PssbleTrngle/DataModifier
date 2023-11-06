@@ -18,7 +18,8 @@ import { createResult, Result, ResultInput } from '../common/result.js'
 import RuledEmitter from './ruled.js'
 import { RegistryProvider } from './index.js'
 import CustomEmitter from './custom.js'
-import { Acceptor } from '@pssbletrngle/pack-resolver'
+import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
+import { Modifier } from '../rule'
 
 export type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
@@ -26,6 +27,7 @@ export type RecipeTest = Readonly<{
    namespace?: string
    output?: IngredientTest
    input?: IngredientTest
+   optional?: boolean
 }>
 
 export interface RecipeRules {
@@ -84,7 +86,8 @@ export default class RecipeEmitter implements RecipeRules {
       await Promise.all([this.ruled.emit(acceptor), this.custom.emit(acceptor)])
    }
 
-   resolveIngredientTest(test: IngredientTest) {
+   resolveIngredientTest(test?: IngredientTest) {
+      if (!test) return () => true
       return resolveIngredientTest(test, this.tags)
    }
 
@@ -112,53 +115,54 @@ export default class RecipeEmitter implements RecipeRules {
       else this.custom.add(id, value)
    }
 
-   remove(test: RecipeTest) {
-      const recipePredicates = this.resolveRecipeTest(test)
+   private addRule(
+      shape: unknown[],
+      modifier: Modifier<Recipe>,
+      recipeTest: RecipeTest = {},
+      ingredientTests: { ingredient?: Predicate<IngredientInput>; result?: Predicate<IngredientInput> } = {}
+   ) {
+      const recipePredicates = this.resolveRecipeTest(recipeTest ?? {})
+
       this.ruled.addRule(
          new RecipeRule(
-            [test],
+            shape,
             recipePredicates.id,
             recipePredicates.type,
-            recipePredicates.ingredient,
-            recipePredicates.result,
-            () => null
-         )
+            [ingredientTests.ingredient, ...recipePredicates.ingredient].filter(exists),
+            [ingredientTests.result, ...recipePredicates.result].filter(exists),
+            modifier
+         ),
+         recipeTest.optional !== true
       )
+   }
+
+   remove(test: RecipeTest) {
+      this.addRule([test], () => null, test)
    }
 
    replaceResult(test: IngredientTest, value: ResultInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
-      const recipePredicates = this.resolveRecipeTest(additionalTest ?? {})
       const replacer = createReplacer<ResultInput>(predicate, value)
       const replace: Replacer<Result> = it => createResult(replacer(it))
 
-      this.ruled.addRule(
-         new RecipeRule(
-            ['replace result', test, 'with', value, additionalTest],
-            recipePredicates.id,
-            recipePredicates.type,
-            recipePredicates.ingredient,
-            [predicate, ...recipePredicates.result],
-            recipe => recipe.replaceResult(replace)
-         )
+      this.addRule(
+         ['replace result', test, 'with', value, additionalTest],
+         recipe => recipe.replaceResult(replace),
+         additionalTest,
+         { result: predicate }
       )
    }
 
    replaceIngredient(test: IngredientTest, value: IngredientInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
-      const recipePredicates = this.resolveRecipeTest(additionalTest ?? {})
       const replacer = createReplacer<IngredientInput>(predicate, value)
       const replace: Replacer<Ingredient> = it => createIngredient(replacer(it))
 
-      this.ruled.addRule(
-         new RecipeRule(
-            ['replace ingredient', test, 'with', value, additionalTest],
-            recipePredicates.id,
-            recipePredicates.type,
-            [predicate, ...recipePredicates.ingredient],
-            recipePredicates.result,
-            recipe => recipe.replaceIngredient(replace)
-         )
+      this.addRule(
+         ['replace ingredient', test, 'with', value, additionalTest],
+         recipe => recipe.replaceIngredient(replace),
+         additionalTest,
+         { ingredient: predicate }
       )
    }
 

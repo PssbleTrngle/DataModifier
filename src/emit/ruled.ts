@@ -17,6 +17,7 @@ export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
 
    private customEntries = new Registry<TEntry>()
    private rulesArray: TRule[] = []
+   private requiredRules = new Set<TRule>()
 
    protected get rules(): ReadonlyArray<TRule> {
       return this.rulesArray
@@ -24,14 +25,16 @@ export default class RuledEmitter<TEntry, TRule extends Rule<TEntry>> {
 
    clear() {
       this.rulesArray = []
+      this.requiredRules.clear()
    }
 
-   addRule(rule: TRule) {
+   addRule(rule: TRule, required: boolean = true) {
       this.rulesArray.push(rule)
+      if (required) this.requiredRules.add(rule)
    }
 
    async emit(acceptor: Acceptor) {
-      const missingRules = new Set<TRule>(this.rules)
+      const missingRules = new Set<TRule>(this.requiredRules)
       this.provider.forEach((recipe, id) => {
          if (this.shouldSkip(id)) return
 

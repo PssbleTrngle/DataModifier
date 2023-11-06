@@ -2,7 +2,7 @@ export type TagEntry =
    | string
    | Readonly<{
         required?: boolean
-        value: string
+        id: string
      }>
 
 export type TagDefinition = Readonly<{

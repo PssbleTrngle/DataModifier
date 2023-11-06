@@ -14,8 +14,8 @@ exports[`adding of tag entries adds tag entries: #mineable/axe content 1`] = `
   "replace": false,
   "values": [
     {
+      "id": "create:brass_block",
       "required": false,
-      "value": "create:brass_block",
     },
     "minecraft:obsidian",
   ],

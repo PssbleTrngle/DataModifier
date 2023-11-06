@@ -52,7 +52,7 @@ describe('adding of tag entries', () => {
 
       loader.tags.items.add('#minecraft:minable/axe', 'minecraft:obsidian')
       loader.tags.items.add('#minecraft:minable/axe', {
-         value: 'create:brass_block',
+         id: 'create:brass_block',
          required: false,
       })
 
