@@ -1,0 +1,8 @@
+[
+  "brigadier:long",
+  "brigadier:float",
+  "brigadier:integer",
+  "brigadier:string",
+  "brigadier:bool",
+  "brigadier:double"
+]

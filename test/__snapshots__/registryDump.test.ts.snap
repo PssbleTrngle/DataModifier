@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registry dump tests correctly loads imports registries: dumped fluid registry entries 1`] = `
+Set {
+  "minecraft:lava",
+  "minecraft:empty",
+  "minecraft:water",
+  "minecraft:flowing_lava",
+  "minecraft:flowing_water",
+}
+`;

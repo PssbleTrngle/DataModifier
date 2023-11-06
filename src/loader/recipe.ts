@@ -230,8 +230,8 @@ export default class RecipeLoader extends JsonLoader<Recipe> implements RecipeLo
       }) as TRecipe
 
       // Catch warnings early
-      parsed.getResults().forEach(createResult)
-      parsed.getIngredients().forEach(createIngredient)
+      parsed.getResults().forEach(it => createResult(it))
+      parsed.getIngredients().forEach(it => createIngredient(it))
 
       return parsed
    }

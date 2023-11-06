@@ -20,6 +20,7 @@ import { RegistryProvider } from './index.js'
 import CustomEmitter from './custom.js'
 import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
 import { Modifier } from '../rule/index.js'
+import { RegistryLookup } from '../loader/registryDump'
 
 export type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
@@ -75,7 +76,8 @@ export default class RecipeEmitter implements RecipeRules {
    constructor(
       private readonly logger: Logger,
       private readonly registry: RegistryProvider<Recipe>,
-      private readonly tags: TagsLoader
+      private readonly tags: TagsLoader,
+      private readonly lookup: RegistryLookup
    ) {}
 
    private recipePath(id: Id) {
@@ -143,7 +145,7 @@ export default class RecipeEmitter implements RecipeRules {
    replaceResult(test: IngredientTest, value: ResultInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
       const replacer = createReplacer<ResultInput>(predicate, value)
-      const replace: Replacer<Result> = it => createResult(replacer(it))
+      const replace: Replacer<Result> = it => createResult(replacer(it), this.lookup)
 
       this.addRule(
          ['replace result', test, 'with', value, additionalTest],
@@ -156,7 +158,7 @@ export default class RecipeEmitter implements RecipeRules {
    replaceIngredient(test: IngredientTest, value: IngredientInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
       const replacer = createReplacer<IngredientInput>(predicate, value)
-      const replace: Replacer<Ingredient> = it => createIngredient(replacer(it))
+      const replace: Replacer<Ingredient> = it => createIngredient(replacer(it), this.lookup)
 
       this.addRule(
          ['replace ingredient', test, 'with', value, additionalTest],

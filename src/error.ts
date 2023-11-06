@@ -1,8 +1,15 @@
 import { Logger } from './logger.js'
 import { ZodError } from 'zod'
+import { NormalizedId } from './common/id.js'
 
 export class IllegalShapeError extends Error {
    constructor(message: string, readonly input?: unknown) {
+      super(message)
+   }
+}
+
+export class UnknownRegistryEntry extends Error {
+   constructor(message: string, readonly registry: string, readonly id: NormalizedId) {
       super(message)
    }
 }

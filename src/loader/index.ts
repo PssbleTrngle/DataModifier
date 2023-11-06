@@ -12,6 +12,18 @@ export default interface Loader {
    loadFrom(resolver: IResolver): Promise<void>
 }
 
+export function tryParseJson(logger: Logger, content: string) {
+   try {
+      return fromJson(content)
+   } catch (error) {
+      if (error instanceof SyntaxError) {
+         logger.warn(`unable to parse json: ${error.message}`)
+         return null
+      }
+      throw error
+   }
+}
+
 export abstract class JsonLoader<T> implements RegistryProvider<T> {
    protected readonly registry = new Registry<T>()
 
@@ -19,18 +31,6 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
 
    forEach(consumer: (recipe: T, id: Id) => void): void {
       this.registry.forEach(consumer)
-   }
-
-   private tryParseJson(logger: Logger, content: string) {
-      try {
-         return fromJson(content)
-      } catch (error) {
-         if (error instanceof SyntaxError) {
-            logger.warn(`unable to parse json: ${error.message}`)
-            return null
-         }
-         throw error
-      }
    }
 
    readonly accept: AcceptorWithLoader = (logger, path, content) => {
@@ -42,7 +42,7 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
 
       const grouped = logger.group(path)
 
-      const json = this.tryParseJson(grouped, content.toString())
+      const json = tryParseJson(grouped, content.toString())
       if (!json) return false
 
       const parsed = tryCatching(grouped, () => this.parse(grouped, json, id))

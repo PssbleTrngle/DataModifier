@@ -23,6 +23,7 @@ type LootTableTest = Readonly<{
 
 export interface LootRules {
    replaceOutput(from: IngredientTest, to: LootItemInput, additionalTests?: LootTableTest): void
+
    removeOutput(from: IngredientTest, additionalTests?: LootTableTest): void
 
    addLootTable(id: IdInput, value: LootTable): void

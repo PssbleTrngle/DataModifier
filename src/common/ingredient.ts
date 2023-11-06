@@ -2,10 +2,11 @@ import { TagRegistry, TagRegistryHolder } from '../loader/tags.js'
 import { createId, encodeId, Id, NormalizedId } from './id.js'
 import { Logger } from '../logger.js'
 import { resolveCommonTest } from './predicates.js'
-import { Block, BlockSchema, FluidStack, FluidStackSchema, ItemStack, ItemStackSchema } from './result.js'
+import { Block, createResult, FluidStack, ItemStack } from './result.js'
 import zod from 'zod'
 import { exists } from '@pssbletrngle/pack-resolver'
 import { IllegalShapeError, tryCatching } from '../error.js'
+import { RegistryLookup } from '../loader/registryDump.js'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),
@@ -32,11 +33,11 @@ export type ItemIngredient = ItemStack | ItemTag
 export type FluidIngredient = FluidStack | FluidTag
 export type BlockIngredient = Block | BlockTag
 
-export type Ingredient = ItemIngredient | FluidIngredient | BlockIngredient | IngredientInput[]
-export type IngredientInput = Ingredient | string
+export type Ingredient = ItemIngredient | FluidIngredient | BlockIngredient | Ingredient[]
+export type IngredientInput = Ingredient | string | IngredientInput[]
 
-export function createIngredient(input: unknown): Ingredient {
-   if (!input) throw new IllegalShapeError('result input may not be null')
+function createUnvalidatedIngredient(input: unknown, lookup?: RegistryLookup): Ingredient {
+   if (!input) throw new IllegalShapeError('ingredient input may not be null')
 
    if (typeof input === 'string') {
       if (input.startsWith('#')) return { tag: input.substring(1) }
@@ -44,20 +45,24 @@ export function createIngredient(input: unknown): Ingredient {
    }
 
    if (Array.isArray(input)) {
-      return input.map(createIngredient)
+      return input.map(it => createIngredient(it, lookup))
    }
 
    if (typeof input === 'object') {
-      if ('item' in input) return ItemStackSchema.parse(input)
-      if ('fluid' in input) return FluidStackSchema.parse(input)
-      if ('block' in input) return BlockSchema.parse(input)
-
       if ('tag' in input) return ItemTagSchema.parse(input)
       if ('fluidTag' in input) return FluidTagSchema.parse(input)
       if ('blockTag' in input) return BlockTagSchema.parse(input)
+
+      return createResult(input, lookup)
    }
 
    throw new IllegalShapeError('unknown ingredient shape', input)
+}
+
+export function createIngredient(input: unknown, lookup?: RegistryLookup): Ingredient {
+   const unvalidated = createUnvalidatedIngredient(input, lookup)
+   lookup?.validate(unvalidated)
+   return unvalidated
 }
 
 export type Predicate<T> = (value: T, logger?: Logger) => boolean

@@ -12,6 +12,7 @@ import LootTableEmitter, { LootRules } from '../emit/loot.js'
 import LangLoader from './lang.js'
 import LangEmitter, { LangRules } from '../emit/lang.js'
 import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
+import RegistryDumpLoader, { RegistryLookup } from './registryDump.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
@@ -20,9 +21,15 @@ export default class PackLoader implements Loader {
    private readonly recipesLoader = new RecipeLoader()
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
+   private readonly registryDumpLoader = new RegistryDumpLoader(this.logger)
 
    private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
-   private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
+   private readonly recipeEmitter = new RecipeEmitter(
+      this.logger,
+      this.recipesLoader,
+      this.tagLoader,
+      this.registryDumpLoader
+   )
    private readonly lootEmitter = new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader)
    private readonly langEmitter = new LangEmitter(this.langLoader)
    private readonly blacklistEmitter = new BlacklistEmitter()
@@ -59,6 +66,10 @@ export default class PackLoader implements Loader {
       return this.blacklistEmitter
    }
 
+   get registries(): RegistryLookup {
+      return this.registryDumpLoader
+   }
+
    resolveIngredientTest(test: IngredientTest) {
       return this.recipeEmitter.resolveIngredientTest(test)
    }
@@ -92,6 +103,10 @@ export default class PackLoader implements Loader {
    async loadFrom(resolver: IResolver) {
       await this.loadInternal(resolver, this.logger)
       this.freeze()
+   }
+
+   async loadRegistryDump(resolver: IResolver) {
+      await resolver.extract((path, content) => this.registryDumpLoader.accept(this.logger, path, content))
    }
 
    private freeze() {
