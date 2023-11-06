@@ -19,7 +19,7 @@ import RuledEmitter from './ruled.js'
 import { RegistryProvider } from './index.js'
 import CustomEmitter from './custom.js'
 import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
-import { Modifier } from '../rule'
+import { Modifier } from '../rule/index.js'
 
 export type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>

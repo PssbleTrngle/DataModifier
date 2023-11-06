@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`blacklist tests generated a jei blacklist config file: jei blacklist config file 1`] = `
+"minecraft:stone
+minecraft:water
+minecraft:ice
+forge:milk"
+`;

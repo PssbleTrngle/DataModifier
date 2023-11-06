@@ -11,6 +11,7 @@ import LootTableLoader from './loot.js'
 import LootTableEmitter, { LootRules } from '../emit/loot.js'
 import LangLoader from './lang.js'
 import LangEmitter, { LangRules } from '../emit/lang.js'
+import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
@@ -24,6 +25,7 @@ export default class PackLoader implements Loader {
    private readonly recipeEmitter = new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader)
    private readonly lootEmitter = new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader)
    private readonly langEmitter = new LangEmitter(this.langLoader)
+   private readonly blacklistEmitter = new BlacklistEmitter()
 
    registerRegistry(key: string) {
       this.tagLoader.registerRegistry(key)
@@ -51,6 +53,10 @@ export default class PackLoader implements Loader {
 
    get recipeLoader(): RecipeLoaderAccessor {
       return this.recipesLoader
+   }
+
+   get blacklist(): BlacklistRules {
+      return this.blacklistEmitter
    }
 
    resolveIngredientTest(test: IngredientTest) {
@@ -98,6 +104,7 @@ export default class PackLoader implements Loader {
       this.lootEmitter.clear()
       this.tagEmitter.clear()
       this.langEmitter.clear()
+      this.blacklistEmitter.clear()
    }
 
    async emit(acceptor: Acceptor) {
@@ -106,6 +113,7 @@ export default class PackLoader implements Loader {
          this.lootEmitter.emit(acceptor),
          this.tagEmitter.emit(acceptor),
          this.langEmitter.emit(acceptor),
+         this.blacklistEmitter.emit(acceptor),
       ])
    }
 
