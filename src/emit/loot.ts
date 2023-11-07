@@ -1,15 +1,16 @@
-import { Logger } from '../logger.js'
-import TagsLoader from '../loader/tags.js'
-import { EmptyLootEntry, LootTable, LootTableSchema } from '../schema/loot.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import RuledEmitter from './ruled.js'
-import CustomEmitter from './custom.js'
 import { Id, IdInput, NormalizedId } from '../common/id.js'
-import LootTableRule from '../rule/lootTable.js'
-import { RegistryProvider } from './index.js'
 import { CommonTest, IngredientInput, IngredientTest, Predicate, resolveIngredientTest } from '../common/ingredient.js'
 import { resolveIDTest } from '../common/predicates.js'
+import RegistryLookup from '../loader/registry/index.js'
+import TagsLoader from '../loader/tags.js'
+import { Logger } from '../logger.js'
 import { createLootEntry, LootItemInput, replaceItemInTable } from '../parser/lootTable.js'
+import LootTableRule from '../rule/lootTable.js'
+import { EmptyLootEntry, LootTable, LootTableSchema } from '../schema/loot.js'
+import CustomEmitter from './custom.js'
+import { RegistryProvider } from './index.js'
+import RuledEmitter from './ruled.js'
 
 export const EMPTY_LOOT_TABLE: LootTable = {
    type: 'minecraft:empty',
@@ -45,7 +46,8 @@ export default class LootTableEmitter implements LootRules {
    constructor(
       private readonly logger: Logger,
       private readonly lootTables: RegistryProvider<LootTable>,
-      private readonly tags: TagsLoader
+      private readonly tags: TagsLoader,
+      private readonly lookup: () => RegistryLookup
    ) {}
 
    private lootPath(id: Id) {
@@ -57,7 +59,7 @@ export default class LootTableEmitter implements LootRules {
    }
 
    resolveIngredientTest(test: IngredientTest) {
-      return resolveIngredientTest(test, this.tags)
+      return resolveIngredientTest(test, this.tags, this.lookup())
    }
 
    private resolveLootTableTest(test: LootTableTest) {
@@ -82,7 +84,7 @@ export default class LootTableEmitter implements LootRules {
    replaceOutput(from: IngredientTest, to: LootItemInput, additionalTests: LootTableTest = {}): void {
       const predicates = this.resolveLootTableTest(additionalTests)
       const outputPredicate = this.resolveIngredientTest(from)
-      const replacer = replaceItemInTable(outputPredicate, createLootEntry(to))
+      const replacer = replaceItemInTable(outputPredicate, createLootEntry(to, this.lookup()))
       this.ruled.addRule(new LootTableRule(predicates.id, [outputPredicate, ...predicates.output], replacer))
    }
 

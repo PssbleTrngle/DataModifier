@@ -1,6 +1,6 @@
 import { Logger } from './logger.js'
 import { ZodError } from 'zod'
-import { NormalizedId } from './common/id.js'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export class IllegalShapeError extends Error {
    constructor(message: string, readonly input?: unknown) {
@@ -8,8 +8,8 @@ export class IllegalShapeError extends Error {
    }
 }
 
-export class UnknownRegistryEntry extends Error {
-   constructor(message: string, readonly registry: string, readonly id: NormalizedId) {
+export class UnknownRegistryEntry<T extends RegistryId> extends Error {
+   constructor(message: string, readonly registry: T, readonly id: InferIds<T>) {
       super(message)
    }
 }

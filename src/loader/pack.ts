@@ -1,36 +1,44 @@
 import { Acceptor, IResolver, ResolverInfo } from '@pssbletrngle/pack-resolver'
 import match from 'minimatch'
-import { Logger } from '../logger.js'
-import Loader, { AcceptorWithLoader } from './index.js'
-import RecipeLoader, { RecipeLoaderAccessor } from './recipe.js'
-import TagsLoader from './tags.js'
+import { IngredientTest } from '../common/ingredient.js'
+import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
+import LangEmitter, { LangRules } from '../emit/lang.js'
+import LootTableEmitter, { LootRules } from '../emit/loot.js'
 import RecipeEmitter, { RecipeRules } from '../emit/recipe.js'
 import TagEmitter, { TagRules } from '../emit/tags.js'
-import { IngredientTest } from '../common/ingredient.js'
-import LootTableLoader from './loot.js'
-import LootTableEmitter, { LootRules } from '../emit/loot.js'
+import { Logger } from '../logger.js'
+import Loader, { AcceptorWithLoader } from './index.js'
 import LangLoader from './lang.js'
-import LangEmitter, { LangRules } from '../emit/lang.js'
-import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
-import RegistryDumpLoader, { RegistryLookup } from './registryDump.js'
+import LootTableLoader from './loot.js'
+import RecipeLoader, { RecipeLoaderAccessor } from './recipe.js'
+import RegistryDumpLoader from './registry/dump.js'
+import RegistryLookup from './registry/index.js'
+import TagsLoader from './tags.js'
+import EmptyRegistryLookup from './registry/empty.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
+
+   private activeRegistryLookup: RegistryLookup = new EmptyRegistryLookup()
 
    private readonly tagLoader = new TagsLoader()
    private readonly recipesLoader = new RecipeLoader()
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
-   private readonly registryDumpLoader = new RegistryDumpLoader(this.logger)
 
    private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
    private readonly recipeEmitter = new RecipeEmitter(
       this.logger,
       this.recipesLoader,
       this.tagLoader,
-      this.registryDumpLoader
+      () => this.activeRegistryLookup
    )
-   private readonly lootEmitter = new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader)
+   private readonly lootEmitter = new LootTableEmitter(
+      this.logger,
+      this.lootLoader,
+      this.tagLoader,
+      () => this.activeRegistryLookup
+   )
    private readonly langEmitter = new LangEmitter(this.langLoader)
    private readonly blacklistEmitter = new BlacklistEmitter()
 
@@ -67,7 +75,7 @@ export default class PackLoader implements Loader {
    }
 
    get registries(): RegistryLookup {
-      return this.registryDumpLoader
+      return this.activeRegistryLookup
    }
 
    resolveIngredientTest(test: IngredientTest) {
@@ -106,7 +114,9 @@ export default class PackLoader implements Loader {
    }
 
    async loadRegistryDump(resolver: IResolver) {
-      await resolver.extract((path, content) => this.registryDumpLoader.accept(this.logger, path, content))
+      const registryDumpLoader = new RegistryDumpLoader(this.logger)
+      await registryDumpLoader.extract(resolver)
+      this.activeRegistryLookup = registryDumpLoader
    }
 
    private freeze() {

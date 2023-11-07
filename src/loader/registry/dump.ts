@@ -1,27 +1,26 @@
-import { AcceptorWithLoader, tryParseJson } from './index.js'
+import { IResolver } from '@pssbletrngle/pack-resolver'
 import zod from 'zod'
-import { tryCatching, UnknownRegistryEntry } from '../error.js'
-import Registry from '../common/registry.js'
-import { encodeId, IdInput, NormalizedId } from '../common/id.js'
-import { Logger } from '../logger.js'
-import { Ingredient } from '../common/ingredient.js'
+import { encodeId, IdInput, NormalizedId } from '../../common/id.js'
+import { Ingredient } from '../../common/ingredient.js'
+import Registry from '../../common/registry.js'
+import { tryCatching, UnknownRegistryEntry } from '../../error.js'
+import { Logger } from '../../logger.js'
+import { AcceptorWithLoader, tryParseJson } from '../index.js'
+import RegistryLookup from './index.js'
+import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 const schema = zod.array(zod.string())
 
-export interface RegistryLookup {
-   keys(registry: IdInput): ReadonlySet<NormalizedId> | undefined
-
-   isKnown(registry: IdInput): boolean
-
-   validate(ingredient: Ingredient): void
-}
-
 export default class RegistryDumpLoader implements RegistryLookup {
-   private readonly registry = new Registry<Set<NormalizedId>>()
+   private readonly registry = new Registry<Set<NormalizedId>, RegistryId>()
 
    constructor(private readonly logger: Logger) {}
 
-   readonly accept: AcceptorWithLoader = (logger, path, content) => {
+   async extract(resolver: IResolver) {
+      await resolver.extract((path, content) => this.accept(this.logger, path, content))
+   }
+
+   private readonly accept: AcceptorWithLoader = (logger, path, content) => {
       const match = /(?<registry>[\w-\\/]+)[\\/][\w-]+.json/.exec(path)
       if (!match?.groups) return false
 
@@ -35,13 +34,17 @@ export default class RegistryDumpLoader implements RegistryLookup {
       const parsed = tryCatching(grouped, () => schema.parse(json))
       if (!parsed) return false
 
-      const set = this.registry.getOrPut(registry, () => new Set<NormalizedId>())
+      const set = this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId>())
       parsed.map(encodeId).forEach(id => set.add(id))
 
       return true
    }
 
-   keys(registry: IdInput) {
+   registries(): NormalizedId<RegistryId>[] {
+      return this.registry.keys()
+   }
+
+   keys<T extends RegistryId>(registry: IdInput<T>) {
       const keys = this.registry.get(registry)
       if (keys === undefined) {
          this.logger.warn(`tried to access registry '${encodeId(registry)}', which has not been loaded`)
@@ -49,7 +52,7 @@ export default class RegistryDumpLoader implements RegistryLookup {
       return keys
    }
 
-   isKnown(registry: IdInput) {
+   isKnown(registry: IdInput<RegistryId>) {
       return this.registry.has(registry)
    }
 

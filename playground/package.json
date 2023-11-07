@@ -1,0 +1,12 @@
+{
+  "name": "@pssbletrngle/data-modifier-playground",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run codegen && tsc",
+    "codegen": "datamod codegen --output generated --registry-dump ../test/resources/dump"
+  },
+  "dependencies": {
+    "@pssbletrngle/data-modifier": "workspace:*",
+    "typescript": "^4.8.2"
+  }
+}
