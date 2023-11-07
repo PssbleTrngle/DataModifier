@@ -4,13 +4,13 @@ export type Id = Readonly<{
    isTag?: boolean
 }>
 
-export type IdInput<T extends string = string> = T | Id
+export type IdInput<T extends string> = T | Id
 
-export type NormalizedId<T extends string = string> = `${string}:${string}` & T
+export type NormalizedId<T extends string> = `${string}:${string}` & T
 
 export type TagInput = IdInput<`#${string}`>
 
-export function createId(from: IdInput): Id {
+export function createId(from: IdInput<string>): Id {
    if (typeof from !== 'string') return from
    if (from.startsWith('#')) return { ...createId(from.substring(1)), isTag: true }
    if (!from.includes(':')) return { namespace: 'minecraft', path: from }

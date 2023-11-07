@@ -1,31 +1,33 @@
 import zod from 'zod'
 import { IllegalShapeError } from '../error.js'
-import { RegistryLookup } from '../loader/registryDump.js'
+import RegistryLookup from '../loader/registry/index.js'
+import { ZodType } from 'zod/lib/types'
+import { BlockId, FluidId, ItemId } from '../schema/ids'
 
 export const ItemStackSchema = zod.object({
-   item: zod.string(),
-   count: zod.number().optional(),
-   chance: zod.number().optional(),
-})
-
-export const FluidStackSchema = zod.object({
-   fluid: zod.string(),
-   amount: zod.number().optional(),
+   item: zod.string() as ZodType<ItemId>,
+   count: zod.number().int().optional(),
    chance: zod.number().optional(),
 })
 
 export type ItemStack = zod.infer<typeof ItemStackSchema>
 
+export const FluidStackSchema = zod.object({
+   fluid: zod.string() as ZodType<FluidId>,
+   amount: zod.number().optional(),
+   chance: zod.number().optional(),
+})
+
 export type FluidStack = zod.infer<typeof FluidStackSchema>
 
 export const BlockSchema = zod.object({
-   block: zod.string(),
+   block: zod.string() as ZodType<BlockId>,
 })
 
 export type Block = zod.infer<typeof BlockSchema>
 
 export type Result = ItemStack | FluidStack | Block
-export type ResultInput = Result | string
+export type ResultInput = Result | ItemId
 
 function createUnvalidatedResult(input: unknown): Result {
    if (!input) throw new IllegalShapeError('result input may not be null')

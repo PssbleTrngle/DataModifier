@@ -1,7 +1,6 @@
+import { createResolver } from '@pssbletrngle/pack-resolver'
 import { createIngredient, createResult, PackLoader } from '../src/index.js'
 import createTestLogger from './mock/TestLogger.js'
-import { createResolver } from '@pssbletrngle/pack-resolver'
-import { tryCatching } from '../src/error.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
@@ -41,24 +40,68 @@ describe('registry dump tests', () => {
    })
 
    it('validates incorrect ingredients', async () => {
-      expect(() => tryCatching(logger, () => createIngredient('example:unknown', loader.registries))).toThrow(
+      expect(() => createIngredient('example:unknown', loader.registries)).toThrow(
          "unknown minecraft:item 'example:unknown'"
       )
 
-      expect(() => tryCatching(logger, () => createResult({ item: 'minecraft:kitkat' }, loader.registries))).toThrow(
+      expect(() => createResult({ item: 'minecraft:kitkat' }, loader.registries)).toThrow(
          "unknown minecraft:item 'minecraft:kitkat'"
       )
 
-      expect(() => tryCatching(logger, () => createIngredient({ block: 'something' }, loader.registries))).toThrow(
+      expect(() => createIngredient({ block: 'something' }, loader.registries)).toThrow(
          "unknown minecraft:block 'minecraft:something'"
       )
 
-      expect(() => tryCatching(logger, () => createResult({ fluid: 'whatever' }, loader.registries))).toThrow(
+      expect(() => createResult({ fluid: 'whatever' }, loader.registries)).toThrow(
          "unknown minecraft:fluid 'minecraft:whatever'"
       )
 
-      expect(() =>
-         tryCatching(logger, () => createIngredient(['minecraft:stone', { fluid: 'no-idea' }], loader.registries))
-      ).toThrow("unknown minecraft:fluid 'minecraft:no-idea'")
+      expect(() => createIngredient(['minecraft:stone', { fluid: 'no-idea' }], loader.registries)).toThrow(
+         "unknown minecraft:fluid 'minecraft:no-idea'"
+      )
+   })
+
+   it('recipe replacement validates incorrect ingredients', async () => {
+      expect(() => {
+         loader.recipes.replaceIngredient('minecraft:emerald', { item: 'minecraft:ruby' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.recipes.replaceIngredient('minecraft:ruby', { item: 'minecraft:lapis_lazuli' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.recipes.replaceResult(
+            'minecraft:diamond_block',
+            { item: 'minecraft:coal_block' },
+            { input: 'minecraft:ruby' }
+         )
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+   })
+
+   it('loot replacement validates incorrect ingredients', async () => {
+      expect(() => {
+         loader.loot.replaceOutput('minecraft:emerald', { item: 'minecraft:ruby' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.loot.replaceOutput('minecraft:ruby', { item: 'minecraft:lapis_lazuli' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.loot.replaceOutput(
+            'minecraft:diamond_block',
+            { item: 'minecraft:coal_block' },
+            { output: 'minecraft:ruby' }
+         )
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.loot.removeOutput('minecraft:diamond_block', { output: 'minecraft:ruby' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby'")
+
+      expect(() => {
+         loader.loot.disableLootTable({ output: 'minecraft:ruby_block' })
+      }).toThrow("unknown minecraft:item 'minecraft:ruby_block'")
    })
 })

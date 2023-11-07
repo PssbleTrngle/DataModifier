@@ -4,10 +4,11 @@ import Registry from '../common/registry.js'
 import { TagDefinition, TagEntry } from '../schema/tag.js'
 import { fromJson } from '../textHelper.js'
 import { AcceptorWithLoader } from './index.js'
+import { InferIds, RegistryId } from '../schema/ids'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
-   else return entry.id
+   else return encodeId(entry.id)
 }
 
 export function orderTagEntries(entries: TagEntry[]) {
@@ -18,24 +19,24 @@ export function orderTagEntries(entries: TagEntry[]) {
 }
 
 export interface TagRegistryHolder {
-   registry(key: string): TagRegistry
+   registry<T extends RegistryId>(key: T): TagRegistry<T>
 }
 
-export interface TagRegistry {
+export interface TagRegistry<T extends RegistryId> {
    list(): string[]
 
    get(id: TagInput): TagEntry[] | undefined
 
    resolve(id: TagInput): TagEntry[]
 
-   contains(id: TagInput, entry: IdInput): boolean
+   contains(id: TagInput, entry: IdInput<InferIds<RegistryId>>): boolean
 }
 
-class WriteableTagRegistry implements TagRegistry {
+class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
    private readonly entries = new Registry<TagEntry[]>()
    private frozen = false
 
-   private validateId(input: IdInput) {
+   private validateId(input: IdInput<string>) {
       const id = encodeId(input)
       if (!id.startsWith('#')) throw new Error("tag id's must start with a '#'")
    }
@@ -86,7 +87,7 @@ class WriteableTagRegistry implements TagRegistry {
       })
    }
 
-   contains(id: TagInput, entry: IdInput): boolean {
+   contains(id: TagInput, entry: IdInput<InferIds<RegistryId>>): boolean {
       const entryId = encodeId(entry)
       return (
          this.get(id)?.some(it => {
@@ -100,7 +101,7 @@ class WriteableTagRegistry implements TagRegistry {
 }
 
 export default class TagsLoader implements TagRegistryHolder {
-   private registries: Record<string, WriteableTagRegistry> = {}
+   private registries: Record<string, WriteableTagRegistry<RegistryId>> = {}
 
    constructor() {
       this.registerRegistry('items')
@@ -112,7 +113,7 @@ export default class TagsLoader implements TagRegistryHolder {
       this.registries[key] = new WriteableTagRegistry()
    }
 
-   registry(key: string): TagRegistry {
+   registry<T extends RegistryId>(key: T): TagRegistry<T> {
       if (!(key in this.registries))
          throw new Error(`unknown registry tags '${key}'. Register them using \`registerRegistry\``)
       return this.registries[key]

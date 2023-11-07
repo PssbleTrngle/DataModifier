@@ -4,32 +4,32 @@ import { CommonTest } from '../common/ingredient.js'
 import { Logger } from '../logger.js'
 import TagsLoader, { entryId, orderTagEntries, TagRegistry } from '../loader/tags.js'
 import { TagDefinition, TagEntry } from '../schema/tag.js'
-import { createId, Id, NormalizedId, TagInput } from '../common/id.js'
+import { createId, encodeId, Id, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
 import { resolveIDTest } from '../common/predicates.js'
+import { BlockId, FluidId, InferIds, ItemId, RegistryId } from '../schema/ids'
 
 export interface TagRules {
-   add(registry: string, id: `#${string}`, value: TagEntry): void
+   add<T extends RegistryId>(registry: T, id: TagInput, value: TagEntry<InferIds<T>>): void
 
-   remove<T extends string = string>(registry: string, id: `#${string}`, test: CommonTest<T>): void
+   remove<T extends RegistryId>(registry: T, id: TagInput, test: CommonTest<InferIds<T>>): void
 
-   scoped(key: string): ScopedTagRules
+   scoped<T extends RegistryId>(key: T): ScopedTagRules<T>
 
-   // todo ID type
-   blocks: ScopedTagRules
-   items: ScopedTagRules
-   fluids: ScopedTagRules
+   blocks: ScopedTagRules<BlockId>
+   items: ScopedTagRules<ItemId>
+   fluids: ScopedTagRules<FluidId>
 }
 
-interface ScopedTagRules<T extends string = string> {
+interface ScopedTagRules<T extends RegistryId> {
    add(id: TagInput, value: TagEntry): void
-   remove(id: TagInput, test: CommonTest<T>): void
+   remove(id: TagInput, test: CommonTest<InferIds<T>>): void
 }
 
 type TagModifier = (previous: TagDefinition) => TagDefinition
 
-class ScopedEmitter<T extends NormalizedId = NormalizedId> implements ScopedTagRules<T> {
-   constructor(private readonly registry: TagRegistry) {}
+class ScopedEmitter<T extends RegistryId> implements ScopedTagRules<T> {
+   constructor(private readonly registry: TagRegistry<RegistryId>) {}
 
    private readonly modifiers = new Registry<TagModifier[]>()
 
@@ -57,14 +57,14 @@ class ScopedEmitter<T extends NormalizedId = NormalizedId> implements ScopedTagR
       })
    }
 
-   remove(id: TagInput, test: CommonTest<T>) {
+   remove(id: TagInput, test: CommonTest<InferIds<T>>) {
       const predicate = resolveIDTest(test, this.registry)
       this.modify(id, previous => {
          const defaultValues = (previous.replace ? undefined : this.registry.resolve(id)) ?? []
          return {
             replace: true,
             values: [...defaultValues, ...previous.values].filter(it => {
-               return !predicate(entryId(it) as T)
+               return !predicate(encodeId(entryId(it)))
             }),
          }
       })
@@ -76,7 +76,7 @@ class ScopedEmitter<T extends NormalizedId = NormalizedId> implements ScopedTagR
 }
 
 export default class TagEmitter implements TagRules {
-   private readonly emitters = new Map<string, ScopedEmitter>()
+   private readonly emitters = new Map<string, ScopedEmitter<RegistryId>>()
 
    constructor(private readonly logger: Logger, private readonly registry: TagsLoader) {}
 
@@ -100,15 +100,15 @@ export default class TagEmitter implements TagRules {
       })
    }
 
-   add(registry: string, id: `#${string}`, value: TagEntry) {
+   add<T extends RegistryId>(registry: T, id: TagInput, value: TagEntry<InferIds<T>>) {
       this.scoped(registry).add(id, value)
    }
 
-   remove<T extends string = string>(registry: string, id: `#${string}`, test: CommonTest<T>): void {
+   remove<T extends RegistryId>(registry: T, id: TagInput, test: CommonTest<InferIds<T>>) {
       this.scoped<T>(registry).remove(id, test)
    }
 
-   scoped<T extends string>(key: string): ScopedTagRules<T> {
+   scoped<T extends RegistryId>(key: T): ScopedTagRules<T> {
       const existing = this.emitters.get(key)
       if (existing) return existing as ScopedTagRules<T>
       else {

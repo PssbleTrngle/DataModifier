@@ -46,7 +46,8 @@
    "packageManager": "pnpm@8.6.12",
    "scripts": {
       "build": "tsc",
-      "lint": "eslint \"{src,test}/**/*.ts\"",
+      "lint": "eslint \"{src,test,playground}/**/*.ts\"",
+      "cli": "pnpm run build && node dist/cli/index.js",
       "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest",
       "test:ci": "pnpm run lint && pnpm run test --coverage"
    },

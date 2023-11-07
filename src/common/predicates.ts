@@ -1,12 +1,13 @@
-import { encodeId, IdInput, NormalizedId, TagInput } from './id.js'
 import { TagRegistry } from '../loader/tags.js'
-import { CommonTest, Predicate } from './ingredient.js'
 import { Logger } from '../logger.js'
+import { encodeId, IdInput, NormalizedId, TagInput } from './id.js'
+import { CommonTest, Predicate } from './ingredient.js'
+import { InferIds, RegistryId } from '../schema/ids'
 
 export function resolveCommonTest<TEntry, TId extends string>(
    test: CommonTest<NormalizedId<TId>>,
    resolve: (value: TEntry, logger?: Logger) => NormalizedId<TId>[],
-   tags?: TagRegistry
+   tags?: TagRegistry<RegistryId>
 ): Predicate<TEntry> {
    if (typeof test === 'function') {
       return (entry, logger) => resolve(entry, logger).some(id => test(id, logger))
@@ -29,6 +30,9 @@ export function resolveCommonTest<TEntry, TId extends string>(
    }
 }
 
-export function resolveIDTest<T extends NormalizedId>(test: CommonTest<T>, tags?: TagRegistry): Predicate<IdInput<T>> {
-   return resolveCommonTest(test, it => [encodeId<T>(it)], tags)
+export function resolveIDTest<T extends RegistryId>(
+   test: CommonTest<InferIds<T>>,
+   tags?: TagRegistry<T>
+): Predicate<IdInput<InferIds<T>>> {
+   return resolveCommonTest<IdInput<InferIds<T>>, InferIds<T>>(test, it => [encodeId(it)], tags)
 }

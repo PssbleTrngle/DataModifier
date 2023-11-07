@@ -1,3 +1,5 @@
+import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
+import { encodeId, Id, IdInput, NormalizedId } from '../common/id.js'
 import {
    CommonTest,
    createIngredient,
@@ -7,24 +9,23 @@ import {
    Predicate,
    resolveIngredientTest,
 } from '../common/ingredient.js'
-import RecipeRule from '../rule/recipe.js'
-import { Logger } from '../logger.js'
-import TagsLoader from '../loader/tags.js'
-import { encodeId, Id, IdInput, NormalizedId } from '../common/id.js'
-import { createReplacer, Recipe, Replacer } from '../parser/recipe/index.js'
-import { RecipeDefinition } from '../schema/recipe.js'
 import { resolveIDTest } from '../common/predicates.js'
 import { createResult, Result, ResultInput } from '../common/result.js'
-import RuledEmitter from './ruled.js'
-import { RegistryProvider } from './index.js'
-import CustomEmitter from './custom.js'
-import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
+import RegistryLookup from '../loader/registry/index.js'
+import TagsLoader from '../loader/tags.js'
+import { Logger } from '../logger.js'
+import { createReplacer, Recipe, Replacer } from '../parser/recipe/index.js'
 import { Modifier } from '../rule/index.js'
-import { RegistryLookup } from '../loader/registryDump'
+import RecipeRule from '../rule/recipe.js'
+import { RecipeDefinition } from '../schema/recipe.js'
+import CustomEmitter from './custom.js'
+import { RegistryProvider } from './index.js'
+import RuledEmitter from './ruled.js'
+import { RecipeSerializerId } from '../schema/ids'
 
 export type RecipeTest = Readonly<{
-   id?: CommonTest<NormalizedId>
-   type?: CommonTest<NormalizedId>
+   id?: CommonTest<NormalizedId<string>>
+   type?: CommonTest<NormalizedId<RecipeSerializerId>>
    namespace?: string
    output?: IngredientTest
    input?: IngredientTest
@@ -37,7 +38,7 @@ export interface RecipeRules {
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTests?: RecipeTest): void
 
    add<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
-      id: IdInput,
+      id: IdInput<string>,
       value: TDefinition | TRecipe
    ): void
 
@@ -77,7 +78,7 @@ export default class RecipeEmitter implements RecipeRules {
       private readonly logger: Logger,
       private readonly registry: RegistryProvider<Recipe>,
       private readonly tags: TagsLoader,
-      private readonly lookup: RegistryLookup
+      private readonly lookup: () => RegistryLookup
    ) {}
 
    private recipePath(id: Id) {
@@ -90,7 +91,7 @@ export default class RecipeEmitter implements RecipeRules {
 
    resolveIngredientTest(test?: IngredientTest) {
       if (!test) return () => true
-      return resolveIngredientTest(test, this.tags)
+      return resolveIngredientTest(test, this.tags, this.lookup())
    }
 
    private resolveRecipeTest(test: RecipeTest) {
@@ -109,7 +110,7 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    add<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
-      id: IdInput,
+      id: IdInput<string>,
       value: TDefinition | TRecipe
    ) {
       if (this.custom.has(id)) this.logger.error(`Overwriting custom recipe with ID ${encodeId(id)}`)
@@ -144,8 +145,10 @@ export default class RecipeEmitter implements RecipeRules {
 
    replaceResult(test: IngredientTest, value: ResultInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
+
+      createResult(value, this.lookup())
       const replacer = createReplacer<ResultInput>(predicate, value)
-      const replace: Replacer<Result> = it => createResult(replacer(it), this.lookup)
+      const replace: Replacer<Result> = it => createResult(replacer(it))
 
       this.addRule(
          ['replace result', test, 'with', value, additionalTest],
@@ -157,8 +160,10 @@ export default class RecipeEmitter implements RecipeRules {
 
    replaceIngredient(test: IngredientTest, value: IngredientInput, additionalTest?: RecipeTest) {
       const predicate = this.resolveIngredientTest(test)
+
+      createIngredient(value, this.lookup())
       const replacer = createReplacer<IngredientInput>(predicate, value)
-      const replace: Replacer<Ingredient> = it => createIngredient(replacer(it), this.lookup)
+      const replace: Replacer<Ingredient> = it => createIngredient(replacer(it))
 
       this.addRule(
          ['replace ingredient', test, 'with', value, additionalTest],

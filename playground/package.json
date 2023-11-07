@@ -1,0 +1,11 @@
+{
+  "name": "@pssbletrngle/data-modifier-playground",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@pssbletrngle/data-modifier": "workspace:*",
+    "typescript": "^4.8.2"
+  }
+}

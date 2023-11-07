@@ -1,8 +1,8 @@
-export type TagEntry =
-   | string
+export type TagEntry<T extends string = string> =
+   | T
    | Readonly<{
         required?: boolean
-        id: string
+        id: T
      }>
 
 export type TagDefinition = Readonly<{

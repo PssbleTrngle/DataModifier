@@ -29,7 +29,6 @@ function subLogger(logger: LogMethods, prefix?: string): Logger {
       info: (message, ...args) => logger.info(grouped(prefix, message), ...args),
    })
 }
-
 export function createSilentLogger(): Logger {
    return wrapLogMethods({
       error: () => {},

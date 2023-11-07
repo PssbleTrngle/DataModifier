@@ -1,12 +1,13 @@
+import { exists } from '@pssbletrngle/pack-resolver'
+import zod from 'zod'
+import { IllegalShapeError, tryCatching } from '../error.js'
+import RegistryLookup from '../loader/registry/index.js'
 import { TagRegistry, TagRegistryHolder } from '../loader/tags.js'
-import { createId, encodeId, Id, NormalizedId } from './id.js'
 import { Logger } from '../logger.js'
+import { createId, encodeId, Id, NormalizedId } from './id.js'
 import { resolveCommonTest } from './predicates.js'
 import { Block, createResult, FluidStack, ItemStack } from './result.js'
-import zod from 'zod'
-import { exists } from '@pssbletrngle/pack-resolver'
-import { IllegalShapeError, tryCatching } from '../error.js'
-import { RegistryLookup } from '../loader/registryDump.js'
+import { ItemId, RegistryId } from '../schema/ids'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),
@@ -34,7 +35,7 @@ export type FluidIngredient = FluidStack | FluidTag
 export type BlockIngredient = Block | BlockTag
 
 export type Ingredient = ItemIngredient | FluidIngredient | BlockIngredient | Ingredient[]
-export type IngredientInput = Ingredient | string | IngredientInput[]
+export type IngredientInput = Ingredient | ItemId | IngredientInput[]
 
 function createUnvalidatedIngredient(input: unknown, lookup?: RegistryLookup): Ingredient {
    if (!input) throw new IllegalShapeError('ingredient input may not be null')
@@ -67,11 +68,11 @@ export function createIngredient(input: unknown, lookup?: RegistryLookup): Ingre
 
 export type Predicate<T> = (value: T, logger?: Logger) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
-export type IngredientTest = CommonTest<Ingredient> | NormalizedId
+export type IngredientTest = CommonTest<Ingredient> | NormalizedId<ItemId>
 
-export function resolveIdIngredientTest(
-   test: NormalizedId | RegExp,
-   tags: TagRegistry,
+function resolveIdIngredientTest(
+   test: NormalizedId<string> | RegExp,
+   tags: TagRegistry<RegistryId>,
    idSupplier: (it: Ingredient) => Id | null
 ): Predicate<IngredientInput> {
    function resolveIds(it: IngredientInput): Id[] {
@@ -110,8 +111,16 @@ function extractBlockID(ingredient: Ingredient): Id | null {
    return null
 }
 
-export function resolveIngredientTest(test: IngredientTest, tags: TagRegistryHolder): Predicate<IngredientInput> {
-   if (typeof test === 'string' || test instanceof RegExp) {
+export function resolveIngredientTest(
+   test: IngredientTest,
+   tags: TagRegistryHolder,
+   lookup: RegistryLookup | undefined
+): Predicate<IngredientInput> {
+   if (typeof test === 'string') {
+      return resolveIngredientTest({ item: test }, tags, lookup)
+   }
+
+   if (test instanceof RegExp) {
       return resolveIdIngredientTest(test, tags.registry('items'), extractItemID)
    }
 
@@ -119,14 +128,18 @@ export function resolveIngredientTest(test: IngredientTest, tags: TagRegistryHol
       return (it, logger) => test(createIngredient(it), logger)
    }
 
-   if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
+   lookup?.validate(test)
+
    if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), extractItemID)
+   if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
+
+   if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
    if ('fluidTag' in test)
       return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), extractFluidID)
-   if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
+
+   if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
    if ('blockTag' in test)
       return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), extractBlockID)
-   if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
 
    return () => false
 }
