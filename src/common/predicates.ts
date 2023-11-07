@@ -2,7 +2,7 @@ import { TagRegistry } from '../loader/tags.js'
 import { Logger } from '../logger.js'
 import { encodeId, IdInput, NormalizedId, TagInput } from './id.js'
 import { CommonTest, Predicate } from './ingredient.js'
-import { InferIds, RegistryId } from '../schema/ids'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export function resolveCommonTest<TEntry, TId extends string>(
    test: CommonTest<TId>,

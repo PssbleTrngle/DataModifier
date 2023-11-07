@@ -7,7 +7,7 @@ import { tryCatching, UnknownRegistryEntry } from '../../error.js'
 import { Logger } from '../../logger.js'
 import { AcceptorWithLoader, tryParseJson } from '../index.js'
 import RegistryLookup from './index.js'
-import { RegistryId } from '../../schema/ids'
+import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 const schema = zod.array(zod.string())
 

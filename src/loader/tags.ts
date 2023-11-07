@@ -4,7 +4,7 @@ import Registry from '../common/registry.js'
 import { TagDefinition, TagEntry } from '../schema/tag.js'
 import { fromJson } from '../textHelper.js'
 import { AcceptorWithLoader } from './index.js'
-import { InferIds, RegistryId } from '../schema/ids'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry

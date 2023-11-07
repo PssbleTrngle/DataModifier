@@ -21,7 +21,7 @@ import { RecipeDefinition } from '../schema/recipe.js'
 import CustomEmitter from './custom.js'
 import { RegistryProvider } from './index.js'
 import RuledEmitter from './ruled.js'
-import { RecipeSerializerId } from '../schema/ids'
+import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 
 export type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId<string>>

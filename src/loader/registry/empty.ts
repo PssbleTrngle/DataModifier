@@ -1,6 +1,6 @@
 import RegistryLookup from './index.js'
 import { NormalizedId } from '../../common/id.js'
-import { RegistryId } from '../../schema/ids'
+import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 const emptySet = new Set<NormalizedId<never>>()
 

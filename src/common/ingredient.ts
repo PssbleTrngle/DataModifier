@@ -7,7 +7,7 @@ import { Logger } from '../logger.js'
 import { createId, encodeId, Id, NormalizedId } from './id.js'
 import { resolveCommonTest } from './predicates.js'
 import { Block, createResult, FluidStack, ItemStack } from './result.js'
-import { ItemId, RegistryId } from '../schema/ids'
+import { ItemId, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export const ItemTagSchema = zod.object({
    tag: zod.string(),

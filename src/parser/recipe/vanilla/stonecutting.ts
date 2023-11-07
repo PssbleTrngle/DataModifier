@@ -4,7 +4,7 @@ import { RecipeDefinition } from '../../../schema/recipe.js'
 import { encodeId } from '../../../common/id.js'
 import { createResult, Result, ResultInput } from '../../../common/result.js'
 import { IllegalShapeError } from '../../../error.js'
-import { ItemId } from '../../../schema/ids'
+import { ItemId } from '@pssbletrngle/data-modifier/generated'
 
 export type StonecuttingRecipeDefinition = RecipeDefinition &
    Readonly<{

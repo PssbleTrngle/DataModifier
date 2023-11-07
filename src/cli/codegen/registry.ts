@@ -5,7 +5,7 @@ import { createId, encodeId, Id, IdInput } from '../../common/id.js'
 import { camelCase } from 'lodash-es'
 import { format } from 'prettier'
 
-const module = '@pssbletrngle/data-modifier/ids'
+const module = '@pssbletrngle/data-modifier/generated'
 
 function idPath(id: Id) {
    return `${id.path.replaceAll('/', '_')}`
@@ -18,7 +18,7 @@ function idType(id: Id) {
 
 function idTemplate(type: string, values: string[]) {
    return `
-        type ${type}Id = ${values.map(it => `'${it}'`).join(' | ')}
+        export type ${type}Id = ${values.map(it => `'${it}'`).join(' | ')}
    `
 }
 
@@ -30,20 +30,17 @@ function inferRegistryTemplate(keys: IdInput<string>[]) {
       `
 }
 
-function augmentationTemplate(keys: IdInput<string>[]) {
-   return `
-        import '${module}'
-        
+function moduleTemplate(...content: string[]) {
+   const replaced = `
         declare module '${module}' {
-            interface IdMap {
-                'registry': RegistryId
-                ${keys.map(it => `'${encodeId(it)}': ${idType(createId(it))}Id`).join('\n')}        
-            }
+            ${content.join('\n\n')}
         }`
+
+   return format(replaced, { parser: 'typescript' })
 }
 
 export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory = '.') {
-   const typesDirectory = resolve(outputDirectory, '@types')
+   const typesDirectory = resolve(outputDirectory, '@types', 'generated')
    if (!existsSync(typesDirectory)) mkdirSync(typesDirectory, { recursive: true })
 
    const registryBlock = idTemplate('Registry', lookup.registries())
@@ -59,9 +56,5 @@ export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory = 
          return idTemplate(type, keys)
       })
 
-   const augmentationBlock = augmentationTemplate(lookup.registries())
-
-   const content = format([registryBlock, ...idBlocks, augmentationBlock].join('\n\n'), { parser: 'typescript' })
-
-   writeFileSync(join(typesDirectory, 'generated.d.ts'), content)
+   writeFileSync(join(typesDirectory, 'index.d.ts'), moduleTemplate(registryBlock, ...idBlocks, inferIdBlock))
 }

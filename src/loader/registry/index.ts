@@ -1,6 +1,6 @@
 import { IdInput, NormalizedId } from '../../common/id.js'
 import { Ingredient } from '../../common/ingredient.js'
-import { InferIds, RegistryId } from '../../schema/ids'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export default interface RegistryLookup {
    registries(): NormalizedId<RegistryId>[]

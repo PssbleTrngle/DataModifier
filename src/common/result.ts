@@ -2,7 +2,7 @@ import zod from 'zod'
 import { IllegalShapeError } from '../error.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { ZodType } from 'zod/lib/types'
-import { BlockId, FluidId, ItemId } from '../schema/ids'
+import { BlockId, FluidId, ItemId } from '@pssbletrngle/data-modifier/generated'
 
 export const ItemStackSchema = zod.object({
    item: zod.string() as ZodType<ItemId>,

@@ -1,6 +1,6 @@
 import { Logger } from './logger.js'
 import { ZodError } from 'zod'
-import { InferIds, RegistryId } from './schema/ids'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export class IllegalShapeError extends Error {
    constructor(message: string, readonly input?: unknown) {

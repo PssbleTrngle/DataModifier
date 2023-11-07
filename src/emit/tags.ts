@@ -7,7 +7,7 @@ import { TagDefinition, TagEntry } from '../schema/tag.js'
 import { createId, encodeId, Id, NormalizedId, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
 import { resolveIDTest } from '../common/predicates.js'
-import { BlockId, FluidId, InferIds, ItemId, RegistryId } from '../schema/ids'
+import { BlockId, FluidId, InferIds, ItemId, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export interface TagRules {
    add<T extends RegistryId>(registry: T, id: TagInput, value: TagEntry<InferIds<T>>): void
