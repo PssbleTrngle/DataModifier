@@ -2,8 +2,8 @@
   "name": "@pssbletrngle/data-modifier-playground",
   "private": true,
   "scripts": {
-    "build": "tsc",
-    "prepare": "datamod codegen --output generated --registry-dump ../test/resources/dump"
+    "build": "pnpm run codegen && tsc",
+    "codegen": "datamod codegen --output generated --registry-dump ../test/resources/dump"
   },
   "dependencies": {
     "@pssbletrngle/data-modifier": "workspace:*",
