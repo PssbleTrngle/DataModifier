@@ -12,7 +12,7 @@ import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 const schema = zod.array(zod.string())
 
 export default class RegistryDumpLoader implements RegistryLookup {
-   private readonly registry = new Registry<Set<NormalizedId<string>>, RegistryId>()
+   private readonly registry = new Registry<Set<NormalizedId>, RegistryId>()
 
    constructor(private readonly logger: Logger) {}
 
@@ -34,7 +34,7 @@ export default class RegistryDumpLoader implements RegistryLookup {
       const parsed = tryCatching(grouped, () => schema.parse(json))
       if (!parsed) return false
 
-      const set = this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId<string>>())
+      const set = this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId>())
       parsed.map(encodeId).forEach(id => set.add(id))
 
       return true

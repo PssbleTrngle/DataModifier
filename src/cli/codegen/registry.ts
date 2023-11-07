@@ -7,10 +7,6 @@ import { format } from 'prettier'
 
 const module = '@pssbletrngle/data-modifier/generated'
 
-function idPath(id: Id) {
-   return `${id.path.replaceAll('/', '_')}`
-}
-
 function idType(id: Id) {
    const cased = camelCase(id.path.replaceAll('/', ' '))
    return cased.charAt(0).toUpperCase() + cased.substring(1)
@@ -22,7 +18,7 @@ function idTemplate(type: string, values: string[]) {
    `
 }
 
-function inferRegistryTemplate(keys: IdInput<string>[]) {
+function inferRegistryTemplate(keys: IdInput[]) {
    return `
         export type InferIds<T extends RegistryId> = {
             ${keys.map(it => `'${encodeId(it)}': ${idType(createId(it))}Id`).join('\n')}
@@ -39,9 +35,14 @@ function moduleTemplate(...content: string[]) {
    return format(replaced, { parser: 'typescript' })
 }
 
-export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory = '.') {
-   const typesDirectory = resolve(outputDirectory, '@types', 'generated')
-   if (!existsSync(typesDirectory)) mkdirSync(typesDirectory, { recursive: true })
+function createTypesDirectory(base: string) {
+   const dir = resolve(base, '@types', 'generated')
+   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+   return dir
+}
+
+export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory: string) {
+   const typesDirectory = createTypesDirectory(outputDirectory)
 
    const registryBlock = idTemplate('Registry', lookup.registries())
    const inferIdBlock = inferRegistryTemplate(lookup.registries())
@@ -57,4 +58,30 @@ export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory = 
       })
 
    writeFileSync(join(typesDirectory, 'index.d.ts'), moduleTemplate(registryBlock, ...idBlocks, inferIdBlock))
+}
+
+export function generateStubTypes(outputDirectory: string) {
+   const typesDirectory = createTypesDirectory(outputDirectory)
+   const registryStub = resolve(typesDirectory, 'index.d.ts')
+
+   writeFileSync(
+      registryStub,
+      format(
+         `
+         declare module '@pssbletrngle/data-modifier/generated' {
+            export type RegistryId = string
+         
+            export type InferIds<T extends RegistryId> = string
+         
+            export type ItemId = string
+         
+            export type BlockId = string
+         
+            export type FluidId = string
+         
+            export type RecipeSerializerId = string
+         }`,
+         { parser: 'typescript' }
+      )
+   )
 }

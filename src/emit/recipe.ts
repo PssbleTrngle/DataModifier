@@ -24,7 +24,7 @@ import RuledEmitter from './ruled.js'
 import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 
 export type RecipeTest = Readonly<{
-   id?: CommonTest<NormalizedId<string>>
+   id?: CommonTest<NormalizedId>
    type?: CommonTest<NormalizedId<RecipeSerializerId>>
    namespace?: string
    output?: IngredientTest
@@ -38,7 +38,7 @@ export interface RecipeRules {
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTests?: RecipeTest): void
 
    add<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
-      id: IdInput<string>,
+      id: IdInput,
       value: TDefinition | TRecipe
    ): void
 
@@ -110,7 +110,7 @@ export default class RecipeEmitter implements RecipeRules {
    }
 
    add<TDefinition extends RecipeDefinition, TRecipe extends Recipe<TDefinition>>(
-      id: IdInput<string>,
+      id: IdInput,
       value: TDefinition | TRecipe
    ) {
       if (this.custom.has(id)) this.logger.error(`Overwriting custom recipe with ID ${encodeId(id)}`)

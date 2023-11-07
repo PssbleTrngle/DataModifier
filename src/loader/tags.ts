@@ -25,18 +25,18 @@ export interface TagRegistryHolder {
 export interface TagRegistry<T extends RegistryId> {
    list(): string[]
 
-   get(id: TagInput): TagEntry[] | undefined
+   get(id: TagInput): TagEntry<InferIds<T>>[] | undefined
 
-   resolve(id: TagInput): TagEntry[]
+   resolve(id: TagInput): TagEntry<InferIds<T>>[]
 
-   contains(id: TagInput, entry: IdInput<InferIds<RegistryId>>): boolean
+   contains(id: TagInput, entry: IdInput<InferIds<T>>): boolean
 }
 
 class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
    private readonly entries = new Registry<TagEntry[]>()
    private frozen = false
 
-   private validateId(input: IdInput<string>) {
+   private validateId(input: IdInput) {
       const id = encodeId(input)
       if (!id.startsWith('#')) throw new Error("tag id's must start with a '#'")
    }

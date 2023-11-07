@@ -71,7 +71,7 @@ export type CommonTest<T> = RegExp | Predicate<T> | T
 export type IngredientTest = CommonTest<Ingredient> | NormalizedId<ItemId>
 
 function resolveIdIngredientTest(
-   test: NormalizedId<string> | RegExp,
+   test: NormalizedId | RegExp,
    tags: TagRegistry<RegistryId>,
    idSupplier: (it: Ingredient) => Id | null
 ): Predicate<IngredientInput> {

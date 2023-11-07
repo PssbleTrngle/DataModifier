@@ -18,7 +18,7 @@ export const EMPTY_LOOT_TABLE: LootTable = {
 }
 
 type LootTableTest = Readonly<{
-   id?: CommonTest<NormalizedId<string>>
+   id?: CommonTest<NormalizedId>
    output?: IngredientTest
 }>
 
@@ -27,7 +27,7 @@ export interface LootRules {
 
    removeOutput(from: IngredientTest, additionalTests?: LootTableTest): void
 
-   addLootTable(id: IdInput<string>, value: LootTable): void
+   addLootTable(id: IdInput, value: LootTable): void
 
    disableLootTable(test: LootTableTest): void
 }
@@ -72,7 +72,7 @@ export default class LootTableEmitter implements LootRules {
       return { id, output }
    }
 
-   addLootTable(id: IdInput<string>, value: LootTable): void {
+   addLootTable(id: IdInput, value: LootTable): void {
       this.custom.add(id, LootTableSchema.parse(value))
    }
 
