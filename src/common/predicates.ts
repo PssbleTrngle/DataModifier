@@ -5,7 +5,7 @@ import { CommonTest, Predicate } from './ingredient.js'
 import { InferIds, RegistryId } from '../schema/ids'
 
 export function resolveCommonTest<TEntry, TId extends string>(
-   test: CommonTest<NormalizedId<TId>>,
+   test: CommonTest<TId>,
    resolve: (value: TEntry, logger?: Logger) => NormalizedId<TId>[],
    tags?: TagRegistry<RegistryId>
 ): Predicate<TEntry> {
@@ -25,14 +25,14 @@ export function resolveCommonTest<TEntry, TId extends string>(
       }
    } else {
       return (ingredient, logger) => {
-         return resolve(ingredient, logger).includes(test)
+         return resolve(ingredient, logger).includes(encodeId(test))
       }
    }
 }
 
 export function resolveIDTest<T extends RegistryId>(
-   test: CommonTest<InferIds<T>>,
+   test: CommonTest<NormalizedId<InferIds<T>>>,
    tags?: TagRegistry<T>
 ): Predicate<IdInput<InferIds<T>>> {
-   return resolveCommonTest<IdInput<InferIds<T>>, InferIds<T>>(test, it => [encodeId(it)], tags)
+   return resolveCommonTest<IdInput<InferIds<T>>, NormalizedId<InferIds<T>>>(test, it => [encodeId(it)], tags)
 }

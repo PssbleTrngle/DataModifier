@@ -1,11 +1,15 @@
-import { dirname, join, resolve } from 'path'
+import { join, resolve } from 'path'
 import RegistryLookup from '../../loader/registry/index.js'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { createId, encodeId, Id, IdInput } from '../../common/id.js'
 import { camelCase } from 'lodash-es'
 import { format } from 'prettier'
 
-const module = '@pssbletrngle/data-modifier'
+const module = '@pssbletrngle/data-modifier/ids'
+
+function idPath(id: Id) {
+   return `${id.path.replaceAll('/', '_')}`
+}
 
 function idType(id: Id) {
    const cased = camelCase(id.path.replaceAll('/', ' '))
@@ -13,50 +17,51 @@ function idType(id: Id) {
 }
 
 function idTemplate(type: string, values: string[]) {
-   const replaced = `
-         import '${module}'
-      
-         declare module '${module}' {
-            export type ${type}Id = ${values.map(it => `'${it}'`).join(' | ')}
-         }
-      `
-
-   return format(replaced, { parser: 'typescript' })
+   return `
+        type ${type}Id = ${values.map(it => `'${it}'`).join(' | ')}
+   `
 }
 
 function inferRegistryTemplate(keys: IdInput<string>[]) {
-   const replaced = `
-         import '${module}'
-      
-         declare module '${module}' {
-            export type InferIds<T extends RegistryId> = {
-                ${keys.map(it => `'${encodeId(it)}': ${idType(createId(it))}Id`).join('\n')}
-            }[T]
-         }
+   return `
+        export type InferIds<T extends RegistryId> = {
+            ${keys.map(it => `'${encodeId(it)}': ${idType(createId(it))}Id`).join('\n')}
+        }[T]
       `
+}
 
-   return format(replaced, { parser: 'typescript' })
+function augmentationTemplate(keys: IdInput<string>[]) {
+   return `
+        import '${module}'
+        
+        declare module '${module}' {
+            interface IdMap {
+                'registry': RegistryId
+                ${keys.map(it => `'${encodeId(it)}': ${idType(createId(it))}Id`).join('\n')}        
+            }
+        }`
 }
 
 export function generateRegistryTypes(lookup: RegistryLookup, outputDirectory = '.') {
    const typesDirectory = resolve(outputDirectory, '@types')
+   if (!existsSync(typesDirectory)) mkdirSync(typesDirectory, { recursive: true })
 
-   writeFileSync(join(typesDirectory, 'registries.d.ts'), idTemplate('Registry', lookup.registries()))
-   writeFileSync(join(typesDirectory, 'ids.d.ts'), inferRegistryTemplate(lookup.registries()))
+   const registryBlock = idTemplate('Registry', lookup.registries())
+   const inferIdBlock = inferRegistryTemplate(lookup.registries())
 
-   lookup
+   const idBlocks = lookup
       .registries()
       .map(createId)
       .filter(it => it.namespace === 'minecraft')
-      .forEach(id => {
-         const file = join(typesDirectory, `${id.path.replaceAll('/', '_')}.d.ts`)
-         if (!existsSync(file)) mkdirSync(dirname(file), { recursive: true })
-
+      .map(id => {
          const keys = [...lookup.keys(id)!].sort()
          const type = idType(id)
-
-         const content = idTemplate(type, keys)
-
-         writeFileSync(file, content)
+         return idTemplate(type, keys)
       })
+
+   const augmentationBlock = augmentationTemplate(lookup.registries())
+
+   const content = format([registryBlock, ...idBlocks, augmentationBlock].join('\n\n'), { parser: 'typescript' })
+
+   writeFileSync(join(typesDirectory, 'generated.d.ts'), content)
 }

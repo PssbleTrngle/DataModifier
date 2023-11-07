@@ -6,7 +6,7 @@ import { generateRegistryTypes } from './codegen/registry.js'
 const logger = createLogger()
 
 async function runCli() {
-   const output = 'generated'
+   const output = 'playground/generated'
 
    const registry = new RegistryDumpLoader(logger)
    const resolver = createResolver({ from: 'test/resources/dump' })

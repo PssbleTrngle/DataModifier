@@ -11,7 +11,8 @@
       "./parser/thermal": "./dist/parser/thermal.js",
       "./parser/farmersdelight": "./dist/parser/farmersdelight.js",
       "./parser/adAstra": "./dist/parser/adAstra.js",
-      "./parser/roots": "./dist/parser/roots.js"
+      "./parser/roots": "./dist/parser/roots.js",
+      "./ids": "./dist/schema/ids.js"
    },
    "typesVersions": {
       "*": {
@@ -35,6 +36,9 @@
          ],
          "parser/roots": [
             "./dist/parser/roots.d.ts"
+         ],
+         "ids": [
+            "./dist/schema/ids.d.ts"
          ]
       }
    },

@@ -4,7 +4,7 @@
     "outDir": "dist",
     "typeRoots": [
       "node_modules/@types",
-      "../generated/@types"
+      "generated/@types"
     ]
   },
   "include": [

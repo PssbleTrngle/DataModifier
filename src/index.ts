@@ -27,4 +27,3 @@ export { default as createLogger, Logger, createSilentLogger, wrapLogMethods } f
 export { RecipeDefinition, FabricCondition, ForgeCondition } from './schema/recipe.js'
 export { TagEntry, TagDefinition } from './schema/tag.js'
 export { EmptyLootEntry, LootEntry, LootTable, LootPool } from './schema/loot.js'
-export * from './schema/ids.js'

@@ -1,28 +1,15 @@
-import { NormalizedId } from '../common/id'
-
 /**
  * Can be overwritten using the cli
  */
-export type RegistryId = string
+export interface IdMap {
+   [key: string]: string
+}
 
-/**
- * Can be overwritten using the cli
- */
-export type ItemId = string
+export type RegistryId = IdMap['registry']
 
-/**
- * Can be overwritten using the cli
- */
-export type BlockId = string
+export type InferIds<T extends RegistryId> = IdMap[T]
 
-/**
- * Can be overwritten using the cli
- */
-export type FluidId = string
-
-/**
- * Can be overwritten using the cli
- */
-export type RecipeSerializerId = string
-
-export type InferIds<T extends RegistryId> = NormalizedId<string>
+export type ItemId = InferIds<'minecraft:item'>
+export type BlockId = InferIds<'minecraft:block'>
+export type FluidId = InferIds<'minecraft:fluid'>
+export type RecipeSerializerId = InferIds<'minecraft:recipe_serializer'>
