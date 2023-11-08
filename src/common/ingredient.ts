@@ -122,7 +122,7 @@ export function resolveIngredientTest(
    }
 
    if (test instanceof RegExp) {
-      return resolveIdIngredientTest(test, tags.registry('items'), extractItemID)
+      return resolveIdIngredientTest(test, tags.registry('item'), extractItemID)
    }
 
    if (typeof test === 'function') {
@@ -131,16 +131,16 @@ export function resolveIngredientTest(
 
    lookup?.validate(test)
 
-   if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('items'), extractItemID)
-   if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('items'), extractItemID)
+   if ('item' in test) return resolveIdIngredientTest(encodeId(test.item), tags.registry('item'), extractItemID)
+   if ('tag' in test) return resolveIdIngredientTest(`#${encodeId(test.tag)}`, tags.registry('item'), extractItemID)
 
-   if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluids'), extractFluidID)
+   if ('fluid' in test) return resolveIdIngredientTest(encodeId(test.fluid), tags.registry('fluid'), extractFluidID)
    if ('fluidTag' in test)
-      return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluids'), extractFluidID)
+      return resolveIdIngredientTest(`#${encodeId(test.fluidTag)}`, tags.registry('fluid'), extractFluidID)
 
-   if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('blocks'), extractBlockID)
+   if ('block' in test) return resolveIdIngredientTest(encodeId(test.block), tags.registry('block'), extractBlockID)
    if ('blockTag' in test)
-      return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('blocks'), extractBlockID)
+      return resolveIdIngredientTest(`#${encodeId(test.blockTag)}`, tags.registry('block'), extractBlockID)
 
    return () => false
 }

@@ -3,7 +3,7 @@ import { toJson } from '../textHelper.js'
 import { CommonTest } from '../common/ingredient.js'
 import { Logger } from '../logger.js'
 import TagsLoader, { entryId, orderTagEntries, TagRegistry } from '../loader/tags.js'
-import { TagDefinition, TagEntry } from '../schema/tag.js'
+import { TagDefinition, TagEntry, tagFolderOf } from '../schema/tag.js'
 import { createId, encodeId, Id, NormalizedId, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
 import { resolveIDTest } from '../common/predicates.js'
@@ -14,7 +14,7 @@ export interface TagRules {
 
    remove<T extends RegistryId>(registry: T, id: TagInput, test: CommonTest<NormalizedId<InferIds<T>>>): void
 
-   scoped<T extends RegistryId>(key: T): ScopedTagRules<T>
+   scoped<T extends RegistryId>(key: T, folder?: string): ScopedTagRules<T>
 
    blocks: ScopedTagRules<'minecraft:block'>
    items: ScopedTagRules<'minecraft:item'>
@@ -22,14 +22,14 @@ export interface TagRules {
 }
 
 interface ScopedTagRules<T extends RegistryId> {
-   add(id: TagInput, value: TagEntry): void
+   add(id: TagInput, value: TagEntry<InferIds<T>>): void
    remove(id: TagInput, test: CommonTest<NormalizedId<InferIds<T>>>): void
 }
 
 type TagModifier = (previous: TagDefinition) => TagDefinition
 
 class ScopedEmitter<T extends RegistryId> implements ScopedTagRules<T> {
-   constructor(private readonly registry: TagRegistry<RegistryId>) {}
+   constructor(private readonly registry: TagRegistry<RegistryId>, public readonly folder: string) {}
 
    private readonly modifiers = new Registry<TagModifier[]>()
 
@@ -85,9 +85,9 @@ export default class TagEmitter implements TagRules {
    }
 
    async emit(acceptor: Acceptor) {
-      this.emitters.forEach((scoped, registry) => {
+      this.emitters.forEach(scoped => {
          scoped.getModified((id, definition) => {
-            const path = `data/${id.namespace}/tags/${registry}/${id.path}.json`
+            const path = `data/${id.namespace}/tags/${scoped.folder}/${id.path}.json`
 
             acceptor(
                path,
@@ -108,17 +108,17 @@ export default class TagEmitter implements TagRules {
       this.scoped<T>(registry).remove(id, test)
    }
 
-   scoped<T extends RegistryId>(key: T): ScopedTagRules<T> {
-      const existing = this.emitters.get(key)
+   scoped<T extends RegistryId>(registry: T, folder: string = tagFolderOf(registry)): ScopedTagRules<T> {
+      const existing = this.emitters.get(registry)
       if (existing) return existing as ScopedTagRules<T>
       else {
-         const emitter = new ScopedEmitter(this.registry.registry(key))
-         this.emitters.set(key, emitter)
+         const emitter = new ScopedEmitter(this.registry.registry(registry), folder)
+         this.emitters.set(registry, emitter)
          return emitter as ScopedTagRules<T>
       }
    }
 
-   blocks = this.scoped('blocks')
-   items = this.scoped('items')
-   fluids = this.scoped('fluids')
+   blocks = this.scoped('minecraft:block', 'blocks')
+   items = this.scoped('minecraft:item', 'items')
+   fluids = this.scoped('minecraft:fluid', 'fluids')
 }

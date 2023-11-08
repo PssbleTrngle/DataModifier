@@ -7,7 +7,7 @@ export type RunicAltarRecipeDefinition = RecipeDefinition &
    Readonly<{
       ingredients: Ingredient[]
       output: Result
-      mana?: number
+      mana: number
    }>
 
 export class RunicAltarRecipe extends Recipe<RunicAltarRecipeDefinition> {

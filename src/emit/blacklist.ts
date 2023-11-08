@@ -6,10 +6,14 @@ import { IllegalShapeError } from '../error.js'
 import { Logger } from '../logger.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { TagRegistryHolder } from '../loader/tags.js'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export interface BlacklistRules {
    hide(...inputs: IngredientTest[]): void
+   hideEntry<T extends RegistryId>(type: T, ...entries: RegistryIdInput<T>[]): void
 }
+
+type RegistryIdInput<T extends RegistryId> = InferIds<T> | RegExp
 
 export default class BlacklistEmitter implements BlacklistRules {
    private hidden: NormalizedId[] = []
@@ -22,6 +26,24 @@ export default class BlacklistEmitter implements BlacklistRules {
 
    hide(...inputs: IngredientTest[]) {
       this.hidden.push(...inputs.flatMap(test => this.resolveIds(test)).map(encodeId))
+   }
+
+   hideEntry<T extends RegistryId>(type: T, ...entries: RegistryIdInput<T>[]) {
+      const lookup = this.lookup()
+      const ids = entries
+         .flatMap(entry => {
+            if (typeof entry === 'string') {
+               lookup.validateEntry(type, entry)
+               return [entry]
+            } else {
+               const keys = lookup.keys(type)
+               if (!keys) throw new Error(`cannot hide using regex/predicates, registry ${encodeId(type)} not loaded`)
+               return [...keys].filter(it => entry.test(it))
+            }
+         })
+         .map(encodeId)
+
+      this.hidden.push(...ids)
    }
 
    private filterIds(test: IngredientTest) {

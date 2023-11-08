@@ -16,13 +16,14 @@ import RegistryLookup from './registry/index.js'
 import TagsLoader from './tags.js'
 import EmptyRegistryLookup from './registry/empty.js'
 import { createResult, ResultInput } from '../common/result.js'
+import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
 
    private activeRegistryLookup: RegistryLookup = new EmptyRegistryLookup()
 
-   private readonly tagLoader = new TagsLoader()
+   private readonly tagLoader = new TagsLoader(() => this.activeRegistryLookup)
    private readonly recipesLoader = new RecipeLoader()
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
@@ -51,7 +52,7 @@ export default class PackLoader implements Loader {
       this.tagLoader.registerRegistry(key)
    }
 
-   tagRegistry(key: string) {
+   tagRegistry<T extends RegistryId>(key: T) {
       return this.tagLoader.registry(key)
    }
 

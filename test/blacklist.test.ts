@@ -43,11 +43,28 @@ describe('blacklist tests', () => {
    it('fails when trying to use a regex/predicate without a registry dump', async () => {
       const acceptor = createTestAcceptor()
 
-      expect(() => loader.blacklist.hide(/whatever/)).toThrow('')
-      expect(() => loader.blacklist.hide(() => true)).toThrow('')
+      const message = 'you can only use regex/predicates to blacklist items if a registry dump is loaded'
+      expect(() => loader.blacklist.hide(/whatever/)).toThrow(message)
+      expect(() => loader.blacklist.hide(() => true)).toThrow(message)
 
       await loader.emit(acceptor)
 
       expect(acceptor.at('jei/blacklist.cfg')).toBeNull()
+   })
+
+   it('validates custom registry ids', async () => {
+      const acceptor = createTestAcceptor()
+
+      await loader.loadRegistryDump(createDumpResolver())
+
+      expect(() => loader.blacklist.hideEntry('example', /whatever/)).toThrow(
+         `cannot hide using regex/predicates, registry minecraft:example not loaded`
+      )
+      loader.blacklist.hideEntry('minecraft:worldgen/biome', 'minecraft:basalt_deltas')
+      loader.blacklist.hideEntry('minecraft:worldgen/biome', /minecraft:.+_forest/)
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.at('jei/blacklist.cfg')).toMatchSnapshot('jei blacklist config file using biome registry')
    })
 })

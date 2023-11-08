@@ -56,7 +56,7 @@ export default class RegistryDumpLoader implements RegistryLookup {
       return this.registry.has(registry)
    }
 
-   private validateEntry(registry: string, id: string) {
+   validateEntry(registry: RegistryId, id: IdInput) {
       const keys = this.keys(registry)
       if (!keys) return
 

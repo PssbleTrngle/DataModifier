@@ -53,3 +53,14 @@ minecraft:ice
 minecraft:stone
 minecraft:water"
 `;
+
+exports[`blacklist tests validates custom registry ids: jei blacklist config file using biome registry 1`] = `
+"minecraft:basalt_deltas
+minecraft:birch_forest
+minecraft:crimson_forest
+minecraft:dark_forest
+minecraft:flower_forest
+minecraft:old_growth_birch_forest
+minecraft:warped_forest
+minecraft:windswept_forest"
+`;

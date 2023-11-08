@@ -1,10 +1,11 @@
 import { orderBy, uniqBy } from 'lodash-es'
-import { encodeId, IdInput, TagInput } from '../common/id.js'
+import { encodeId, IdInput, NormalizedId, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
-import { TagDefinition, TagEntry } from '../schema/tag.js'
+import { TagDefinition, TagEntry, tagFolderOf } from '../schema/tag.js'
 import { fromJson } from '../textHelper.js'
 import { AcceptorWithLoader } from './index.js'
 import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import RegistryLookup from './registry/index.js'
 
 export function entryId(entry: TagEntry) {
    if (typeof entry === 'string') return entry
@@ -35,6 +36,8 @@ export interface TagRegistry<T extends RegistryId> {
 class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
    private readonly entries = new Registry<TagEntry[]>()
    private frozen = false
+
+   constructor(public readonly folder: string) {}
 
    private validateId(input: IdInput) {
       const id = encodeId(input)
@@ -101,36 +104,46 @@ class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
 }
 
 export default class TagsLoader implements TagRegistryHolder {
-   private registries: Record<string, WriteableTagRegistry<RegistryId>> = {}
+   private registries: Record<NormalizedId, WriteableTagRegistry<RegistryId>> = {}
+   private consumerLookup = false
 
-   constructor() {
-      this.registerRegistry('items')
-      this.registerRegistry('blocks')
-      this.registerRegistry('fluids')
+   constructor(private readonly lookup: () => RegistryLookup) {
+      this.registerRegistry('minecraft:item', 'items')
+      this.registerRegistry('minecraft:block', 'blocks')
+      this.registerRegistry('minecraft:fluid', 'fluids')
+      this.registerRegistry('minecraft:entity_type', 'entity_types')
    }
 
-   registerRegistry(key: string) {
-      this.registries[key] = new WriteableTagRegistry()
+   registerRegistry(key: IdInput, folder = tagFolderOf(key)) {
+      this.registries[encodeId(key)] = new WriteableTagRegistry(folder)
    }
 
-   registry<T extends RegistryId>(key: T): TagRegistry<T> {
-      if (!(key in this.registries))
-         throw new Error(`unknown registry tags '${key}'. Register them using \`registerRegistry\``)
-      return this.registries[key]
+   registry<T extends RegistryId>(key: IdInput<T>): TagRegistry<T> {
+      const id = encodeId(key)
+      if (!(id in this.registries))
+         throw new Error(`unknown registry tags '${id}'. Register them using \`registerRegistry\``)
+      return this.registries[id]
    }
 
    private parsePath(input: string) {
+      if (!this.consumerLookup) {
+         this.lookup()
+            .registries()
+            .forEach(it => this.registerRegistry(it))
+         this.consumerLookup = true
+      }
+
       const match = /data[\\/](?<namespace>[\w-]+)[\\/]tags[\\/](?<rest>[\w-\\/]+).json/.exec(input)
       if (!match?.groups) return null
 
       const { namespace, rest } = match.groups
 
-      const registry = Object.entries(this.registries).find(([it]) => rest.startsWith(`${it}/`))
+      const registry = Object.values(this.registries).find(it => rest.startsWith(`${it.folder}/`))
       if (!registry) return null
 
-      const path = rest.substring(registry[0].length + 1)
+      const path = rest.substring(registry.folder.length + 1)
 
-      return { namespace, registry: registry[1], path, isTag: true }
+      return { namespace, registry, path, isTag: true }
    }
 
    readonly accept: AcceptorWithLoader = (_, path, content) => {

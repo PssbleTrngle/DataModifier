@@ -7,6 +7,11 @@ export {
 export {
    ThermalCatalystRecipeDefinition,
    ThermalCatalystRecipe,
-   default as ThermalCatalystParser,
+   default as ThermalCatalystRecipeParser,
 } from './recipe/thermal/catalyst.js'
+export {
+   ThermalFuelRecipeDefinition,
+   ThermalFuelRecipe,
+   default as ThermalFuelRecipeParser,
+} from './recipe/thermal/fuel.js'
 export { ThermalIngredientInput, fromThermalIngredient, toThermalIngredient } from './recipe/thermal/ingredient.js'

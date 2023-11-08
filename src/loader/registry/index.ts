@@ -10,4 +10,6 @@ export default interface RegistryLookup {
    isKnown(registry: IdInput<RegistryId>): boolean
 
    validate(ingredient: Ingredient): void
+
+   validateEntry(key: RegistryId, id: IdInput): void
 }

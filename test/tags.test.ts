@@ -5,8 +5,8 @@ const { loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })
 
 describe('loading of tags', () => {
    it('loads tags correctly', async () => {
-      const itemTags = loader.tagRegistry('items')
-      const blockTags = loader.tagRegistry('blocks')
+      const itemTags = loader.tagRegistry('item')
+      const blockTags = loader.tagRegistry('block')
 
       expect(blockTags.list().length).toBe(259)
       expect(itemTags.list().length).toBe(302)
@@ -16,8 +16,8 @@ describe('loading of tags', () => {
    })
 
    it('resolves tags correctly', async () => {
-      const itemTags = loader.tagRegistry('items')
-      const blockTags = loader.tagRegistry('blocks')
+      const itemTags = loader.tagRegistry('item')
+      const blockTags = loader.tagRegistry('block')
 
       expect(blockTags.resolve('#minecraft:mineable/axe')).toMatchSnapshot('resolved #mineable/axe entries')
       expect(itemTags.resolve('#minecraft:trapdoors')).toMatchSnapshot('resolved #trapdoors entries')
@@ -26,7 +26,7 @@ describe('loading of tags', () => {
 
 describe('tag contain tests', () => {
    it('finds item in tag', async () => {
-      const blockTags = loader.tagRegistry('blocks')
+      const blockTags = loader.tagRegistry('block')
 
       expect(blockTags.contains('#minecraft:mineable/axe', 'minecraft:note_block')).toBeTruthy()
       expect(blockTags.contains('#minecraft:mineable/axe', 'minecraft:oak_log')).toBeTruthy()
@@ -37,7 +37,7 @@ describe('tag contain tests', () => {
    })
 
    it('finds tag in tag', async () => {
-      const blockTags = loader.tagRegistry('blocks')
+      const blockTags = loader.tagRegistry('block')
 
       expect(blockTags.contains('#minecraft:mineable/axe', '#minecraft:logs')).toBeTruthy()
       expect(blockTags.contains('#minecraft:mineable/axe', '#minecraft:logs_that_burn')).toBeTruthy()

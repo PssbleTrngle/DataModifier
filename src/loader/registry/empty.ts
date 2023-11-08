@@ -18,4 +18,8 @@ export default class EmptyRegistryLookup implements RegistryLookup {
    validate() {
       // Nothing done
    }
+
+   validateEntry() {
+      // Nothing done
+   }
 }
