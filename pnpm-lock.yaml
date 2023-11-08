@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@pssbletrngle/data-modifier': link:.
+
 importers:
 
   .:
@@ -94,7 +97,7 @@ importers:
   playground:
     dependencies:
       '@pssbletrngle/data-modifier':
-        specifier: workspace:*
+        specifier: link:..
         version: link:..
       typescript:
         specifier: ^4.8.2

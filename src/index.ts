@@ -5,7 +5,7 @@ export { TagRules } from './emit/tags.js'
 export { RecipeRules, EMPTY_RECIPE } from './emit/recipe.js'
 export { LootRules, EMPTY_LOOT_TABLE } from './emit/loot.js'
 export { LootItemInput } from './parser/lootTable.js'
-export { IllegalShapeError } from './error.js'
+export { UnknownRegistryEntry, IllegalShapeError } from './error.js'
 export {
    IngredientInput,
    Predicate,

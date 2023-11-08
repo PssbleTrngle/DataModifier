@@ -100,5 +100,8 @@
       "prismarine-nbt": "^2.2.1",
       "typescript": "^4.8.2",
       "zod": "^3.22.4"
+   },
+   "resolutions": {
+      "@pssbletrngle/data-modifier": "link:."
    }
 }

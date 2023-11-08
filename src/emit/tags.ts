@@ -7,7 +7,7 @@ import { TagDefinition, TagEntry } from '../schema/tag.js'
 import { createId, encodeId, Id, NormalizedId, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
 import { resolveIDTest } from '../common/predicates.js'
-import { BlockId, FluidId, InferIds, ItemId, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export interface TagRules {
    add<T extends RegistryId>(registry: T, id: TagInput, value: TagEntry<InferIds<T>>): void
@@ -16,9 +16,9 @@ export interface TagRules {
 
    scoped<T extends RegistryId>(key: T): ScopedTagRules<T>
 
-   blocks: ScopedTagRules<BlockId>
-   items: ScopedTagRules<ItemId>
-   fluids: ScopedTagRules<FluidId>
+   blocks: ScopedTagRules<'minecraft:block'>
+   items: ScopedTagRules<'minecraft:item'>
+   fluids: ScopedTagRules<'minecraft:fluid'>
 }
 
 interface ScopedTagRules<T extends RegistryId> {

@@ -1,6 +1,6 @@
 import { Acceptor, IResolver, ResolverInfo } from '@pssbletrngle/pack-resolver'
 import match from 'minimatch'
-import { IngredientTest } from '../common/ingredient.js'
+import { createIngredient, IngredientInput, IngredientTest } from '../common/ingredient.js'
 import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
 import LangEmitter, { LangRules } from '../emit/lang.js'
 import LootTableEmitter, { LootRules } from '../emit/loot.js'
@@ -15,6 +15,7 @@ import RegistryDumpLoader from './registry/dump.js'
 import RegistryLookup from './registry/index.js'
 import TagsLoader from './tags.js'
 import EmptyRegistryLookup from './registry/empty.js'
+import { createResult, ResultInput } from '../common/result.js'
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger) {}
@@ -76,6 +77,14 @@ export default class PackLoader implements Loader {
 
    get registries(): RegistryLookup {
       return this.activeRegistryLookup
+   }
+
+   createResult(input: ResultInput) {
+      return createResult(input, this.activeRegistryLookup)
+   }
+
+   createIngredient(input: IngredientInput) {
+      return createIngredient(input, this.activeRegistryLookup)
    }
 
    resolveIngredientTest(test: IngredientTest) {

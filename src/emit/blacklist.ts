@@ -5,14 +5,14 @@ import { uniq } from 'lodash-es'
 import { IllegalShapeError } from '../error.js'
 
 export interface BlacklistRules {
-   hide(input: IngredientInput): void
+   hide(...inputs: IngredientInput[]): void
 }
 
 export default class BlacklistEmitter implements BlacklistRules {
    private hidden: IngredientInput[] = []
 
-   hide(input: IngredientInput) {
-      this.hidden.push(input)
+   hide(...inputs: IngredientInput[]) {
+      this.hidden.push(...inputs)
    }
 
    private resolveIds(input: IngredientInput): string[] {

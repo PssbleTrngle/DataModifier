@@ -68,7 +68,7 @@ export function createIngredient(input: unknown, lookup?: RegistryLookup): Ingre
 
 export type Predicate<T> = (value: T, logger?: Logger) => boolean
 export type CommonTest<T> = RegExp | Predicate<T> | T
-export type IngredientTest = CommonTest<Ingredient> | NormalizedId<ItemId>
+export type IngredientTest = CommonTest<Ingredient> | ItemId | `#${string}`
 
 function resolveIdIngredientTest(
    test: NormalizedId | RegExp,
@@ -117,7 +117,8 @@ export function resolveIngredientTest(
    lookup: RegistryLookup | undefined
 ): Predicate<IngredientInput> {
    if (typeof test === 'string') {
-      return resolveIngredientTest({ item: test }, tags, lookup)
+      if (!test.startsWith('#')) return resolveIngredientTest({ item: test }, tags, lookup)
+      return resolveIngredientTest({ tag: test.substring(1) }, tags, lookup)
    }
 
    if (test instanceof RegExp) {
