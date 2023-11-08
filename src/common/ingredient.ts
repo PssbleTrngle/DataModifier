@@ -35,7 +35,7 @@ export type FluidIngredient = FluidStack | FluidTag
 export type BlockIngredient = Block | BlockTag
 
 export type Ingredient = ItemIngredient | FluidIngredient | BlockIngredient | Ingredient[]
-export type IngredientInput = Ingredient | ItemId | IngredientInput[]
+export type IngredientInput = Ingredient | ItemId | `#${string}` | IngredientInput[]
 
 function createUnvalidatedIngredient(input: unknown, lookup?: RegistryLookup): Ingredient {
    if (!input) throw new IllegalShapeError('ingredient input may not be null')
