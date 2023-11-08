@@ -1,22 +1,43 @@
-import { createIngredient, IngredientInput } from '../common/ingredient.js'
-import { encodeId } from '../common/id.js'
+import { createIngredient, IngredientTest, resolveIngredientTest } from '../common/ingredient.js'
+import { encodeId, NormalizedId } from '../common/id.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { uniq } from 'lodash-es'
 import { IllegalShapeError } from '../error.js'
+import { Logger } from '../logger.js'
+import RegistryLookup from '../loader/registry/index.js'
+import { TagRegistryHolder } from '../loader/tags.js'
 
 export interface BlacklistRules {
-   hide(...inputs: IngredientInput[]): void
+   hide(...inputs: IngredientTest[]): void
 }
 
 export default class BlacklistEmitter implements BlacklistRules {
-   private hidden: IngredientInput[] = []
+   private hidden: NormalizedId[] = []
 
-   hide(...inputs: IngredientInput[]) {
-      this.hidden.push(...inputs)
+   constructor(
+      private readonly logger: Logger,
+      private readonly tags: TagRegistryHolder,
+      private readonly lookup: () => RegistryLookup
+   ) {}
+
+   hide(...inputs: IngredientTest[]) {
+      this.hidden.push(...inputs.flatMap(test => this.resolveIds(test)).map(encodeId))
    }
 
-   private resolveIds(input: IngredientInput): string[] {
-      const ingredient = createIngredient(input)
+   private filterIds(test: IngredientTest) {
+      const keys = this.lookup().keys('minecraft:item')
+      if (!keys) throw new Error('you can only use regex/predicates to blacklist items if a registry dump is loaded')
+      const predicate = resolveIngredientTest(test, this.tags, this.lookup())
+
+      return [...keys.keys()].filter(it => predicate(it, this.logger))
+   }
+
+   private resolveIds(input: IngredientTest): string[] {
+      if (input instanceof RegExp || typeof input === 'function') {
+         return this.filterIds(input)
+      }
+
+      const ingredient = createIngredient(input, this.lookup())
 
       if (Array.isArray(ingredient)) {
          return ingredient.flatMap(it => this.resolveIds(it))
@@ -30,7 +51,7 @@ export default class BlacklistEmitter implements BlacklistRules {
    }
 
    async emit(acceptor: Acceptor) {
-      const hiddenIds = uniq(this.hidden.flatMap(test => this.resolveIds(test)).map(encodeId))
+      const hiddenIds = uniq(this.hidden).sort()
       if (hiddenIds.length === 0) return
 
       const content = hiddenIds.join('\n')

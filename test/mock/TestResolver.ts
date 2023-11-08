@@ -1,4 +1,4 @@
-import { createMergedResolver, IResolver, Options } from '@pssbletrngle/pack-resolver'
+import { createMergedResolver, createResolver, IResolver, Options } from '@pssbletrngle/pack-resolver'
 
 export default function createTestResolver(options: Partial<Options> = {}): IResolver {
    return createMergedResolver({
@@ -7,4 +7,8 @@ export default function createTestResolver(options: Partial<Options> = {}): IRes
       include: ['assets/**/*.json', 'data/**/*.json'],
       ...options,
    })
+}
+
+export function createDumpResolver(): IResolver {
+   return createResolver({ from: 'test/resources/dump', silent: true })
 }

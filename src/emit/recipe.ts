@@ -12,7 +12,7 @@ import {
 import { resolveIDTest } from '../common/predicates.js'
 import { createResult, Result, ResultInput } from '../common/result.js'
 import RegistryLookup from '../loader/registry/index.js'
-import TagsLoader from '../loader/tags.js'
+import { TagRegistryHolder } from '../loader/tags.js'
 import { Logger } from '../logger.js'
 import { createReplacer, Recipe, Replacer } from '../parser/recipe/index.js'
 import { Modifier } from '../rule/index.js'
@@ -77,7 +77,7 @@ export default class RecipeEmitter implements RecipeRules {
    constructor(
       private readonly logger: Logger,
       private readonly registry: RegistryProvider<Recipe>,
-      private readonly tags: TagsLoader,
+      private readonly tags: TagRegistryHolder,
       private readonly lookup: () => RegistryLookup
    ) {}
 

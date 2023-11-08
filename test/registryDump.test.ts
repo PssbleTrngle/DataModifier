@@ -1,12 +1,12 @@
-import { createResolver } from '@pssbletrngle/pack-resolver'
 import { createIngredient, createResult, PackLoader } from '../src/index.js'
 import createTestLogger from './mock/TestLogger.js'
+import { createDumpResolver } from './mock/TestResolver.js'
 
 const logger = createTestLogger()
 const loader = new PackLoader(logger)
 
 beforeEach(async () => {
-   const resolver = createResolver({ from: 'test/resources/dump', silent: true })
+   const resolver = createDumpResolver()
    await loader.loadRegistryDump(resolver)
 })
 

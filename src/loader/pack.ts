@@ -41,7 +41,11 @@ export default class PackLoader implements Loader {
       () => this.activeRegistryLookup
    )
    private readonly langEmitter = new LangEmitter(this.langLoader)
-   private readonly blacklistEmitter = new BlacklistEmitter()
+   private readonly blacklistEmitter = new BlacklistEmitter(
+      this.logger,
+      this.tagLoader,
+      () => this.activeRegistryLookup
+   )
 
    registerRegistry(key: string) {
       this.tagLoader.registerRegistry(key)
@@ -134,6 +138,8 @@ export default class PackLoader implements Loader {
 
    clear() {
       this.recipesLoader.clear()
+      this.activeRegistryLookup = new EmptyRegistryLookup()
+
       this.recipeEmitter.clear()
       this.lootEmitter.clear()
       this.tagEmitter.clear()

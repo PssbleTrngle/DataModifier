@@ -3,7 +3,7 @@ import { Id, IdInput, NormalizedId } from '../common/id.js'
 import { CommonTest, IngredientInput, IngredientTest, Predicate, resolveIngredientTest } from '../common/ingredient.js'
 import { resolveIDTest } from '../common/predicates.js'
 import RegistryLookup from '../loader/registry/index.js'
-import TagsLoader from '../loader/tags.js'
+import { TagRegistryHolder } from '../loader/tags.js'
 import { Logger } from '../logger.js'
 import { createLootEntry, LootItemInput, replaceItemInTable } from '../parser/lootTable.js'
 import LootTableRule from '../rule/lootTable.js'
@@ -46,7 +46,7 @@ export default class LootTableEmitter implements LootRules {
    constructor(
       private readonly logger: Logger,
       private readonly lootTables: RegistryProvider<LootTable>,
-      private readonly tags: TagsLoader,
+      private readonly tags: TagRegistryHolder,
       private readonly lookup: () => RegistryLookup
    ) {}
 
