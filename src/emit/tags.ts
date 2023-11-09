@@ -29,7 +29,11 @@ interface ScopedTagRules<T extends RegistryId> {
 type TagModifier = (previous: TagDefinition) => TagDefinition
 
 class ScopedEmitter<T extends RegistryId> implements ScopedTagRules<T> {
-   constructor(private readonly registry: TagRegistry<RegistryId>, public readonly folder: string) {}
+   constructor(
+      private readonly registry: TagRegistry<RegistryId>,
+      public readonly folder: string,
+      private readonly options: TagEmitterOptions
+   ) {}
 
    private readonly modifiers = new Registry<TagModifier[]>()
 
@@ -52,22 +56,35 @@ class ScopedEmitter<T extends RegistryId> implements ScopedTagRules<T> {
       this.modify(id, previous => {
          return {
             ...previous,
-            values: [...previous.values, value],
+            values: [...(previous.values ?? []), value],
          }
       })
    }
 
    remove(id: TagInput, test: CommonTest<NormalizedId<InferIds<T>>>) {
-      const predicate = resolveIDTest(test, this.registry)
-      this.modify(id, previous => {
-         const defaultValues = (previous.replace ? undefined : this.registry.resolve(id)) ?? []
-         return {
-            replace: true,
-            values: [...defaultValues, ...previous.values].filter(it => {
-               return !predicate(encodeId(entryId(it)))
-            }),
+      if (this.options.advancedTags) {
+         if (test instanceof RegExp || typeof test === 'function') {
+            throw new Error('advanced tag loader only accepts tag entries in removal')
          }
-      })
+
+         this.modify(id, previous => {
+            return {
+               ...previous,
+               remove: [...(previous.remove ?? []), test],
+            }
+         })
+      } else {
+         const predicate = resolveIDTest(test, this.registry)
+         this.modify(id, previous => {
+            const defaultValues = (previous.replace ? undefined : this.registry.resolve(id)) ?? []
+            return {
+               replace: true,
+               values: [...defaultValues, ...(previous.values ?? [])].filter(it => {
+                  return !predicate(encodeId(entryId(it)))
+               }),
+            }
+         })
+      }
    }
 
    clear() {
@@ -75,10 +92,18 @@ class ScopedEmitter<T extends RegistryId> implements ScopedTagRules<T> {
    }
 }
 
+export interface TagEmitterOptions {
+   advancedTags?: boolean
+}
+
 export default class TagEmitter implements TagRules {
    private readonly emitters = new Map<string, ScopedEmitter<RegistryId>>()
 
-   constructor(private readonly logger: Logger, private readonly registry: TagsLoader) {}
+   constructor(
+      private readonly logger: Logger,
+      private readonly registry: TagsLoader,
+      private readonly options: TagEmitterOptions
+   ) {}
 
    clear() {
       this.emitters.forEach(it => it.clear())
@@ -93,7 +118,8 @@ export default class TagEmitter implements TagRules {
                path,
                toJson({
                   ...definition,
-                  values: orderTagEntries(definition.values),
+                  values: definition.values && orderTagEntries(definition.values),
+                  remove: definition.remove && orderTagEntries(definition.remove),
                })
             )
          })
@@ -112,7 +138,7 @@ export default class TagEmitter implements TagRules {
       const existing = this.emitters.get(registry)
       if (existing) return existing as ScopedTagRules<T>
       else {
-         const emitter = new ScopedEmitter(this.registry.registry(registry), folder)
+         const emitter = new ScopedEmitter(this.registry.registry(registry), folder, this.options)
          this.emitters.set(registry, emitter)
          return emitter as ScopedTagRules<T>
       }

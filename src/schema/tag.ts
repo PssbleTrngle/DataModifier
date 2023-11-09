@@ -10,7 +10,8 @@ export type TagEntry<T extends string = string> =
 
 export type TagDefinition = Readonly<{
    replace?: boolean
-   values: TagEntry[]
+   values?: TagEntry[]
+   remove?: TagEntry[]
 }>
 
 export function tagFolderOf(registry: IdInput) {

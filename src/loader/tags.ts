@@ -53,7 +53,9 @@ class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
       if (this.frozen) throw new Error('TagRegistry has already been frozen')
 
       const existingEntries = this.entries.get(id) ?? []
-      const unique = orderTagEntries([...existingEntries, ...definition.values])
+      const unique = orderTagEntries([...existingEntries, ...(definition.values ?? [])])
+      // TODO support for advanced-tag-loader packs?
+
       this.entries.set(id, unique)
    }
 

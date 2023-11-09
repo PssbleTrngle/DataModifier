@@ -5,7 +5,7 @@ import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
 import LangEmitter, { LangRules } from '../emit/lang.js'
 import LootTableEmitter, { LootRules } from '../emit/loot.js'
 import RecipeEmitter, { RecipeRules } from '../emit/recipe.js'
-import TagEmitter, { TagRules } from '../emit/tags.js'
+import TagEmitter, { TagEmitterOptions, TagRules } from '../emit/tags.js'
 import { Logger } from '../logger.js'
 import Loader, { AcceptorWithLoader } from './index.js'
 import LangLoader from './lang.js'
@@ -18,8 +18,10 @@ import EmptyRegistryLookup from './registry/empty.js'
 import { createResult, ResultInput } from '../common/result.js'
 import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
+export interface PackLoaderOptions extends TagEmitterOptions {}
+
 export default class PackLoader implements Loader {
-   constructor(private readonly logger: Logger) {}
+   constructor(private readonly logger: Logger, private readonly options: PackLoaderOptions = {}) {}
 
    private activeRegistryLookup: RegistryLookup = new EmptyRegistryLookup()
 
@@ -28,7 +30,7 @@ export default class PackLoader implements Loader {
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
 
-   private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader)
+   private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader, this.options)
    private readonly recipeEmitter = new RecipeEmitter(
       this.logger,
       this.recipesLoader,

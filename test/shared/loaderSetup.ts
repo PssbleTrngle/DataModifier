@@ -2,10 +2,14 @@ import createTestLogger from '../mock/TestLogger.js'
 import { PackLoader } from '../../src/index.js'
 import createTestResolver from '../mock/TestResolver.js'
 import { Options } from '@pssbletrngle/pack-resolver'
+import { PackLoaderOptions } from '../../src/loader/pack'
 
-export default function setupLoader(options?: Partial<Options>, block?: (loader: PackLoader) => void) {
+export default function setupLoader(
+   options?: Partial<Options & PackLoaderOptions>,
+   block?: (loader: PackLoader) => void
+) {
    const logger = createTestLogger()
-   const loader = new PackLoader(logger)
+   const loader = new PackLoader(logger, options)
 
    block?.(loader)
 
