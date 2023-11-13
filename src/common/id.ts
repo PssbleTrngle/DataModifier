@@ -27,3 +27,13 @@ export function encodeId<T extends string>(from: IdInput<T>): NormalizedId<T> {
    if (from.isTag) return `#${from.namespace}:${from.path}` as NormalizedId<T>
    return `${from.namespace}:${from.path}` as NormalizedId<T>
 }
+
+export function prefix(id: IdInput, prefix: string) {
+   const { path, ...rest } = createId(id)
+   return encodeId({ ...rest, path: `${prefix}/${path}` })
+}
+
+export function suffix(id: IdInput, suffix: string) {
+   const { path, ...rest } = createId(id)
+   return encodeId({ ...rest, path: `${path}/${suffix}` })
+}

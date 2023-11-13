@@ -1,5 +1,5 @@
-import createTestAcceptor from './mock/TestAcceptor'
-import setupLoader from './shared/loaderSetup'
+import createTestAcceptor from './mock/TestAcceptor.js'
+import setupLoader from './shared/loaderSetup.js'
 
 const { loader } = setupLoader({ advancedTags: true })
 

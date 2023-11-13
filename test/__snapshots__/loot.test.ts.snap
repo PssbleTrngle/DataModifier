@@ -167,6 +167,14 @@ exports[`loot tables output replacements replaces outputs with additional tests:
     },
     {
       "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player",
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+        },
+      ],
       "entries": [
         {
           "name": "forge:ingots/lead",
@@ -254,6 +262,14 @@ exports[`loot tables output replacements replaces outputs with additional tests:
     },
     {
       "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player",
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+        },
+      ],
       "entries": [
         {
           "name": "forge:ingots/lead",
@@ -303,6 +319,14 @@ exports[`loot tables output replacements replaces outputs with additional tests:
     },
     {
       "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player",
+        },
+        {
+          "condition": "minecraft:random_chance_with_looting",
+        },
+      ],
       "entries": [
         {
           "name": "forge:ingots/lead",

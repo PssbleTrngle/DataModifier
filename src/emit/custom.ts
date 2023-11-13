@@ -7,10 +7,6 @@ import { PathProvider } from './index.js'
 export default class CustomEmitter<TEntry> {
    constructor(private readonly pathProvider: PathProvider) {}
 
-   protected addCustom(id: IdInput, value: TEntry) {
-      this.customEntries.set(createId(id), value)
-   }
-
    private customEntries = new Registry<TEntry>()
 
    clear() {

@@ -17,11 +17,23 @@ import TagsLoader from './tags.js'
 import EmptyRegistryLookup from './registry/empty.js'
 import { createResult, ResultInput } from '../common/result.js'
 import { RegistryId } from '@pssbletrngle/data-modifier/generated'
+import BlockDefinitionEmitter, { BlockDefinitionRules } from '../emit/content/blockDefinition.js'
+import BlockstateEmitter, { BlockstateRules } from '../emit/assets/blockstates.js'
+import ModelEmitter, { ModelRules } from '../emit/assets/models.js'
+import ItemDefinitionEmitter, { ItemDefinitionRules } from '../emit/content/itemDefinition.js'
+import { ClearableEmitter } from '../emit/index.js'
 
 export interface PackLoaderOptions extends TagEmitterOptions {}
 
 export default class PackLoader implements Loader {
    constructor(private readonly logger: Logger, private readonly options: PackLoaderOptions = {}) {}
+
+   private readonly emitters: ClearableEmitter[] = []
+
+   private register<T extends ClearableEmitter>(emitter: T): T {
+      this.emitters.push(emitter)
+      return emitter
+   }
 
    private activeRegistryLookup: RegistryLookup = new EmptyRegistryLookup()
 
@@ -30,24 +42,24 @@ export default class PackLoader implements Loader {
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
 
-   private readonly tagEmitter = new TagEmitter(this.logger, this.tagLoader, this.options)
-   private readonly recipeEmitter = new RecipeEmitter(
-      this.logger,
-      this.recipesLoader,
-      this.tagLoader,
-      () => this.activeRegistryLookup
+   readonly tags: TagRules = this.register(new TagEmitter(this.logger, this.tagLoader, this.options))
+   readonly recipes: RecipeRules = this.register(
+      new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader, () => this.activeRegistryLookup)
    )
-   private readonly lootEmitter = new LootTableEmitter(
-      this.logger,
-      this.lootLoader,
-      this.tagLoader,
-      () => this.activeRegistryLookup
+   readonly loot: LootRules = this.register(
+      new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader, () => this.activeRegistryLookup)
    )
-   private readonly langEmitter = new LangEmitter(this.langLoader)
-   private readonly blacklistEmitter = new BlacklistEmitter(
-      this.logger,
-      this.tagLoader,
-      () => this.activeRegistryLookup
+   readonly lang: LangRules = this.register(new LangEmitter(this.langLoader))
+   readonly blacklist: BlacklistRules = this.register(
+      new BlacklistEmitter(this.logger, this.tagLoader, () => this.activeRegistryLookup)
+   )
+
+   readonly models: ModelRules = this.register(new ModelEmitter())
+   readonly blockstates: BlockstateRules = this.register(new BlockstateEmitter())
+
+   private readonly itemDefinition: ItemDefinitionRules = this.register(new ItemDefinitionEmitter(this.models))
+   private readonly blockDefinition: BlockDefinitionRules = this.register(
+      new BlockDefinitionEmitter(this.models, this.blockstates, this.loot)
    )
 
    registerRegistry(key: string) {
@@ -58,28 +70,18 @@ export default class PackLoader implements Loader {
       return this.tagLoader.registry(key)
    }
 
-   get tags(): TagRules {
-      return this.tagEmitter
-   }
-
-   get recipes(): RecipeRules {
-      return this.recipeEmitter
-   }
-
-   get loot(): LootRules {
-      return this.lootEmitter
-   }
-
-   get lang(): LangRules {
-      return this.langEmitter
+   get content(): Readonly<{
+      blocks: BlockDefinitionRules
+      items: ItemDefinitionRules
+   }> {
+      return {
+         blocks: this.blockDefinition,
+         items: this.itemDefinition,
+      }
    }
 
    get recipeLoader(): RecipeLoaderAccessor {
       return this.recipesLoader
-   }
-
-   get blacklist(): BlacklistRules {
-      return this.blacklistEmitter
    }
 
    get registries(): RegistryLookup {
@@ -95,7 +97,7 @@ export default class PackLoader implements Loader {
    }
 
    resolveIngredientTest(test: IngredientTest) {
-      return this.recipeEmitter.resolveIngredientTest(test)
+      return this.recipes.resolveIngredientTest(test)
    }
 
    private acceptors: Record<string, AcceptorWithLoader> = {
@@ -143,21 +145,11 @@ export default class PackLoader implements Loader {
       this.recipesLoader.clear()
       this.activeRegistryLookup = new EmptyRegistryLookup()
 
-      this.recipeEmitter.clear()
-      this.lootEmitter.clear()
-      this.tagEmitter.clear()
-      this.langEmitter.clear()
-      this.blacklistEmitter.clear()
+      this.emitters.forEach(it => it.clear())
    }
 
    async emit(acceptor: Acceptor) {
-      await Promise.all([
-         this.recipeEmitter.emit(acceptor),
-         this.lootEmitter.emit(acceptor),
-         this.tagEmitter.emit(acceptor),
-         this.langEmitter.emit(acceptor),
-         this.blacklistEmitter.emit(acceptor),
-      ])
+      await Promise.all(this.emitters.map(it => it.emit(acceptor)))
    }
 
    async run(from: IResolver, to: Acceptor) {

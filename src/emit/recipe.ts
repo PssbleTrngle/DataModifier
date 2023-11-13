@@ -33,6 +33,8 @@ export type RecipeTest = Readonly<{
 }>
 
 export interface RecipeRules {
+   resolveIngredientTest(test?: IngredientTest): Predicate<IngredientInput>
+
    replaceResult(test: IngredientTest, value: Result, additionalTests?: RecipeTest): void
 
    replaceIngredient(test: IngredientTest, value: Ingredient, additionalTests?: RecipeTest): void

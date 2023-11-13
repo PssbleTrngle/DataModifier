@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration with content packs mod generates additional resources for block definitions: basic block definition 1`] = `
+{
+  "properties": {
+    "material": "stone",
+  },
+  "type": "basic",
+}
+`;
+
+exports[`integration with content packs mod generates additional resources for block definitions: basic block model 1`] = `
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "example:block/ruby_ore",
+  },
+}
+`;
+
+exports[`integration with content packs mod generates additional resources for block definitions: basic blockstate 1`] = `
+{
+  "variants": {
+    "": {
+      "model": "example:block/ruby_ore",
+    },
+  },
+}
+`;
+
+exports[`integration with content packs mod generates additional resources for block definitions: basic loot table 1`] = `
+{
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion",
+        },
+      ],
+      "entries": [
+        {
+          "name": "example:ruby_ore",
+          "type": "minecraft:item",
+        },
+      ],
+      "rolls": 1,
+    },
+  ],
+  "type": "minecraft:block",
+}
+`;
+
+exports[`integration with content packs mod generates additional resources for item definitions: basic item definition 1`] = `
+{
+  "properties": {
+    "rarity": "rare",
+    "stack_size": 24,
+  },
+  "type": "basic",
+}
+`;
+
+exports[`integration with content packs mod generates additional resources for item definitions: basic item model 1`] = `
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "example:item/ruby",
+  },
+}
+`;
+
+exports[`integration with content packs mod generates block resources for block item definitions: basic item definition 1`] = `
+{
+  "block": {
+    "properties": {
+      "material": "metal",
+    },
+    "type": "basic",
+  },
+  "properties": {
+    "rarity": "rare",
+  },
+  "type": "block_item",
+}
+`;
+
+exports[`integration with content packs mod generates block resources for block item definitions: basic item model 1`] = `
+{
+  "parent": "example:block/ruby_block",
+}
+`;

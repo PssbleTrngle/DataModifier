@@ -70,6 +70,8 @@ export const LootPoolSchema = zod.object({
    rolls: NumberProviderSchema,
    bonus_rolls: NumberProviderSchema.optional(),
    entries: zod.array(LootEntryBaseSchema),
+   conditions: zod.array(LootConditionSchema).optional(),
+   functions: zod.array(LootFunctionSchema).optional(),
 })
 
 export type LootPool = zod.infer<typeof LootPoolSchema>
