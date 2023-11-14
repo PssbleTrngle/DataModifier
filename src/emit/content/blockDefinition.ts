@@ -32,7 +32,7 @@ export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRul
 
    abstract add<T extends BlockDefinition>(id: IdInput, definition: T): T
 
-   basic(id: IdInput, { type, ...properties }: ExtendedBlockProperties = {}, options?: BlockDefinitionOptions) {
+   basic(id: IdInput, { type, ...properties }: ExtendedBlockProperties, options?: BlockDefinitionOptions) {
       const model = this.models.fileId('block', id)
 
       if (options?.model !== false)

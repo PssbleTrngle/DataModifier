@@ -89,3 +89,7 @@ exports[`integration with content packs mod generates block resources for block 
   "parent": "example:block/ruby_block",
 }
 `;
+
+exports[`integration with content packs mod generates block resources for block item definitions: included block model 1`] = `null`;
+
+exports[`integration with content packs mod generates block resources for block item definitions: included blockstate 1`] = `null`;

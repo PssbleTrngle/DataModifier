@@ -57,7 +57,9 @@ export default class PackLoader implements Loader {
    readonly models: ModelRules = this.register(new ModelEmitter())
    readonly blockstates: BlockstateRules = this.register(new BlockstateEmitter())
 
-   private readonly itemDefinition: ItemDefinitionRules = this.register(new ItemDefinitionEmitter(this.models))
+   private readonly itemDefinition: ItemDefinitionRules = this.register(
+      new ItemDefinitionEmitter(this.models, this.blockstates, this.loot)
+   )
    private readonly blockDefinition: BlockDefinitionRules = this.register(
       new BlockDefinitionEmitter(this.models, this.blockstates, this.loot)
    )

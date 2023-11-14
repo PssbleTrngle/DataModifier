@@ -5,8 +5,9 @@ import { ModelRules } from '../assets/models.js'
 import { BlockDefinition } from '../../schema/content/blockDefinition.js'
 import { ClearableEmitter } from '../index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { AbstractBlockDefinitionRules, BlockDefinitionRules } from './blockDefinition'
-import { mapValues } from 'lodash-es'
+import createInnerBlockDefinitionBuilder, { BlockDefinitionRulesWithoutId } from './innerBlockDefinition.js'
+import { BlockstateRules } from '../assets/blockstates.js'
+import { LootRules } from '../loot.js'
 
 export type ItemDefinitionOptions = Readonly<{
    model?: boolean
@@ -16,6 +17,8 @@ type ExtendedItemProperties = ItemProperties & {
    type?: string
 }
 
+type BlockDefinitionInput = BlockDefinition | ((rules: BlockDefinitionRulesWithoutId) => BlockDefinition)
+
 export interface ItemDefinitionRules {
    add<T extends ItemDefinition>(id: IdInput, definition: T): T
 
@@ -24,48 +27,20 @@ export interface ItemDefinitionRules {
    blockItem(
       id: IdInput,
       properties?: ExtendedItemProperties & {
-         block: BlockDefinition
+         block: BlockDefinitionInput
       },
       options?: ItemDefinitionOptions
    ): ItemDefinition
 }
 
-class InnerBlockDefinitionRules extends AbstractBlockDefinitionRules {
-   private last: BlockDefinition | null = null
-
-   add<T extends BlockDefinition>(id: IdInput, definition: T): T {
-      this.last = definition
-      return definition
-   }
-
-   build() {
-      if (this.last === null) throw new Error('missing block definition')
-      return this.last
-   }
-}
-
-type SlicedArguments<T> = T extends (sliced: unknown, ...args: infer A) => unknown
-   ? (...args: A) => ReturnType<T>
-   : never
-
-type BlockDefinitionRulesWithoutId = {
-   [K in keyof BlockDefinitionRules]: SlicedArguments<BlockDefinitionRules[K]>
-}
-
-const t = {} as unknown as BlockDefinitionRulesWithoutId
-
-function createdSlicedEmitter(emitter: BlockDefinitionRules) {
-   return mapValues(emitter, prop => {
-      if (typeof prop !== 'function') return prop
-      const sliced: SlicedArguments<typeof prop> = (...args: unknown[]) => (prop as any)('', ...args)
-      return sliced
-   }) as BlockDefinitionRulesWithoutId
-}
-
 export default class ItemDefinitionEmitter implements ItemDefinitionRules, ClearableEmitter {
    private readonly custom = new CustomEmitter<ItemDefinition>(this.filePath)
 
-   constructor(private readonly models: ModelRules) {}
+   private readonly blockBuilder: BlockDefinitionRulesWithoutId
+
+   constructor(private readonly models: ModelRules, blockstates: BlockstateRules, loot: LootRules) {
+      this.blockBuilder = createInnerBlockDefinitionBuilder(models, blockstates, loot)
+   }
 
    private filePath(id: Id) {
       return `content/${id.namespace}/item/${id.path}.json`
@@ -101,6 +76,11 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
       })
    }
 
+   private createBlockDefinition(input: BlockDefinitionInput) {
+      if (typeof input !== 'function') return input
+      return input(this.blockBuilder)
+   }
+
    blockItem(
       id: IdInput,
       {
@@ -108,7 +88,7 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
          type,
          ...properties
       }: ExtendedItemProperties & {
-         block: BlockDefinition
+         block: BlockDefinitionInput
       },
       options?: ItemDefinitionOptions
    ) {
@@ -119,9 +99,11 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
          })
       }
 
+      const blockDefinition = this.createBlockDefinition(block)
+
       return this.add(id, {
          type: type ?? 'block_item',
-         block,
+         block: blockDefinition,
          properties,
       })
    }

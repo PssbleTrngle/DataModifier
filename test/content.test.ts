@@ -31,8 +31,10 @@ describe('integration with content packs mod', () => {
    it('generates block resources for block item definitions', async () => {
       const acceptor = createTestAcceptor()
 
-      const block = loader.content.blocks.basic('example:ruby_block', { material: 'metal' }, { loot: false })
-      loader.content.items.blockItem('example:ruby_block', { rarity: 'rare', block })
+      loader.content.items.blockItem('example:ruby_block', {
+         rarity: 'rare',
+         block: blocks => blocks.basic({ material: 'metal' }, { loot: false }),
+      })
 
       await loader.emit(acceptor)
 
@@ -43,5 +45,27 @@ describe('integration with content packs mod', () => {
       expect(acceptor.jsonAt('content/example/block/ruby_block.json')).toBeNull()
       expect(acceptor.jsonAt('assets/example/blockstates/ruby_block.json')).toMatchSnapshot('included blockstate')
       expect(acceptor.jsonAt('assets/example/models/block/ruby_block.json')).toMatchSnapshot('included block model')
+   })
+
+   it('uses custom definition types', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.content.blocks.basic('example:sapphire_block', { material: 'stone', type: 'example_block' })
+      loader.content.items.basic('example:sapphire', { type: 'example' })
+      loader.content.items.blockItem('example:sapphire_ore', {
+         type: 'example_block_item',
+         block: blocks => blocks.basic({ material: 'stone', type: 'example_block' }),
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('content/example/block/sapphire_block.json')).toMatchObject({ type: 'example_block' })
+      expect(acceptor.jsonAt('content/example/item/sapphire.json')).toMatchObject({ type: 'example' })
+      expect(acceptor.jsonAt('content/example/item/sapphire_ore.json')).toMatchObject({
+         type: 'example_block_item',
+         block: {
+            type: 'example_block',
+         },
+      })
    })
 })
