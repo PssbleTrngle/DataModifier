@@ -1,6 +1,6 @@
 import { encodeId, Id } from '../common/id.js'
 import { tryCatching } from '../error.js'
-import { LootTable, LootTableSchema } from '../schema/loot.js'
+import { LootTable, LootTableSchema } from '../schema/data/loot.js'
 import { JsonLoader } from './index.js'
 import { Logger } from '../logger.js'
 

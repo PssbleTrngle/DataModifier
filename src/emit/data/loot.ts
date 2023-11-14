@@ -1,16 +1,22 @@
 import { Acceptor } from '@pssbletrngle/pack-resolver'
-import { Id, IdInput, NormalizedId } from '../common/id.js'
-import { CommonTest, IngredientInput, IngredientTest, Predicate, resolveIngredientTest } from '../common/ingredient.js'
-import { resolveIDTest } from '../common/predicates.js'
-import RegistryLookup from '../loader/registry/index.js'
-import { TagRegistryHolder } from '../loader/tags.js'
-import { Logger } from '../logger.js'
-import { createLootEntry, LootItemInput, replaceItemInTable } from '../parser/lootTable.js'
+import { encodeId, Id, IdInput, NormalizedId, prefix } from '../../common/id.js'
+import {
+   CommonTest,
+   IngredientInput,
+   IngredientTest,
+   Predicate,
+   resolveIngredientTest,
+} from '../../common/ingredient.js'
+import { resolveIDTest } from '../../common/predicates.js'
+import RegistryLookup from '../../loader/registry/index.js'
+import { TagRegistryHolder } from '../../loader/tags.js'
+import { Logger } from '../../logger.js'
+import { createLootEntry, LootItemInput, replaceItemInTable } from '../../parser/lootTable.js'
 import LootTableRule from '../rule/lootTable.js'
-import { EmptyLootEntry, LootTable, LootTableSchema } from '../schema/loot.js'
-import CustomEmitter from './custom.js'
-import { RegistryProvider } from './index.js'
-import RuledEmitter from './ruled.js'
+import { EmptyLootEntry, LootTable, LootTableSchema } from '../../schema/data/loot.js'
+import CustomEmitter from '../custom.js'
+import { ClearableEmitter, RegistryProvider } from '../index.js'
+import RuledEmitter from '../ruled.js'
 
 export const EMPTY_LOOT_TABLE: LootTable = {
    type: 'minecraft:empty',
@@ -27,12 +33,14 @@ export interface LootRules {
 
    removeOutput(from: IngredientTest, additionalTests?: LootTableTest): void
 
-   addLootTable(id: IdInput, value: LootTable): void
+   add(id: IdInput, value: LootTable): void
 
-   disableLootTable(test: LootTableTest): void
+   disable(test: LootTableTest): void
+
+   block(id: IdInput): void
 }
 
-export default class LootTableEmitter implements LootRules {
+export default class LootTableEmitter implements LootRules, ClearableEmitter {
    private readonly custom = new CustomEmitter<LootTable>(this.lootPath)
 
    private readonly ruled = new RuledEmitter<LootTable, LootTableRule>(
@@ -54,6 +62,11 @@ export default class LootTableEmitter implements LootRules {
       return `data/${id.namespace}/loot_tables/${id.path}.json`
    }
 
+   clear() {
+      this.custom.clear()
+      this.ruled.clear()
+   }
+
    async emit(acceptor: Acceptor) {
       await Promise.all([this.ruled.emit(acceptor), this.custom.emit(acceptor)])
    }
@@ -72,11 +85,11 @@ export default class LootTableEmitter implements LootRules {
       return { id, output }
    }
 
-   addLootTable(id: IdInput, value: LootTable): void {
+   add(id: IdInput, value: LootTable): void {
       this.custom.add(id, LootTableSchema.parse(value))
    }
 
-   disableLootTable(test: LootTableTest): void {
+   disable(test: LootTableTest): void {
       const predicates = this.resolveLootTableTest(test)
       this.ruled.addRule(new LootTableRule(predicates.id, predicates.output, () => null))
    }
@@ -92,8 +105,25 @@ export default class LootTableEmitter implements LootRules {
       this.replaceOutput(from, EmptyLootEntry, additionalTests)
    }
 
-   clear() {
-      this.custom.clear()
-      this.ruled.clear()
+   block(id: IdInput) {
+      this.add(prefix(id, 'blocks'), {
+         type: 'minecraft:block',
+         pools: [
+            {
+               rolls: 1,
+               entries: [
+                  {
+                     type: 'minecraft:item',
+                     name: encodeId(id),
+                  },
+               ],
+               conditions: [
+                  {
+                     condition: 'minecraft:survives_explosion',
+                  },
+               ],
+            },
+         ],
+      })
    }
 }

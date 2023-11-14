@@ -1,7 +1,7 @@
 import { Recipe } from './index.js'
 import { IngredientInput } from '../../common/ingredient.js'
 import { ResultInput } from '../../common/result.js'
-import { RecipeDefinition } from '../../schema/recipe.js'
+import { RecipeDefinition } from '../../schema/data/recipe.js'
 
 export default class IgnoredRecipe<T extends RecipeDefinition> extends Recipe<T> {
    getIngredients(): IngredientInput[] {

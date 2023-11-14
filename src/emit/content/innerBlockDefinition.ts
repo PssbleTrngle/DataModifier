@@ -1,6 +1,6 @@
 import { AbstractBlockDefinitionRules, BlockDefinitionRules } from './blockDefinition.js'
 import { ModelRules } from '../assets/models.js'
-import { LootRules } from '../loot.js'
+import { LootRules } from '../data/loot.js'
 import { BlockstateRules } from '../assets/blockstates.js'
 import { BlockDefinition } from '../../schema/content/blockDefinition.js'
 import { IdInput } from '../../common/id.js'

@@ -1,7 +1,7 @@
 import setupLoader from './shared/loaderSetup.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 
-const { loader } = setupLoader()
+const { loader } = setupLoader({ load: false })
 
 describe('integration with content packs mod', () => {
    it('generates additional resources for block definitions', async () => {

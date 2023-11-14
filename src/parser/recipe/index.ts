@@ -1,5 +1,5 @@
 import { Ingredient, IngredientInput, Predicate } from '../../common/ingredient.js'
-import { RecipeDefinition } from '../../schema/recipe.js'
+import { RecipeDefinition } from '../../schema/data/recipe.js'
 import { Result, ResultInput } from '../../common/result.js'
 
 export type Replacer<T> = (value: T) => T

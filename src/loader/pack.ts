@@ -2,10 +2,10 @@ import { Acceptor, IResolver, ResolverInfo } from '@pssbletrngle/pack-resolver'
 import match from 'minimatch'
 import { createIngredient, IngredientInput, IngredientTest } from '../common/ingredient.js'
 import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
-import LangEmitter, { LangRules } from '../emit/lang.js'
-import LootTableEmitter, { LootRules } from '../emit/loot.js'
-import RecipeEmitter, { RecipeRules } from '../emit/recipe.js'
-import TagEmitter, { TagEmitterOptions, TagRules } from '../emit/tags.js'
+import LangEmitter, { LangRules } from '../emit/assets/lang.js'
+import LootTableEmitter, { LootRules } from '../emit/data/loot.js'
+import RecipeEmitter, { RecipeRules } from '../emit/data/recipe.js'
+import TagEmitter, { TagEmitterOptions, TagRules } from '../emit/data/tags.js'
 import { Logger } from '../logger.js'
 import Loader, { AcceptorWithLoader } from './index.js'
 import LangLoader from './lang.js'
@@ -19,7 +19,7 @@ import { createResult, ResultInput } from '../common/result.js'
 import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 import BlockDefinitionEmitter, { BlockDefinitionRules } from '../emit/content/blockDefinition.js'
 import BlockstateEmitter, { BlockstateRules } from '../emit/assets/blockstates.js'
-import ModelEmitter, { ModelRules } from '../emit/assets/models.js'
+import ModelEmitter, { ModelRulesGroup } from '../emit/assets/models.js'
 import ItemDefinitionEmitter, { ItemDefinitionRules } from '../emit/content/itemDefinition.js'
 import { ClearableEmitter } from '../emit/index.js'
 
@@ -54,14 +54,17 @@ export default class PackLoader implements Loader {
       new BlacklistEmitter(this.logger, this.tagLoader, () => this.activeRegistryLookup)
    )
 
-   readonly models: ModelRules = this.register(new ModelEmitter())
    readonly blockstates: BlockstateRules = this.register(new BlockstateEmitter())
+   readonly models: ModelRulesGroup = {
+      blocks: this.register(new ModelEmitter('block')),
+      items: this.register(new ModelEmitter('item')),
+   }
 
    private readonly itemDefinition: ItemDefinitionRules = this.register(
       new ItemDefinitionEmitter(this.models, this.blockstates, this.loot)
    )
    private readonly blockDefinition: BlockDefinitionRules = this.register(
-      new BlockDefinitionEmitter(this.models, this.blockstates, this.loot)
+      new BlockDefinitionEmitter(this.models.blocks, this.blockstates, this.loot)
    )
 
    registerRegistry(key: string) {

@@ -1,4 +1,4 @@
-import { createId, IdInput } from '../common/id.js'
+import { createId, IdInput } from '../../common/id.js'
 
 export type TagEntry<T extends string = string> =
    | T

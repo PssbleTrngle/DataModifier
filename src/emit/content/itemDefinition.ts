@@ -1,13 +1,13 @@
-import { Id, IdInput } from '../../common/id.js'
+import { Id, IdInput, prefix } from '../../common/id.js'
 import CustomEmitter from '../custom.js'
 import { ItemDefinition, ItemProperties } from '../../schema/content/itemDefinition.js'
-import { ModelRules } from '../assets/models.js'
+import { ModelRulesGroup } from '../assets/models.js'
 import { BlockDefinition } from '../../schema/content/blockDefinition.js'
 import { ClearableEmitter } from '../index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import createInnerBlockDefinitionBuilder, { BlockDefinitionRulesWithoutId } from './innerBlockDefinition.js'
 import { BlockstateRules } from '../assets/blockstates.js'
-import { LootRules } from '../loot.js'
+import { LootRules } from '../data/loot.js'
 
 export type ItemDefinitionOptions = Readonly<{
    model?: boolean
@@ -38,8 +38,8 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
 
    private readonly blockBuilder: BlockDefinitionRulesWithoutId
 
-   constructor(private readonly models: ModelRules, blockstates: BlockstateRules, loot: LootRules) {
-      this.blockBuilder = createInnerBlockDefinitionBuilder(models, blockstates, loot)
+   constructor(private readonly models: ModelRulesGroup, blockstates: BlockstateRules, loot: LootRules) {
+      this.blockBuilder = createInnerBlockDefinitionBuilder(models.blocks, blockstates, loot)
    }
 
    private filePath(id: Id) {
@@ -60,15 +60,7 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
    }
 
    basic(id: IdInput, { type, ...properties }: ExtendedItemProperties = {}, options?: ItemDefinitionOptions) {
-      if (options?.model !== false) {
-         const texture = this.models.fileId('item', id)
-         this.models.add('item', id, {
-            parent: 'minecraft:item/generated',
-            textures: {
-               layer0: texture,
-            },
-         })
-      }
+      if (options?.model !== false) this.models.items.flat(id)
 
       return this.add(id, {
          type: type ?? 'basic',
@@ -93,10 +85,8 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
       options?: ItemDefinitionOptions
    ) {
       if (options?.model !== false) {
-         const parent = this.models.fileId('block', id)
-         this.models.add('item', id, {
-            parent,
-         })
+         const parent = prefix(id, 'block')
+         this.models.items.add(id, { parent })
       }
 
       const blockDefinition = this.createBlockDefinition(block)

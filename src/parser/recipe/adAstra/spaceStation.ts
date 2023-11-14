@@ -1,6 +1,6 @@
 import RecipeParser, { Recipe, Replacer } from '../index.js'
 import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
-import { RecipeDefinition } from '../../../schema/recipe.js'
+import { RecipeDefinition } from '../../../schema/data/recipe.js'
 import { ResultInput } from '../../../common/result.js'
 import { WrappedIngredient } from './index.js'
 

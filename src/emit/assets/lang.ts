@@ -1,10 +1,10 @@
-import { RegistryProvider } from './index.js'
-import { LangDefinition } from '../schema/lang.js'
+import { RegistryProvider } from '../index.js'
+import { LangDefinition } from '../../schema/assets/lang.js'
 import { Acceptor, arrayOrSelf } from '@pssbletrngle/pack-resolver'
-import { Predicate } from '../common/ingredient.js'
-import { Replacer } from '../parser/recipe/index.js'
+import { Predicate } from '../../common/ingredient.js'
+import { Replacer } from '../../parser/recipe/index.js'
 import { mapValues, omitBy } from 'lodash-es'
-import { toJson } from '../textHelper.js'
+import { toJson } from '../../textHelper.js'
 
 type LangRule = Readonly<{
    languages: string[]

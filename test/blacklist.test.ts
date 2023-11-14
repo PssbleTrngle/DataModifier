@@ -3,7 +3,7 @@ import createTestAcceptor from './mock/TestAcceptor.js'
 import { createDumpResolver } from './mock/TestResolver.js'
 import { Ingredient } from '../src/index.js'
 
-const { loader } = setupLoader()
+const { loader } = setupLoader({ load: false })
 
 describe('blacklist tests', () => {
    it('generated a jei blacklist config file', async () => {

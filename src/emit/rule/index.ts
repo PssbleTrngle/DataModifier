@@ -1,5 +1,5 @@
-import { Id } from '../common/id.js'
-import { Logger } from '../logger.js'
+import { Id } from '../../common/id.js'
+import { Logger } from '../../logger.js'
 
 export type Modifier<T> = (recipe: T) => T | null
 

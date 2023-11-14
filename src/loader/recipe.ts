@@ -1,6 +1,6 @@
 import RecipeParser, { Recipe } from '../parser/recipe/index.js'
 import ShapedParser from '../parser/recipe/vanilla/shaped.js'
-import { RecipeDefinition } from '../schema/recipe.js'
+import { RecipeDefinition } from '../schema/data/recipe.js'
 import { encodeId } from '../common/id.js'
 import ShapelessParser from '../parser/recipe/vanilla/shapeless.js'
 import CreateProcessingRecipeParser from '../parser/recipe/create/processing.js'

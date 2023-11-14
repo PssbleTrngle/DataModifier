@@ -1,9 +1,9 @@
-import { encodeId, Id, IdInput, prefix } from '../../common/id.js'
+import { Id, IdInput } from '../../common/id.js'
 import CustomEmitter from '../custom.js'
 import { BlockDefinition, BlockProperties } from '../../schema/content/blockDefinition.js'
 import { ModelRules } from '../assets/models.js'
 import { BlockstateRules } from '../assets/blockstates.js'
-import { LootRules } from '../loot.js'
+import { LootRules } from '../data/loot.js'
 import { ClearableEmitter } from '../index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 
@@ -33,45 +33,11 @@ export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRul
    abstract add<T extends BlockDefinition>(id: IdInput, definition: T): T
 
    basic(id: IdInput, { type, ...properties }: ExtendedBlockProperties, options?: BlockDefinitionOptions) {
-      const model = this.models.fileId('block', id)
+      if (options?.model !== false) this.models.cubeAll(id)
 
-      if (options?.model !== false)
-         this.models.add('block', id, {
-            parent: 'minecraft:block/cube_all',
-            textures: {
-               all: model,
-            },
-         })
+      if (options?.blockstate !== false) this.blockstates.basic(id)
 
-      if (options?.blockstate !== false)
-         this.blockstates.add(id, {
-            variants: {
-               '': {
-                  model,
-               },
-            },
-         })
-
-      if (options?.loot !== false)
-         this.loot.addLootTable(prefix(id, 'blocks'), {
-            type: 'minecraft:block',
-            pools: [
-               {
-                  rolls: 1,
-                  entries: [
-                     {
-                        type: 'minecraft:item',
-                        name: encodeId(id),
-                     },
-                  ],
-                  conditions: [
-                     {
-                        condition: 'minecraft:survives_explosion',
-                     },
-                  ],
-               },
-            ],
-         })
+      if (options?.loot !== false) this.loot.block(id)
 
       return this.add(id, {
          type: type ?? 'basic',

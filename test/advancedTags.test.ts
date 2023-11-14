@@ -1,7 +1,7 @@
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
 
-const { loader } = setupLoader({ advancedTags: true })
+const { loader } = setupLoader({ advancedTags: true, load: false })
 
 describe('creation of tag definitions for the advanced tag-loader mod', () => {
    it('can generate files using remove entries', async () => {

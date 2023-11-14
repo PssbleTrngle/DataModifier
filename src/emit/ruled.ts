@@ -1,4 +1,4 @@
-import Rule from '../rule/index.js'
+import Rule from './rule/index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { toJson } from '../textHelper.js'
 import Registry from '../common/registry.js'

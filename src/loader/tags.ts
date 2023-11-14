@@ -1,7 +1,7 @@
 import { orderBy, uniqBy } from 'lodash-es'
 import { encodeId, IdInput, NormalizedId, TagInput } from '../common/id.js'
 import Registry from '../common/registry.js'
-import { TagDefinition, TagEntry, tagFolderOf } from '../schema/tag.js'
+import { TagDefinition, TagEntry, tagFolderOf } from '../schema/data/tag.js'
 import { fromJson } from '../textHelper.js'
 import { AcceptorWithLoader } from './index.js'
 import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'

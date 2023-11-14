@@ -1,18 +1,12 @@
-import { createIngredient, createResult, PackLoader } from '../src/index.js'
-import createTestLogger from './mock/TestLogger.js'
+import { createIngredient, createResult } from '../src/index.js'
 import { createDumpResolver } from './mock/TestResolver.js'
+import setupLoader from './shared/loaderSetup.js'
 
-const logger = createTestLogger()
-const loader = new PackLoader(logger)
+const { logger, loader } = setupLoader({ load: false })
 
 beforeEach(async () => {
    const resolver = createDumpResolver()
    await loader.loadRegistryDump(resolver)
-})
-
-afterEach(() => {
-   logger.reset()
-   loader.clear()
 })
 
 describe('registry dump tests', () => {
@@ -101,7 +95,7 @@ describe('registry dump tests', () => {
       }).toThrow("unknown minecraft:item 'minecraft:ruby'")
 
       expect(() => {
-         loader.loot.disableLootTable({ output: 'minecraft:ruby_block' })
+         loader.loot.disable({ output: 'minecraft:ruby_block' })
       }).toThrow("unknown minecraft:item 'minecraft:ruby_block'")
    })
 })

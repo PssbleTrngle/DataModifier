@@ -1,4 +1,4 @@
-import { Id, IdInput } from '../../common/id.js'
+import { Id, IdInput, prefix } from '../../common/id.js'
 import CustomEmitter from '../custom.js'
 import { Blockstate } from '../../schema/assets/blockstate.js'
 import { ClearableEmitter } from '../index.js'
@@ -6,6 +6,7 @@ import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 export interface BlockstateRules {
    add(id: IdInput, blockstate: Blockstate): void
+   basic(id: IdInput, model?: string): void
 }
 
 export default class BlockstateEmitter implements BlockstateRules, ClearableEmitter {
@@ -25,5 +26,15 @@ export default class BlockstateEmitter implements BlockstateRules, ClearableEmit
 
    clear() {
       this.custom.clear()
+   }
+
+   basic(id: IdInput, model = prefix(id, 'block')) {
+      this.add(id, {
+         variants: {
+            '': {
+               model,
+            },
+         },
+      })
    }
 }

@@ -5,7 +5,7 @@ import { Options } from '@pssbletrngle/pack-resolver'
 import { PackLoaderOptions } from '../../src/loader/pack.js'
 
 export default function setupLoader(
-   options?: Partial<Options & PackLoaderOptions>,
+   { load = true, ...options }: Partial<Options & PackLoaderOptions> & { load?: boolean } = {},
    block?: (loader: PackLoader) => void
 ) {
    const logger = createTestLogger()
@@ -13,10 +13,12 @@ export default function setupLoader(
 
    block?.(loader)
 
-   beforeAll(async () => {
-      const resolver = createTestResolver(options)
-      await loader.loadFrom(resolver)
-   }, 15_0000)
+   if (load) {
+      beforeAll(async () => {
+         const resolver = createTestResolver(options)
+         await loader.loadFrom(resolver)
+      }, 15_0000)
+   }
 
    afterEach(() => {
       loader.clear()

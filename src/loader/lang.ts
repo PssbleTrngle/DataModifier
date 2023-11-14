@@ -1,7 +1,7 @@
 import { Id } from '../common/id.js'
 import { JsonLoader } from './index.js'
 import { Logger } from '../logger.js'
-import { LangDefinition, LangSchema } from '../schema/lang.js'
+import { LangDefinition, LangSchema } from '../schema/assets/lang.js'
 
 export default class LangLoader extends JsonLoader<LangDefinition> {
    protected parse(_: Logger, json: unknown, id: Id): LangDefinition | null {

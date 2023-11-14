@@ -1,30 +1,32 @@
-import { encodeId, Id, IdInput, NormalizedId, prefix } from '../../common/id.js'
+import { encodeId, IdInput, NormalizedId, prefix } from '../../common/id.js'
 import CustomEmitter from '../custom.js'
 import { Model } from '../../schema/assets/model.js'
 import { ClearableEmitter } from '../index.js'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 export interface ModelRules {
-   fileId(type: string, id: IdInput): NormalizedId
+   add(id: IdInput, blockstate: Model): NormalizedId
 
-   add(type: string, id: IdInput, blockstate: Model): NormalizedId
+   cubeAll(id: IdInput, texture?: string): NormalizedId
+
+   flat(id: IdInput, texture?: string): NormalizedId
+}
+
+export interface ModelRulesGroup {
+   blocks: ModelRules
+   items: ModelRules
 }
 
 export default class ModelEmitter implements ModelRules, ClearableEmitter {
-   private readonly custom = new CustomEmitter<Model>(this.filePath)
+   private readonly custom
 
-   private filePath(id: Id) {
-      return `assets/${id.namespace}/models/${id.path}.json`
+   constructor(type: string) {
+      this.custom = new CustomEmitter<Model>(id => `assets/${id.namespace}/models/${type}/${id.path}.json`)
    }
 
-   add(type: string, id: IdInput, model: Model) {
-      const fileId = this.fileId(type, id)
-      this.custom.add(fileId, model)
-      return encodeId(fileId)
-   }
-
-   fileId(type: string, id: IdInput): NormalizedId {
-      return prefix(id, type)
+   add(id: IdInput, model: Model) {
+      this.custom.add(id, model)
+      return encodeId(id)
    }
 
    emit(acceptor: Acceptor) {
@@ -33,5 +35,23 @@ export default class ModelEmitter implements ModelRules, ClearableEmitter {
 
    clear() {
       this.custom.clear()
+   }
+
+   cubeAll(id: IdInput, texture = prefix(id, 'block')) {
+      return this.add(id, {
+         parent: 'minecraft:block/cube_all',
+         textures: {
+            all: texture,
+         },
+      })
+   }
+
+   flat(id: IdInput, texture = prefix(id, 'item')) {
+      return this.add(id, {
+         parent: 'minecraft:item/generated',
+         textures: {
+            layer0: texture,
+         },
+      })
    }
 }

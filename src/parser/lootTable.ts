@@ -1,4 +1,4 @@
-import { extendLootEntry, LootEntry, LootEntryBase, LootEntrySchema, LootTable } from '../schema/loot.js'
+import { extendLootEntry, LootEntry, LootEntryBase, LootEntrySchema, LootTable } from '../schema/data/loot.js'
 import { IllegalShapeError } from '../error.js'
 import { IngredientInput, ItemIngredient, Predicate } from '../common/ingredient.js'
 import RegistryLookup from '../loader/registry/index.js'

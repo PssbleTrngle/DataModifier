@@ -1,5 +1,5 @@
 import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
-import { encodeId, Id, IdInput, NormalizedId } from '../common/id.js'
+import { encodeId, Id, IdInput, NormalizedId } from '../../common/id.js'
 import {
    CommonTest,
    createIngredient,
@@ -8,19 +8,19 @@ import {
    IngredientTest,
    Predicate,
    resolveIngredientTest,
-} from '../common/ingredient.js'
-import { resolveIDTest } from '../common/predicates.js'
-import { createResult, Result, ResultInput } from '../common/result.js'
-import RegistryLookup from '../loader/registry/index.js'
-import { TagRegistryHolder } from '../loader/tags.js'
-import { Logger } from '../logger.js'
-import { createReplacer, Recipe, Replacer } from '../parser/recipe/index.js'
+} from '../../common/ingredient.js'
+import { resolveIDTest } from '../../common/predicates.js'
+import { createResult, Result, ResultInput } from '../../common/result.js'
+import RegistryLookup from '../../loader/registry/index.js'
+import { TagRegistryHolder } from '../../loader/tags.js'
+import { Logger } from '../../logger.js'
+import { createReplacer, Recipe, Replacer } from '../../parser/recipe/index.js'
 import { Modifier } from '../rule/index.js'
 import RecipeRule from '../rule/recipe.js'
-import { RecipeDefinition } from '../schema/recipe.js'
-import CustomEmitter from './custom.js'
-import { RegistryProvider } from './index.js'
-import RuledEmitter from './ruled.js'
+import { RecipeDefinition } from '../../schema/data/recipe.js'
+import CustomEmitter from '../custom.js'
+import { RegistryProvider } from '../index.js'
+import RuledEmitter from '../ruled.js'
 import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 
 export type RecipeTest = Readonly<{

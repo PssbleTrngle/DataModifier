@@ -1,4 +1,4 @@
-import { EMPTY_RECIPE, RecipeTest } from '../src/emit/recipe.js'
+import { EMPTY_RECIPE, RecipeTest } from '../src/emit/data/recipe.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'

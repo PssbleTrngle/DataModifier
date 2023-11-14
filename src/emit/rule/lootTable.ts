@@ -1,8 +1,8 @@
 import Rule, { Modifier } from './index.js'
-import { extendLootEntry, LootEntryBase, LootTable } from '../schema/loot.js'
-import { Id } from '../common/id.js'
-import { Logger } from '../logger.js'
-import { IngredientInput, Predicate } from '../common/ingredient.js'
+import { extendLootEntry, LootEntryBase, LootTable } from '../../schema/data/loot.js'
+import { Id } from '../../common/id.js'
+import { Logger } from '../../logger.js'
+import { IngredientInput, Predicate } from '../../common/ingredient.js'
 
 function entryMatches(test: Predicate<IngredientInput>, base: LootEntryBase): boolean {
    const entry = extendLootEntry(base)
