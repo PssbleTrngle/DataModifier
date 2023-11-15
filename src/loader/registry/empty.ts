@@ -1,5 +1,5 @@
 import RegistryLookup from './index.js'
-import { NormalizedId } from '../../common/id.js'
+import { encodeId, IdInput, NormalizedId } from '../../common/id.js'
 import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export default class EmptyRegistryLookup implements RegistryLookup {
@@ -21,5 +21,9 @@ export default class EmptyRegistryLookup implements RegistryLookup {
 
    validateEntry() {
       // Nothing done
+   }
+
+   addCustom(key: RegistryId, id: IdInput) {
+      return encodeId(id)
    }
 }

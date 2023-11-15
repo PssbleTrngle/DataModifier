@@ -20,6 +20,10 @@ export default class RegistryDumpLoader implements RegistryLookup {
       await resolver.extract((path, content) => this.accept(this.logger, path, content))
    }
 
+   private registryOf(registry: RegistryId) {
+      return this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId>())
+   }
+
    private readonly accept: AcceptorWithLoader = (logger, path, content) => {
       const match = /(?<registry>[\w-\\/]+)[\\/][\w-]+.json/.exec(path)
       if (!match?.groups) return false
@@ -34,7 +38,7 @@ export default class RegistryDumpLoader implements RegistryLookup {
       const parsed = tryCatching(grouped, () => schema.parse(json))
       if (!parsed) return false
 
-      const set = this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId>())
+      const set = this.registryOf(registry)
       parsed.map(encodeId).forEach(id => set.add(id))
 
       return true
@@ -74,5 +78,11 @@ export default class RegistryDumpLoader implements RegistryLookup {
       if ('item' in ingredient) this.validateEntry('minecraft:item', ingredient.item)
       if ('block' in ingredient) this.validateEntry('minecraft:block', ingredient.block)
       if ('fluid' in ingredient) this.validateEntry('minecraft:fluid', ingredient.fluid)
+   }
+
+   addCustom(key: RegistryId, input: IdInput) {
+      const id = encodeId(input)
+      this.registryOf(key).add(id)
+      return id
    }
 }

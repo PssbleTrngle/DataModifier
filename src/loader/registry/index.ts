@@ -12,4 +12,6 @@ export default interface RegistryLookup {
    validate(ingredient: Ingredient): void
 
    validateEntry(key: RegistryId, id: IdInput): void
+
+   addCustom<T extends RegistryId>(key: T, id: IdInput): InferIds<T>
 }

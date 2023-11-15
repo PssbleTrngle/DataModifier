@@ -106,8 +106,8 @@ class WriteableTagRegistry<T extends RegistryId> implements TagRegistry<T> {
 }
 
 export default class TagsLoader implements TagRegistryHolder {
+   // TODO lookup should add some?
    private registries: Record<NormalizedId, WriteableTagRegistry<RegistryId>> = {}
-   private consumerLookup = false
 
    constructor(private readonly lookup: () => RegistryLookup) {
       this.registerRegistry('minecraft:item', 'items')
@@ -128,13 +128,6 @@ export default class TagsLoader implements TagRegistryHolder {
    }
 
    private parsePath(input: string) {
-      if (!this.consumerLookup) {
-         this.lookup()
-            .registries()
-            .forEach(it => this.registerRegistry(it))
-         this.consumerLookup = true
-      }
-
       const match = /data[\\/](?<namespace>[\w-]+)[\\/]tags[\\/](?<rest>[\w-\\/]+).json/.exec(input)
       if (!match?.groups) return null
 
