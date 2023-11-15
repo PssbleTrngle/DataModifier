@@ -21,6 +21,12 @@ export interface BlockDefinitionRules {
    add<T extends BlockDefinition>(id: IdInput, definition: T): T
 
    basic(id: IdInput, properties: ExtendedBlockProperties, options?: BlockDefinitionOptions): BlockDefinition
+
+   cog(
+      id: IdInput,
+      properties: ExtendedBlockProperties & { large?: boolean },
+      options?: BlockDefinitionOptions
+   ): BlockDefinition
 }
 
 export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRules {
@@ -41,6 +47,24 @@ export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRul
 
       return this.add(id, {
          type: type ?? 'basic',
+         properties,
+      })
+   }
+
+   cog(
+      id: IdInput,
+      { type, large = false, ...properties }: ExtendedBlockProperties & { large?: boolean },
+      options?: BlockDefinitionOptions
+   ) {
+      if (options?.model !== false) this.models.cog(id, large)
+
+      if (options?.blockstate !== false) this.blockstates.cog(id)
+
+      if (options?.loot !== false) this.loot.block(id)
+
+      return this.add(id, {
+         type: type ?? 'create:cog',
+         large,
          properties,
       })
    }

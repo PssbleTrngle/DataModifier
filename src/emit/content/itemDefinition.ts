@@ -36,11 +36,11 @@ export interface ItemDefinitionRules {
 export default class ItemDefinitionEmitter implements ItemDefinitionRules, ClearableEmitter {
    private readonly custom = new CustomEmitter<ItemDefinition>(this.filePath)
 
-   private readonly blockBuilder: BlockDefinitionRulesWithoutId
-
-   constructor(private readonly models: ModelRulesGroup, blockstates: BlockstateRules, loot: LootRules) {
-      this.blockBuilder = createInnerBlockDefinitionBuilder(models.blocks, blockstates, loot)
-   }
+   constructor(
+      private readonly models: ModelRulesGroup,
+      private readonly blockstates: BlockstateRules,
+      private readonly loot: LootRules
+   ) {}
 
    private filePath(id: Id) {
       return `content/${id.namespace}/item/${id.path}.json`
@@ -68,9 +68,10 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
       })
    }
 
-   private createBlockDefinition(input: BlockDefinitionInput) {
+   private createBlockDefinition(id: IdInput, input: BlockDefinitionInput) {
       if (typeof input !== 'function') return input
-      return input(this.blockBuilder)
+      const blockBuilder = createInnerBlockDefinitionBuilder(id, this.models.blocks, this.blockstates, this.loot)
+      return input(blockBuilder)
    }
 
    blockItem(
@@ -89,7 +90,7 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
          this.models.items.add(id, { parent })
       }
 
-      const blockDefinition = this.createBlockDefinition(block)
+      const blockDefinition = this.createBlockDefinition(id, block)
 
       return this.add(id, {
          type: type ?? 'block_item',

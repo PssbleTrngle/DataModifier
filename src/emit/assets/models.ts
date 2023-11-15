@@ -10,6 +10,8 @@ export interface ModelRules {
    cubeAll(id: IdInput, texture?: string): NormalizedId
 
    flat(id: IdInput, texture?: string): NormalizedId
+
+   cog(id: IdInput, large: boolean, texture?: string): NormalizedId
 }
 
 export interface ModelRulesGroup {
@@ -53,5 +55,25 @@ export default class ModelEmitter implements ModelRules, ClearableEmitter {
             layer0: texture,
          },
       })
+   }
+
+   cog(id: IdInput, large: boolean, texture = prefix(id, 'block')) {
+      if (large) {
+         return this.add(id, {
+            parent: 'create:block/large_cogwheel',
+            textures: {
+               '4': texture,
+               particle: texture,
+            },
+         })
+      } else {
+         return this.add(id, {
+            parent: 'create:block/cogwheel',
+            textures: {
+               '1_2': texture,
+               particle: texture,
+            },
+         })
+      }
    }
 }

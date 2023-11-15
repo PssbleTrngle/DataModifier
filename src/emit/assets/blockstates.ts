@@ -7,6 +7,7 @@ import { Acceptor } from '@pssbletrngle/pack-resolver'
 export interface BlockstateRules {
    add(id: IdInput, blockstate: Blockstate): void
    basic(id: IdInput, model?: string): void
+   cog(id: IdInput, model?: string): void
 }
 
 export default class BlockstateEmitter implements BlockstateRules, ClearableEmitter {
@@ -33,6 +34,26 @@ export default class BlockstateEmitter implements BlockstateRules, ClearableEmit
          variants: {
             '': {
                model,
+            },
+         },
+      })
+   }
+
+   cog(id: IdInput, model = prefix(id, 'block')) {
+      this.add(id, {
+         variants: {
+            'axis=x': {
+               model,
+               x: 90,
+               y: 90,
+            },
+            'axis=y': {
+               model,
+            },
+            'axis=z': {
+               model,
+               x: 90,
+               y: 180,
             },
          },
       })

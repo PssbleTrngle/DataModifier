@@ -34,7 +34,7 @@ export type BlockDefinitionRulesWithoutId = {
 /**
  * Modifies emitter
  */
-function createCurriedEmitter(emitter: BlockDefinitionRules) {
+function createCurriedEmitter(id: IdInput, emitter: BlockDefinitionRules) {
    const methods = Object.getOwnPropertyNames(AbstractBlockDefinitionRules.prototype).filter(
       it => it !== 'constructor'
    ) as Array<keyof AbstractBlockDefinitionRules>
@@ -44,7 +44,7 @@ function createCurriedEmitter(emitter: BlockDefinitionRules) {
    methods.forEach(key => {
       const func = emitter[key]
       if (typeof func === 'function') {
-         out[key] = curry(func, '').bind(emitter)
+         out[key] = curry(func, id).bind(emitter)
       }
    })
 
@@ -54,10 +54,11 @@ function createCurriedEmitter(emitter: BlockDefinitionRules) {
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 export default function createInnerBlockDefinitionBuilder(
+   id: IdInput,
    models: ModelRules,
    blockstates: BlockstateRules,
    loot: LootRules
 ) {
    const inner = new InnerBlockDefinitionRules(models, blockstates, loot)
-   return createCurriedEmitter(inner)
+   return createCurriedEmitter(id, inner)
 }
