@@ -39,7 +39,7 @@ export default class ModelEmitter implements ModelRules, ClearableEmitter {
       this.custom.clear()
    }
 
-   cubeAll(id: IdInput, texture = prefix(id, 'block')) {
+   cubeAll(id: IdInput, texture = prefix(id, 'block/')) {
       return this.add(id, {
          parent: 'minecraft:block/cube_all',
          textures: {
@@ -48,7 +48,7 @@ export default class ModelEmitter implements ModelRules, ClearableEmitter {
       })
    }
 
-   flat(id: IdInput, texture = prefix(id, 'item')) {
+   flat(id: IdInput, texture = prefix(id, 'item/')) {
       return this.add(id, {
          parent: 'minecraft:item/generated',
          textures: {
@@ -57,7 +57,7 @@ export default class ModelEmitter implements ModelRules, ClearableEmitter {
       })
    }
 
-   cog(id: IdInput, large: boolean, texture = prefix(id, 'block')) {
+   cog(id: IdInput, large: boolean, texture = prefix(id, 'block/')) {
       if (large) {
          return this.add(id, {
             parent: 'create:block/large_cogwheel',

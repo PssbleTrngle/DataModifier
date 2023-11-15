@@ -2,9 +2,10 @@ import zod from 'zod'
 import { IllegalShapeError } from '../error.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { BlockId, FluidId, ItemId } from '@pssbletrngle/data-modifier/generated'
+import { IdSchema } from './id.js'
 
 export const ItemStackSchema = zod.object({
-   item: zod.string(),
+   item: IdSchema,
    count: zod.number().int().optional(),
    chance: zod.number().optional(),
 })
@@ -14,7 +15,7 @@ export type ItemStack = Omit<zod.infer<typeof ItemStackSchema>, 'item'> & {
 }
 
 export const FluidStackSchema = zod.object({
-   fluid: zod.string(),
+   fluid: IdSchema,
    amount: zod.number().optional(),
    chance: zod.number().optional(),
 })
@@ -24,7 +25,7 @@ export type FluidStack = Omit<zod.infer<typeof FluidStackSchema>, 'fluid'> & {
 }
 
 export const BlockSchema = zod.object({
-   block: zod.string(),
+   block: IdSchema,
 })
 
 export type Block = Omit<zod.infer<typeof BlockSchema>, 'block'> & {

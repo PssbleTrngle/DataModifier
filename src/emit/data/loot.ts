@@ -13,7 +13,7 @@ import { TagRegistryHolder } from '../../loader/tags.js'
 import { Logger } from '../../logger.js'
 import { createLootEntry, LootItemInput, replaceItemInTable } from '../../parser/lootTable.js'
 import LootTableRule from '../rule/lootTable.js'
-import { EmptyLootEntry, LootTable, LootTableSchema } from '../../schema/data/loot.js'
+import { EmptyLootEntry, LootModifier, LootTable, LootTableSchema } from '../../schema/data/loot.js'
 import CustomEmitter from '../custom.js'
 import { ClearableEmitter, RegistryProvider } from '../index.js'
 import RuledEmitter from '../ruled.js'
@@ -21,6 +21,10 @@ import RuledEmitter from '../ruled.js'
 export const EMPTY_LOOT_TABLE: LootTable = {
    type: 'minecraft:empty',
    pools: [],
+}
+
+export const EMPTY_LOOT_MODIFIER: LootModifier = {
+   type: 'noop',
 }
 
 type LootTableTest = Readonly<{
@@ -38,17 +42,22 @@ export interface LootRules {
    disable(test: LootTableTest): void
 
    block(id: IdInput): void
+
+   addModifier<T extends LootModifier>(id: IdInput, value: T): void
+
+   disabledModifier(id: IdInput): void
 }
 
 export default class LootTableEmitter implements LootRules, ClearableEmitter {
-   private readonly custom = new CustomEmitter<LootTable>(this.lootPath)
+   private readonly customTables = new CustomEmitter<LootTable>(this.tablePath)
+   private readonly customModifiers = new CustomEmitter<LootModifier>(this.modifierPath)
 
    private readonly ruled = new RuledEmitter<LootTable, LootTableRule>(
       this.logger,
       this.lootTables,
-      this.lootPath,
+      this.tablePath,
       EMPTY_LOOT_TABLE,
-      id => this.custom.has(id)
+      id => this.customTables.has(id)
    )
 
    constructor(
@@ -58,17 +67,26 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
       private readonly lookup: () => RegistryLookup
    ) {}
 
-   private lootPath(id: Id) {
+   private tablePath(id: Id) {
       return `data/${id.namespace}/loot_tables/${id.path}.json`
    }
 
+   private modifierPath(id: Id) {
+      return `data/${id.namespace}/loot_modifiers/${id.path}.json`
+   }
+
    clear() {
-      this.custom.clear()
+      this.customTables.clear()
+      this.customModifiers.clear()
       this.ruled.clear()
    }
 
    async emit(acceptor: Acceptor) {
-      await Promise.all([this.ruled.emit(acceptor), this.custom.emit(acceptor)])
+      await Promise.all([
+         this.ruled.emit(acceptor),
+         this.customTables.emit(acceptor),
+         this.customModifiers.emit(acceptor),
+      ])
    }
 
    resolveIngredientTest(test: IngredientTest) {
@@ -86,7 +104,7 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
    }
 
    add(id: IdInput, value: LootTable): void {
-      this.custom.add(id, LootTableSchema.parse(value))
+      this.customTables.add(id, LootTableSchema.parse(value))
    }
 
    disable(test: LootTableTest): void {
@@ -106,7 +124,7 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
    }
 
    block(id: IdInput) {
-      this.add(prefix(id, 'blocks'), {
+      this.add(prefix(id, 'blocks/'), {
          type: 'minecraft:block',
          pools: [
             {
@@ -125,5 +143,13 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
             },
          ],
       })
+   }
+
+   disabledModifier(id: IdInput) {
+      this.addModifier(id, EMPTY_LOOT_MODIFIER)
+   }
+
+   addModifier<T extends LootModifier>(id: IdInput, value: T) {
+      this.customModifiers.add(id, value)
    }
 }

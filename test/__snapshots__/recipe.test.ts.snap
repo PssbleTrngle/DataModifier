@@ -4,7 +4,7 @@ exports[`recipe ingredient replacement replaces ingredients in create recipes: m
 {
   "ingredients": [
     {
-      "tag": "#forge:raw_materials/iron",
+      "tag": "forge:raw_materials/iron",
     },
   ],
   "processingTime": 400,
@@ -25,7 +25,7 @@ exports[`recipe ingredient replacement replaces ingredients in create recipes: m
 {
   "key": {
     "C": {
-      "tag": "#forge:raw_materials/iron",
+      "tag": "forge:raw_materials/iron",
     },
   },
   "pattern": [
@@ -45,7 +45,7 @@ exports[`recipe ingredient replacement replaces ingredients in create recipes: m
   "cookingtime": 100,
   "experience": 0.7,
   "ingredient": {
-    "tag": "#forge:raw_materials/iron",
+    "tag": "forge:raw_materials/iron",
   },
   "result": "create:zinc_ingot",
   "type": "minecraft:blasting",
@@ -57,7 +57,7 @@ exports[`recipe ingredient replacement replaces ingredients in create recipes: m
   "cookingtime": 200,
   "experience": 0.7,
   "ingredient": {
-    "tag": "#forge:raw_materials/iron",
+    "tag": "forge:raw_materials/iron",
   },
   "result": "create:zinc_ingot",
   "type": "minecraft:smelting",

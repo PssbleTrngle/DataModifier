@@ -1,4 +1,4 @@
-import { RegistryProvider } from '../index.js'
+import { ClearableEmitter, RegistryProvider } from '../index.js'
 import { LangDefinition } from '../../schema/assets/lang.js'
 import { Acceptor, arrayOrSelf } from '@pssbletrngle/pack-resolver'
 import { Predicate } from '../../common/ingredient.js'
@@ -25,7 +25,7 @@ export interface LangRules {
    replaceValue(match: RegExp, value: string, options?: Omit<ReplaceOptions, 'matchCase'>): void
 }
 
-export default class LangEmitter implements LangRules {
+export default class LangEmitter implements LangRules, ClearableEmitter {
    private rules: LangRule[] = []
 
    constructor(private readonly registry: RegistryProvider<LangDefinition>) {}

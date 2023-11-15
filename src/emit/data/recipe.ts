@@ -19,7 +19,7 @@ import { Modifier } from '../rule/index.js'
 import RecipeRule from '../rule/recipe.js'
 import { RecipeDefinition } from '../../schema/data/recipe.js'
 import CustomEmitter from '../custom.js'
-import { RegistryProvider } from '../index.js'
+import { ClearableEmitter, RegistryProvider } from '../index.js'
 import RuledEmitter from '../ruled.js'
 import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 
@@ -65,7 +65,7 @@ export const EMPTY_RECIPE: RecipeDefinition = {
    ],
 }
 
-export default class RecipeEmitter implements RecipeRules {
+export default class RecipeEmitter implements RecipeRules, ClearableEmitter {
    private readonly custom = new CustomEmitter<RecipeDefinition>(this.recipePath)
 
    private readonly ruled = new RuledEmitter<Recipe, RecipeRule>(

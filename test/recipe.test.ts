@@ -57,7 +57,7 @@ describe('recipe ingredient replacement', () => {
       const acceptor = createTestAcceptor()
 
       loader.recipes.replaceIngredient('#forge:raw_materials/zinc', {
-         tag: '#forge:raw_materials/iron',
+         tag: 'forge:raw_materials/iron',
       })
 
       await loader.emit(acceptor)

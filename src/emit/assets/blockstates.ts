@@ -29,7 +29,7 @@ export default class BlockstateEmitter implements BlockstateRules, ClearableEmit
       this.custom.clear()
    }
 
-   basic(id: IdInput, model = prefix(id, 'block')) {
+   basic(id: IdInput, model = prefix(id, 'block/')) {
       this.add(id, {
          variants: {
             '': {
@@ -39,7 +39,7 @@ export default class BlockstateEmitter implements BlockstateRules, ClearableEmit
       })
    }
 
-   cog(id: IdInput, model = prefix(id, 'block')) {
+   cog(id: IdInput, model = prefix(id, 'block/')) {
       this.add(id, {
          variants: {
             'axis=x': {

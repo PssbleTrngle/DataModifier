@@ -25,12 +25,12 @@ import { ClearableEmitter } from '../emit/index.js'
 
 export interface PackLoaderOptions extends TagEmitterOptions {}
 
-export default class PackLoader implements Loader {
+export default class PackLoader implements Loader, ClearableEmitter {
    constructor(private readonly logger: Logger, private readonly options: PackLoaderOptions = {}) {}
 
    private readonly emitters: ClearableEmitter[] = []
 
-   private register<T extends ClearableEmitter>(emitter: T): T {
+   registerEmitter<T extends ClearableEmitter>(emitter: T): T {
       this.emitters.push(emitter)
       return emitter
    }
@@ -42,28 +42,28 @@ export default class PackLoader implements Loader {
    private readonly lootLoader = new LootTableLoader()
    private readonly langLoader = new LangLoader()
 
-   readonly tags: TagRules = this.register(new TagEmitter(this.logger, this.tagLoader, this.options))
-   readonly recipes: RecipeRules = this.register(
+   readonly tags: TagRules = this.registerEmitter(new TagEmitter(this.logger, this.tagLoader, this.options))
+   readonly recipes: RecipeRules = this.registerEmitter(
       new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader, () => this.activeRegistryLookup)
    )
-   readonly loot: LootRules = this.register(
+   readonly loot: LootRules = this.registerEmitter(
       new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader, () => this.activeRegistryLookup)
    )
-   readonly lang: LangRules = this.register(new LangEmitter(this.langLoader))
-   readonly blacklist: BlacklistRules = this.register(
+   readonly lang: LangRules = this.registerEmitter(new LangEmitter(this.langLoader))
+   readonly blacklist: BlacklistRules = this.registerEmitter(
       new BlacklistEmitter(this.logger, this.tagLoader, () => this.activeRegistryLookup)
    )
 
-   readonly blockstates: BlockstateRules = this.register(new BlockstateEmitter())
+   readonly blockstates: BlockstateRules = this.registerEmitter(new BlockstateEmitter())
    readonly models: ModelRulesGroup = {
-      blocks: this.register(new ModelEmitter('block')),
-      items: this.register(new ModelEmitter('item')),
+      blocks: this.registerEmitter(new ModelEmitter('block')),
+      items: this.registerEmitter(new ModelEmitter('item')),
    }
 
-   private readonly itemDefinition: ItemDefinitionRules = this.register(
+   private readonly itemDefinition: ItemDefinitionRules = this.registerEmitter(
       new ItemDefinitionEmitter(this.models, this.blockstates, this.loot)
    )
-   private readonly blockDefinition: BlockDefinitionRules = this.register(
+   private readonly blockDefinition: BlockDefinitionRules = this.registerEmitter(
       new BlockDefinitionEmitter(this.models.blocks, this.blockstates, this.loot)
    )
 

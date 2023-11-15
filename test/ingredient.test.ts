@@ -28,6 +28,12 @@ describe('tests regarding ingredient/result shapes', () => {
       expect(logger.warn).toHaveBeenCalledTimes(7)
    })
 
+   it('warns about tags starting with a #', async () => {
+      expect(() => createIngredient({ tag: '#test' })).toThrow()
+      expect(() => createIngredient({ fluidTag: '#test' })).toThrow()
+      expect(() => createIngredient({ blockTag: '#test' })).toThrow()
+   })
+
    it('does not encounter any unknown ingredient shapes', async () => {
       const acceptor = createTestAcceptor()
 

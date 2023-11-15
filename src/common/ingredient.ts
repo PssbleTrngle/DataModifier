@@ -4,27 +4,27 @@ import { IllegalShapeError, tryCatching } from '../error.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { TagRegistry, TagRegistryHolder } from '../loader/tags.js'
 import { Logger } from '../logger.js'
-import { createId, encodeId, Id, NormalizedId } from './id.js'
+import { createId, encodeId, Id, IdSchema, NormalizedId } from './id.js'
 import { resolveCommonTest } from './predicates.js'
 import { Block, createResult, FluidStack, ItemStack } from './result.js'
 import { ItemId, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 export const ItemTagSchema = zod.object({
-   tag: zod.string(),
+   tag: IdSchema,
    count: zod.number().optional(),
 })
 
 export type ItemTag = zod.infer<typeof ItemTagSchema>
 
 export const FluidTagSchema = zod.object({
-   fluidTag: zod.string(),
+   fluidTag: IdSchema,
    amount: zod.number().optional(),
 })
 
 export type FluidTag = zod.infer<typeof FluidTagSchema>
 
 export const BlockTagSchema = zod.object({
-   blockTag: zod.string(),
+   blockTag: IdSchema,
    weight: zod.number().optional(),
 })
 

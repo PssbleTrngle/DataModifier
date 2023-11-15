@@ -86,3 +86,10 @@ export type LootTable = zod.infer<typeof LootTableSchema>
 export function extendLootEntry(base: LootEntryBase): LootEntry {
    return LootEntrySchema.parse(base)
 }
+
+export type LootModifier = Readonly<{
+   type: string
+   conditions?: Array<{
+      condition: string
+   }>
+}>

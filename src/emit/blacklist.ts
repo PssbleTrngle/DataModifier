@@ -7,6 +7,7 @@ import { Logger } from '../logger.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { TagRegistryHolder } from '../loader/tags.js'
 import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { ClearableEmitter } from './index.js'
 
 export interface BlacklistRules {
    hide(...inputs: IngredientTest[]): void
@@ -15,7 +16,7 @@ export interface BlacklistRules {
 
 type RegistryIdInput<T extends RegistryId> = InferIds<T> | RegExp
 
-export default class BlacklistEmitter implements BlacklistRules {
+export default class BlacklistEmitter implements BlacklistRules, ClearableEmitter {
    private hidden: NormalizedId[] = []
 
    constructor(

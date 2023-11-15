@@ -8,6 +8,7 @@ import { createId, encodeId, Id, NormalizedId, TagInput } from '../../common/id.
 import Registry from '../../common/registry.js'
 import { resolveIDTest } from '../../common/predicates.js'
 import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { ClearableEmitter } from '../index.js'
 
 export interface TagRules {
    add<T extends RegistryId>(registry: T, id: TagInput, value: TagEntry<InferIds<T>>): void
@@ -96,7 +97,7 @@ export interface TagEmitterOptions {
    advancedTags?: boolean
 }
 
-export default class TagEmitter implements TagRules {
+export default class TagEmitter implements TagRules, ClearableEmitter {
    private readonly emitters = new Map<string, ScopedEmitter<RegistryId>>()
 
    constructor(

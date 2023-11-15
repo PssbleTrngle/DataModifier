@@ -86,7 +86,7 @@ export default class ItemDefinitionEmitter implements ItemDefinitionRules, Clear
       options?: ItemDefinitionOptions
    ) {
       if (options?.model !== false) {
-         const parent = prefix(id, 'block')
+         const parent = prefix(id, 'block/')
          this.models.items.add(id, { parent })
       }
 
