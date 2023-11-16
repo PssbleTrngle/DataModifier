@@ -1,5 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`replacing translation entries emits custom values together with replaced values: custom values 1`] = `
+{
+  "advancements.story.mine_diamond.description": "Acquire rubys",
+  "advancements.story.mine_diamond.title": "Rubys!",
+  "advancements.story.shiny_gear.description": "Ruby armor saves lives",
+  "advancements.story.shiny_gear.title": "Cover Me with Rubys",
+  "block.minecraft.deepslate_diamond_ore": "Deepslate Ruby Ore",
+  "block.minecraft.diamond_block": "Block of Ruby",
+  "block.minecraft.diamond_ore": "Ruby Ore",
+  "item.minecraft.diamond": "Sapphire",
+  "item.minecraft.diamond_axe": "Ruby Axe",
+  "item.minecraft.diamond_boots": "Ruby Boots",
+  "item.minecraft.diamond_chestplate": "Ruby Chestplate",
+  "item.minecraft.diamond_helmet": "Ruby Helmet",
+  "item.minecraft.diamond_hoe": "Ruby Hoe",
+  "item.minecraft.diamond_horse_armor": "Ruby Horse Armor",
+  "item.minecraft.diamond_leggings": "Ruby Leggings",
+  "item.minecraft.diamond_pickaxe": "Ruby Pickaxe",
+  "item.minecraft.diamond_shovel": "Ruby Shovel",
+  "item.minecraft.diamond_sword": "Ruby Sword",
+  "something.else": "The Value",
+  "subtitles.item.armor.equip_diamond": "Ruby armor clangs",
+}
+`;
+
+exports[`replacing translation entries emits custom values: custom values 1`] = `
+{
+  "item.minecraft.diamond": "Sapphire",
+  "something.else": "The Value",
+}
+`;
+
 exports[`replacing translation entries replaces requires the case to match: replaced matched case values 1`] = `
 {
   "advancements.story.mine_stone.title": "Rock Age",

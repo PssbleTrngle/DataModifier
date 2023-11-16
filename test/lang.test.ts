@@ -23,4 +23,27 @@ describe('replacing translation entries', () => {
 
       expect(acceptor.jsonAt('assets/minecraft/lang/en_us.json')).toMatchSnapshot('replaced matched case values')
    })
+
+   it('emits custom values', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.lang.addCustom('en_us', 'something.else', 'The Value')
+      loader.lang.entryName('minecraft:item', 'minecraft:diamond', 'Sapphire')
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('assets/minecraft/lang/en_us.json')).toMatchSnapshot('custom values')
+   })
+
+   it('emits custom values together with replaced values', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.lang.addCustom('en_us', 'something.else', 'The Value')
+      loader.lang.entryName('minecraft:item', 'minecraft:diamond', 'Sapphire')
+      loader.lang.replaceValue('Diamond', 'ruby')
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('assets/minecraft/lang/en_us.json')).toMatchSnapshot('custom values')
+   })
 })

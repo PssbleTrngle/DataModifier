@@ -5,6 +5,9 @@ import { Predicate } from '../../common/ingredient.js'
 import { Replacer } from '../../parser/recipe/index.js'
 import { mapValues, omitBy } from 'lodash-es'
 import { toJson } from '../../textHelper.js'
+import { createId, encodeId, Id, IdInput } from '../../common/id.js'
+import Registry from '../../common/registry.js'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
 
 type LangRule = Readonly<{
    languages: string[]
@@ -20,17 +23,27 @@ type ReplaceOptions = Readonly<{
    mod?: string | string[]
 }>
 
+type EntryOptions = { lang?: string }
+
 export interface LangRules {
    replaceValue(match: string, value: string, options?: ReplaceOptions): void
+
    replaceValue(match: RegExp, value: string, options?: Omit<ReplaceOptions, 'matchCase'>): void
+
+   addCustom(file: IdInput, key: string, value: string): void
+
+   entryName<T extends RegistryId>(registry: T, id: IdInput<InferIds<T>>, value: string, options?: EntryOptions): void
 }
 
 export default class LangEmitter implements LangRules, ClearableEmitter {
+   private custom = new Registry<LangDefinition>()
    private rules: LangRule[] = []
 
    constructor(private readonly registry: RegistryProvider<LangDefinition>) {}
 
    async emit(acceptor: Acceptor) {
+      const missingCustomFiles = new Set(this.custom.keys())
+
       this.registry.forEach((lang, id) => {
          const allRules = this.rules.filter(rule => {
             return (
@@ -48,15 +61,33 @@ export default class LangEmitter implements LangRules, ClearableEmitter {
             it => !it
          )
 
-         if (Object.keys(replaced).length > 0) {
-            const path = `assets/${id.namespace}/lang/${id.path}.json`
-            acceptor(path, toJson(replaced))
+         const custom = this.custom.get(id) ?? {}
+
+         const output = {
+            ...replaced,
+            ...custom,
          }
+
+         if (Object.keys(output).length > 0) {
+            missingCustomFiles.delete(encodeId(id))
+            const path = this.langPath(id)
+            acceptor(path, toJson(output))
+         }
+      })
+
+      missingCustomFiles.forEach(id => {
+         const path = this.langPath(createId(id))
+         acceptor(path, toJson(this.custom.get(id)))
       })
    }
 
    clear() {
       this.rules = []
+      this.custom.clear()
+   }
+
+   private langPath(id: Id) {
+      return `assets/${id.namespace}/lang/${id.path}.json`
    }
 
    replaceValue(match: string | RegExp, value: string, options: ReplaceOptions = {}) {
@@ -78,6 +109,18 @@ export default class LangEmitter implements LangRules, ClearableEmitter {
       } else {
          this.rules.push({ languages, mods, value: it => match.test(it), replacer: it => it.replace(match, matcher) })
       }
+   }
+
+   addCustom(file: IdInput, key: string, value: string) {
+      const definition = this.custom.getOrPut(file, () => ({}))
+      definition[key] = value
+   }
+
+   entryName<T extends RegistryId>(registry: T, id: IdInput<InferIds<T>>, value: string, { lang }: EntryOptions = {}) {
+      const { namespace, path } = createId(id)
+      const file = createId({ namespace, path: lang ?? 'en_us' })
+      const { path: registryPath } = createId(registry)
+      this.addCustom(file, `${registryPath}.${namespace}.${path}`, value)
    }
 }
 
