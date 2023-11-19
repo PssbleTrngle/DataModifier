@@ -1,4 +1,5 @@
 import zod from 'zod'
+import { encodeId } from '../../common/id.js'
 
 const NumberProviderSchema = zod.union([
    zod.number(),
@@ -84,6 +85,9 @@ export const LootTableSchema = zod.object({
 export type LootTable = zod.infer<typeof LootTableSchema>
 
 export function extendLootEntry(base: LootEntryBase): LootEntry {
+   if (typeof base === 'object' && 'type' in base) {
+      base.type = encodeId(base.type)
+   }
    return LootEntrySchema.parse(base)
 }
 

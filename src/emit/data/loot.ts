@@ -109,14 +109,21 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
 
    disable(test: LootTableTest): void {
       const predicates = this.resolveLootTableTest(test)
-      this.ruled.addRule(new LootTableRule(predicates.id, predicates.output, () => null))
+      this.ruled.addRule(new LootTableRule(['remove output', test], predicates.id, predicates.output, () => null))
    }
 
    replaceOutput(from: IngredientTest, to: LootItemInput, additionalTests: LootTableTest = {}): void {
       const predicates = this.resolveLootTableTest(additionalTests)
       const outputPredicate = this.resolveIngredientTest(from)
       const replacer = replaceItemInTable(outputPredicate, createLootEntry(to, this.lookup()))
-      this.ruled.addRule(new LootTableRule(predicates.id, [outputPredicate, ...predicates.output], replacer))
+      this.ruled.addRule(
+         new LootTableRule(
+            ['replace output', from, 'with', to, additionalTests],
+            predicates.id,
+            [outputPredicate, ...predicates.output],
+            replacer
+         )
+      )
    }
 
    removeOutput(from: IngredientTest, additionalTests?: LootTableTest) {

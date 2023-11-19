@@ -1,4 +1,4 @@
-import { extendLootEntry, LootEntry, LootEntryBase, LootEntrySchema, LootTable } from '../schema/data/loot.js'
+import { extendLootEntry, LootEntry, LootEntryBase, LootTable } from '../schema/data/loot.js'
 import { IllegalShapeError } from '../error.js'
 import { IngredientInput, ItemIngredient, Predicate } from '../common/ingredient.js'
 import RegistryLookup from '../loader/registry/index.js'
@@ -7,7 +7,7 @@ export type LootItemInput = ItemIngredient | LootEntry
 
 function createUnvalidatedLootEntry(input: LootItemInput): LootEntry {
    if (input && typeof input === 'object') {
-      if ('type' in input) return LootEntrySchema.parse(input)
+      if ('type' in input) return extendLootEntry(input)
 
       if ('tag' in input)
          return {
