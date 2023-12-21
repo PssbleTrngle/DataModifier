@@ -21,11 +21,11 @@ export default class RegistryDumpLoader implements RegistryLookup {
    }
 
    private registryOf(registry: RegistryId) {
-      return this.registry.getOrPut(registry.replaceAll('\\', '/'), () => new Set<NormalizedId>())
+      return this.registry.getOrPut(registry, () => new Set<NormalizedId>())
    }
 
    private readonly accept: AcceptorWithLoader = (logger, path, content) => {
-      const match = /(?<registry>[\w-\\/]+)[\\/][\w-]+.json/.exec(path)
+      const match = /(?<registry>[\w-/]+)\/[\w-]+.json/.exec(path)
       if (!match?.groups) return false
 
       const { registry } = match.groups

@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@pssbletrngle/pack-resolver':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.4.0
+        version: 1.4.0
       '@pssbletrngle/resource-merger':
         specifier: ^1.2.4
         version: 1.2.4
@@ -802,8 +802,8 @@ packages:
       typescript: 4.8.2
     dev: false
 
-  /@pssbletrngle/pack-resolver@1.3.0:
-    resolution: {integrity: sha512-Egvf6nQ762BlDdq6OjR2oXVcZ/jplRZ9C4DhtmWL+tfJm6sIB92ROLGQYcwAiKT4XPVO9ep78+quxErUm/O5Sg==, tarball: https://npm.pkg.github.com/download/@pssbletrngle/pack-resolver/1.3.0/bc6039ffb21a76a9a344aad313872a71606dd751}
+  /@pssbletrngle/pack-resolver@1.4.0:
+    resolution: {integrity: sha512-hLHBfS/WrJX6wWRkIjnNCh5Ek8ZavbgMSrx2l3kw8bs0e8LIuC8h/ICTqF1jDLxjZQhptgM3J5Eq79ZhTByYww==, tarball: https://npm.pkg.github.com/download/@pssbletrngle/pack-resolver/1.4.0/07151bdf2744e03dadcd30a10dc4ae551b8e563a}
     dependencies:
       fs-extra: 10.1.0
       lodash: 4.17.21

@@ -1,6 +1,5 @@
 import setupLoader from './shared/loaderSetup.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
-import { join } from 'path'
 
 const { logger, loader } = setupLoader({ include: ['data/*/recipes/**/*.json'], from: 'test/resources/failing' })
 
@@ -13,9 +12,6 @@ describe('tests regarding error logging', () => {
 
       await loader.emit(acceptor)
 
-      expect(logger.warn).toHaveBeenCalledWith(
-         `${join('data', 'example', 'recipes', 'incorrectResult.json')} -> unknown result shape`,
-         120
-      )
+      expect(logger.warn).toHaveBeenCalledWith(`data/example/recipes/incorrectResult.json -> unknown result shape`, 120)
    })
 })

@@ -34,7 +34,7 @@ export abstract class JsonLoader<T> implements RegistryProvider<T> {
    }
 
    readonly accept: AcceptorWithLoader = (logger, path, content) => {
-      const match = /(data|assets)[\\/](?<namespace>[\w-]+)[\\/]\w+[\\/](?<rest>[\w-\\/]+).json/.exec(path)
+      const match = /(data|assets)\/(?<namespace>[\w-]+)\/\w+\/(?<rest>[\w-/]+).json/.exec(path)
       if (!match?.groups) return false
 
       const { namespace, rest } = match.groups
