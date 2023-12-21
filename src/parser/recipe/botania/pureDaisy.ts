@@ -15,7 +15,6 @@ export type PureDaisyRecipeDefinition = RecipeDefinition &
    Readonly<{
       input: BlockInput
       output: BlockOutput
-      result: ResultInput
    }>
 
 export class PureDaisyRecipe extends Recipe<PureDaisyRecipeDefinition> {
