@@ -54,6 +54,18 @@ describe('loot tables output replacements', () => {
          'modified zombie_villager loot table'
       )
    })
+
+   it('keeps extended loot entry properties', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.loot.replaceOutput('farmersdelight:rice', { item: 'minecraft:apple' })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('data/farmersdelight/loot_tables/blocks/wild_rice.json')).toMatchSnapshot(
+         'modified wild rice loot table'
+      )
+   })
 })
 
 describe('loot table removal', () => {

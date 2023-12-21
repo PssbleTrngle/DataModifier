@@ -66,6 +66,118 @@ exports[`loot table removal removes loot table with output filter: loot tables c
 ]
 `;
 
+exports[`loot tables output replacements keeps extended loot entry properties: modified wild rice loot table 1`] = `
+{
+  "pools": [
+    {
+      "conditions": [
+        {
+          "block": "farmersdelight:wild_rice",
+          "condition": "minecraft:block_state_property",
+          "properties": {
+            "half": "lower",
+          },
+        },
+        {
+          "condition": "minecraft:location_check",
+          "offsetY": 1,
+          "predicate": {
+            "block": {
+              "block": "farmersdelight:wild_rice",
+              "state": {
+                "half": "upper",
+              },
+            },
+          },
+        },
+      ],
+      "entries": [
+        {
+          "children": [
+            {
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "tag": "forge:shears",
+                  },
+                },
+              ],
+              "name": "farmersdelight:wild_rice",
+              "type": "minecraft:item",
+            },
+            {
+              "conditions": [
+                {
+                  "condition": "minecraft:survives_explosion",
+                },
+              ],
+              "name": "minecraft:apple",
+              "type": "minecraft:item",
+            },
+          ],
+          "type": "minecraft:alternatives",
+        },
+      ],
+      "rolls": 1,
+    },
+    {
+      "conditions": [
+        {
+          "block": "farmersdelight:wild_rice",
+          "condition": "minecraft:block_state_property",
+          "properties": {
+            "half": "upper",
+          },
+        },
+        {
+          "condition": "minecraft:location_check",
+          "offsetY": -1,
+          "predicate": {
+            "block": {
+              "block": "farmersdelight:wild_rice",
+              "state": {
+                "half": "lower",
+              },
+            },
+          },
+        },
+      ],
+      "entries": [
+        {
+          "children": [
+            {
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "tag": "forge:shears",
+                  },
+                },
+              ],
+              "name": "farmersdelight:wild_rice",
+              "type": "minecraft:item",
+            },
+            {
+              "conditions": [
+                {
+                  "condition": "minecraft:survives_explosion",
+                },
+              ],
+              "name": "minecraft:apple",
+              "type": "minecraft:item",
+            },
+          ],
+          "type": "minecraft:alternatives",
+        },
+      ],
+      "rolls": 1,
+    },
+  ],
+  "type": "minecraft:block",
+}
+`;
+
 exports[`loot tables output replacements removes outputs: modified deepslate_iron_ore loot table 1`] = `
 {
   "pools": [
@@ -78,6 +190,16 @@ exports[`loot tables output replacements removes outputs: modified deepslate_iro
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "enchantments": [
+                      {
+                        "enchantment": "minecraft:silk_touch",
+                        "levels": {
+                          "min": 1,
+                        },
+                      },
+                    ],
+                  },
                 },
               ],
               "type": "minecraft:empty",
@@ -85,6 +207,8 @@ exports[`loot tables output replacements removes outputs: modified deepslate_iro
             {
               "functions": [
                 {
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops",
                   "function": "minecraft:apply_bonus",
                 },
                 {
@@ -117,6 +241,16 @@ exports[`loot tables output replacements removes outputs: modified iron_ore loot
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "enchantments": [
+                      {
+                        "enchantment": "minecraft:silk_touch",
+                        "levels": {
+                          "min": 1,
+                        },
+                      },
+                    ],
+                  },
                 },
               ],
               "type": "minecraft:empty",
@@ -124,6 +258,8 @@ exports[`loot tables output replacements removes outputs: modified iron_ore loot
             {
               "functions": [
                 {
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops",
                   "function": "minecraft:apply_bonus",
                 },
                 {
@@ -153,9 +289,20 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "add": false,
+              "count": {
+                "max": 2,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:set_count",
             },
             {
+              "count": {
+                "max": 1,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:looting_enchant",
             },
           ],
@@ -172,7 +319,9 @@ exports[`loot tables output replacements replaces outputs with additional tests:
           "condition": "minecraft:killed_by_player",
         },
         {
+          "chance": 0.025,
           "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01,
         },
       ],
       "entries": [
@@ -187,6 +336,17 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "conditions": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true,
+                    },
+                  },
+                },
+              ],
               "function": "minecraft:furnace_smelt",
             },
           ],
@@ -210,6 +370,12 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "add": false,
+              "count": {
+                "max": 2,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:set_count",
             },
           ],
@@ -225,6 +391,12 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "add": false,
+              "count": {
+                "max": 5,
+                "min": 3,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:set_count",
             },
           ],
@@ -248,9 +420,20 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "add": false,
+              "count": {
+                "max": 2,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:set_count",
             },
             {
+              "count": {
+                "max": 1,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:looting_enchant",
             },
           ],
@@ -267,7 +450,9 @@ exports[`loot tables output replacements replaces outputs with additional tests:
           "condition": "minecraft:killed_by_player",
         },
         {
+          "chance": 0.025,
           "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01,
         },
       ],
       "entries": [
@@ -282,6 +467,17 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "conditions": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true,
+                    },
+                  },
+                },
+              ],
               "function": "minecraft:furnace_smelt",
             },
           ],
@@ -305,9 +501,20 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "add": false,
+              "count": {
+                "max": 2,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:set_count",
             },
             {
+              "count": {
+                "max": 1,
+                "min": 0,
+                "type": "minecraft:uniform",
+              },
               "function": "minecraft:looting_enchant",
             },
           ],
@@ -324,7 +531,9 @@ exports[`loot tables output replacements replaces outputs with additional tests:
           "condition": "minecraft:killed_by_player",
         },
         {
+          "chance": 0.025,
           "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01,
         },
       ],
       "entries": [
@@ -339,6 +548,17 @@ exports[`loot tables output replacements replaces outputs with additional tests:
         {
           "functions": [
             {
+              "conditions": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true,
+                    },
+                  },
+                },
+              ],
               "function": "minecraft:furnace_smelt",
             },
           ],

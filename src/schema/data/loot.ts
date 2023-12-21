@@ -8,13 +8,18 @@ const NumberProviderSchema = zod.union([
    }),
 ])
 
-const LootConditionSchema = zod.object({
-   condition: zod.string(),
-})
+const LootConditionSchema = zod
+   .object({
+      condition: zod.string(),
+   })
+   .passthrough()
 
-const LootFunctionSchema = zod.object({
-   function: zod.string(),
-})
+const LootFunctionSchema = zod
+   .object({
+      conditions: zod.array(LootConditionSchema).optional(),
+      function: zod.string(),
+   })
+   .passthrough()
 
 const LootEntryBaseSchema = zod
    .object({
