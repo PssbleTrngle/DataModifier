@@ -5,7 +5,7 @@ import { Result, ResultInput } from '../../../common/result.js'
 
 export type ToolInput = Readonly<{
    type: 'farmersdelight:tool_action'
-   action: 'string'
+   action: string
 }>
 
 export type CuttingRecipeDefinition = RecipeDefinition &

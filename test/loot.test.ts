@@ -1,6 +1,6 @@
-import createTestAcceptor from './mock/TestAcceptor.js'
-import { LootEntrySchema, LootTableSchema } from '../src/schema/data/loot.js'
 import { EMPTY_LOOT_TABLE } from '../src/emit/data/loot.js'
+import { LootEntrySchema, LootTableSchema } from '../src/schema/data/loot.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
 
 const { logger, loader } = setupLoader({ include: ['data/*/loot_tables/**/*.json', 'data/*/tags/**/*.json'] })
@@ -36,6 +36,11 @@ describe('loot tables output replacements', () => {
       const acceptor = createTestAcceptor()
 
       loader.loot.replaceOutput('#forge:ingots/iron', { tag: 'forge:ingots/lead' }, { id: /minecraft:entities\/.+/ })
+      loader.loot.replaceOutput(
+         { item: 'minecraft:rotten_flesh' },
+         { item: 'minecraft:sand' },
+         { id: 'minecraft:entities/husk' }
+      )
 
       await loader.emit(acceptor)
 

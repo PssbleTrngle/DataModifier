@@ -306,7 +306,7 @@ exports[`loot tables output replacements replaces outputs with additional tests:
               "function": "minecraft:looting_enchant",
             },
           ],
-          "name": "minecraft:rotten_flesh",
+          "name": "minecraft:sand",
           "type": "minecraft:item",
         },
       ],

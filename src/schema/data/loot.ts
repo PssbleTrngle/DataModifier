@@ -3,9 +3,11 @@ import { encodeId } from '../../common/id.js'
 
 const NumberProviderSchema = zod.union([
    zod.number(),
-   zod.object({
-      type: zod.string().optional(),
-   }),
+   zod
+      .object({
+         type: zod.string().optional(),
+      })
+      .passthrough(),
 ])
 
 const LootConditionSchema = zod
