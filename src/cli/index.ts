@@ -1,6 +1,7 @@
-import createLogger from '../logger.js'
-import RegistryDumpLoader from '../loader/registry/dump.js'
 import { createResolver } from '@pssbletrngle/pack-resolver'
+import { existsSync } from 'fs'
+import RegistryDumpLoader from '../loader/registry/dump.js'
+import createLogger from '../logger.js'
 import { generateRegistryTypes, generateStubTypes } from './codegen/registry.js'
 import CliConfig, { fromArgs, printHelp } from './config.js'
 
@@ -24,7 +25,7 @@ async function runCli() {
 async function runCodegen(config: CliConfig) {
    if (!config.output) throw new Error('output not specified')
 
-   if (config.registryDump) {
+   if (config.registryDump && existsSync(config.registryDump)) {
       const resolver = createResolver({ from: config.registryDump })
 
       const registry = new RegistryDumpLoader(logger)
