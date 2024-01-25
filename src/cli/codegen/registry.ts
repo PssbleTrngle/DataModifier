@@ -1,9 +1,9 @@
-import { join, resolve } from 'path'
-import RegistryLookup from '../../loader/registry/index.js'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
-import { createId, encodeId, Id, IdInput } from '../../common/id.js'
 import { camelCase } from 'lodash-es'
+import { join, resolve } from 'path'
 import { format } from 'prettier'
+import { Id, IdInput, createId, encodeId } from '../../common/id.js'
+import RegistryLookup from '../../loader/registry/index.js'
 
 const module = '@pssbletrngle/data-modifier/generated'
 
@@ -68,18 +68,20 @@ export function generateStubTypes(outputDirectory: string) {
       registryStub,
       format(
          `
+         import { NormalizedId } from '@pssbletrngle/data-modifier'
+
          declare module '@pssbletrngle/data-modifier/generated' {
-            export type RegistryId = string
+            export type RegistryId = NormalizedId
          
-            export type InferIds<T extends RegistryId> = string
+            export type InferIds<T extends RegistryId> = NormalizedId
          
-            export type ItemId = string
+            export type ItemId = NormalizedId
          
-            export type BlockId = string
+            export type BlockId = NormalizedId
          
-            export type FluidId = string
+            export type FluidId = NormalizedId
          
-            export type RecipeSerializerId = string
+            export type RecipeSerializerId = NormalizedId
          }`,
          { parser: 'typescript' }
       )
