@@ -64,27 +64,29 @@ export function generateStubTypes(outputDirectory: string) {
    const typesDirectory = createTypesDirectory(outputDirectory)
    const registryStub = resolve(typesDirectory, 'index.d.ts')
 
+   const stubIdType = '`${string}:${string}`'
+
    writeFileSync(
       registryStub,
       format(
          `
-         import { NormalizedId } from '@pssbletrngle/data-modifier'
-         
          declare module '@pssbletrngle/data-modifier/generated' {
-            export type RegistryId = NormalizedId
+            type StubId = ${stubIdType}
+
+            export type RegistryId = StubId
             
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            export type InferIds<T extends RegistryId> = NormalizedId
+            export type InferIds<T extends RegistryId> = StubId
          
-            export type ItemId = NormalizedId
+            export type ItemId = StubId
          
-            export type BlockId = NormalizedId
+            export type BlockId = StubId
          
-            export type FluidId = NormalizedId
+            export type FluidId = StubId
          
-            export type RecipeSerializerId = NormalizedId
+            export type RecipeSerializerId = StubId
 
-            export type EntityTypeId = NormalizedId
+            export type EntityTypeId = StubId
          }`,
          { parser: 'typescript' }
       )
