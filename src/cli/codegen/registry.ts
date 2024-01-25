@@ -69,10 +69,11 @@ export function generateStubTypes(outputDirectory: string) {
       format(
          `
          import { NormalizedId } from '@pssbletrngle/data-modifier'
-
+         
          declare module '@pssbletrngle/data-modifier/generated' {
             export type RegistryId = NormalizedId
-         
+            
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             export type InferIds<T extends RegistryId> = NormalizedId
          
             export type ItemId = NormalizedId
@@ -82,6 +83,8 @@ export function generateStubTypes(outputDirectory: string) {
             export type FluidId = NormalizedId
          
             export type RecipeSerializerId = NormalizedId
+
+            export type EntityTypeId = NormalizedId
          }`,
          { parser: 'typescript' }
       )
