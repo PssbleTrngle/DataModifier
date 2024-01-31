@@ -1,13 +1,13 @@
-import { ClearableEmitter, RegistryProvider } from '../index.js'
-import { LangDefinition } from '../../schema/assets/lang.js'
-import { Acceptor, arrayOrSelf } from '@pssbletrngle/pack-resolver'
-import { Predicate } from '../../common/ingredient.js'
-import { Replacer } from '../../parser/recipe/index.js'
-import { mapValues, omitBy } from 'lodash-es'
-import { toJson } from '../../textHelper.js'
-import { createId, encodeId, Id, IdInput } from '../../common/id.js'
-import Registry from '../../common/registry.js'
 import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { Acceptor, arrayOrSelf } from '@pssbletrngle/pack-resolver'
+import { mapValues, omitBy } from 'lodash-es'
+import { Id, IdInput, createId, encodeId } from '../../common/id.js'
+import { Predicate } from '../../common/ingredient.js'
+import Registry from '../../common/registry.js'
+import { Replacer } from '../../parser/recipe/index.js'
+import { LangDefinition } from '../../schema/assets/lang.js'
+import { toJson } from '../../textHelper.js'
+import { ClearableEmitter, RegistryProvider } from '../index.js'
 
 type LangRule = Readonly<{
    languages: string[]
@@ -104,7 +104,7 @@ export default class LangEmitter implements LangRules, ClearableEmitter {
                replacer: it => it.replaceAll(match, matcher),
             })
          } else {
-            this.replaceValue(new RegExp(match, 'i'), value)
+            this.replaceValue(new RegExp(match, 'i'), value, options)
          }
       } else {
          this.rules.push({ languages, mods, value: it => match.test(it), replacer: it => it.replace(match, matcher) })

@@ -1,5 +1,5 @@
-import setupLoader from './shared/loaderSetup.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
+import setupLoader from './shared/loaderSetup.js'
 
 const { loader } = setupLoader({ include: 'assets/*/lang/*.json' })
 
@@ -45,5 +45,15 @@ describe('replacing translation entries', () => {
       await loader.emit(acceptor)
 
       expect(acceptor.jsonAt('assets/minecraft/lang/en_us.json')).toMatchSnapshot('custom values')
+   })
+
+   it('only modifies values of given mods', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.lang.replaceValue('Iron', 'Steel', { lang: 'en_us', mod: ['create', 'farmersdelight'] })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.paths()).toHaveLength(2)
    })
 })
