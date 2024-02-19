@@ -1,9 +1,9 @@
-import { IngredientInput, Predicate } from '../../common/ingredient.js'
-import { Recipe } from '../../parser/recipe/index.js'
-import { createId, Id } from '../../common/id.js'
-import { Logger } from '../../logger.js'
-import Rule, { Modifier } from './index.js'
 import { exists } from '@pssbletrngle/pack-resolver'
+import { Id, createId } from '../../common/id.js'
+import { IngredientInput, Predicate } from '../../common/ingredient.js'
+import { Logger } from '../../logger.js'
+import { Recipe } from '../../parser/recipe/index.js'
+import Rule, { Modifier } from './index.js'
 
 export default class RecipeRule extends Rule<Recipe> {
    constructor(
@@ -18,10 +18,10 @@ export default class RecipeRule extends Rule<Recipe> {
    }
 
    matches(id: Id, recipe: Recipe, logger: Logger): boolean {
-      const type = createId(recipe.toJSON().type)
+      const types = recipe.getTypes().map(createId)
       return (
          this.idsTests.every(test => test(id, logger)) &&
-         this.typeTests.every(test => test(type, logger)) &&
+         this.typeTests.every(test => types.some(it => test(it))) &&
          this.ingredientTests.every(test => recipe.getIngredients().some(it => test(it, logger))) &&
          this.resultTests.every(test => recipe.getResults().some(it => test(it, logger)))
       )

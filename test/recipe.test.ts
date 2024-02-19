@@ -1,8 +1,8 @@
 import { EMPTY_RECIPE, RecipeTest } from '../src/emit/data/recipe.js'
+import { NormalizedId } from '../src/index.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
-import { NormalizedId } from '../src/index.js'
 
 const { logger, loader } = setupLoader({ include: ['data/**/*.json'] })
 
@@ -76,6 +76,16 @@ describe('recipe ingredient replacement', () => {
       expect(acceptor.jsonAt('data/create/recipes/smelting/zinc_ingot_from_raw_ore.json')).toMatchSnapshot(
          'modified create:zinc_ingot_from_raw_ore recipe'
       )
+   })
+
+   it('matches recipes wrapped in forge:conditional', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.recipes.remove({ input: { item: 'biomesoplenty:violet' }, type: 'farmersdelight:cutting' })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('data/custom/recipes/conditional.json')).toMatchObject(EMPTY_RECIPE)
    })
 })
 

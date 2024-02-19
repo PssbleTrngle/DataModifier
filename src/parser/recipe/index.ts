@@ -1,6 +1,6 @@
 import { Ingredient, IngredientInput, Predicate } from '../../common/ingredient.js'
-import { RecipeDefinition } from '../../schema/data/recipe.js'
 import { Result, ResultInput } from '../../common/result.js'
+import { RecipeDefinition } from '../../schema/data/recipe.js'
 
 export type Replacer<T> = (value: T) => T
 
@@ -24,6 +24,10 @@ export abstract class Recipe<TDefinition extends RecipeDefinition = RecipeDefini
 
    toJSON(): TDefinition {
       return this.definition
+   }
+
+   getTypes() {
+      return [this.toJSON().type]
    }
 }
 

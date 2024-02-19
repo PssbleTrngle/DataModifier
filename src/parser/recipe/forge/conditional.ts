@@ -1,7 +1,7 @@
-import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
 import { Ingredient, IngredientInput } from '../../../common/ingredient.js'
-import { RecipeDefinition } from '../../../schema/data/recipe.js'
 import { Result, ResultInput } from '../../../common/result.js'
+import { RecipeDefinition } from '../../../schema/data/recipe.js'
+import RecipeParser, { InlineRecipeParser, Recipe, Replacer } from '../index.js'
 
 type WithConditions<T> = {
    conditions: unknown[]
@@ -47,6 +47,10 @@ export class ForgeConditionalRecipe extends Recipe<ForgeConditionalRecipeDefinit
          this.definition,
          this.recipes.map(it => ({ ...it, recipe: it.recipe.replaceResult(replace) }))
       )
+   }
+
+   getTypes() {
+      return this.definition.recipes.map(it => it.recipe.type)
    }
 }
 
