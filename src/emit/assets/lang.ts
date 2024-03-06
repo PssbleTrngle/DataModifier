@@ -19,6 +19,7 @@ type LangRule = Readonly<{
 
 type ReplaceOptions = Readonly<{
    matchCase?: boolean
+   keepCase?: boolean
    lang?: string | string[]
    mod?: string | string[]
 }>
@@ -93,7 +94,7 @@ export default class LangEmitter implements LangRules, ClearableEmitter {
    replaceValue(match: string | RegExp, value: string, options: ReplaceOptions = {}) {
       const languages = arrayOrSelf(options.lang)
       const mods = arrayOrSelf(options.mod)
-      const matcher = matchCase(value)
+      const matcher: (it: string) => string = options.keepCase === false ? () => value : keepCaseMatcher(value)
 
       if (typeof match === 'string') {
          if (options.matchCase) {
@@ -125,7 +126,7 @@ export default class LangEmitter implements LangRules, ClearableEmitter {
 }
 
 // Taken from https://stackoverflow.com/questions/17264639/replace-text-but-keep-case
-function matchCase(replaceValue: string) {
+function keepCaseMatcher(replaceValue: string) {
    return (input: string) => {
       let result = ''
 

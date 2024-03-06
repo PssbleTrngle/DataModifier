@@ -56,4 +56,14 @@ describe('replacing translation entries', () => {
 
       expect(acceptor.paths()).toHaveLength(2)
    })
+
+   it('respects keepCase option', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.lang.replaceValue('Dark Oak', 'Mahagony', { lang: 'en_us', mod: ['minecraft'], keepCase: false })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('assets/minecraft/lang/en_us.json')).toMatchSnapshot('kept case values')
+   })
 })

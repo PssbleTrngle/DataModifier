@@ -85,3 +85,27 @@ exports[`replacing translation entries replaces using string value: replaced dio
   "block.minecraft.polished_diorite_stairs": "Polished Bird poop Stairs",
 }
 `;
+
+exports[`replacing translation entries respects keepCase option: kept case values 1`] = `
+{
+  "block.minecraft.dark_oak_button": "Mahagony Button",
+  "block.minecraft.dark_oak_door": "Mahagony Door",
+  "block.minecraft.dark_oak_fence": "Mahagony Fence",
+  "block.minecraft.dark_oak_fence_gate": "Mahagony Fence Gate",
+  "block.minecraft.dark_oak_leaves": "Mahagony Leaves",
+  "block.minecraft.dark_oak_log": "Mahagony Log",
+  "block.minecraft.dark_oak_planks": "Mahagony Planks",
+  "block.minecraft.dark_oak_pressure_plate": "Mahagony Pressure Plate",
+  "block.minecraft.dark_oak_sapling": "Mahagony Sapling",
+  "block.minecraft.dark_oak_sign": "Mahagony Sign",
+  "block.minecraft.dark_oak_slab": "Mahagony Slab",
+  "block.minecraft.dark_oak_stairs": "Mahagony Stairs",
+  "block.minecraft.dark_oak_trapdoor": "Mahagony Trapdoor",
+  "block.minecraft.dark_oak_wall_sign": "Mahagony Wall Sign",
+  "block.minecraft.dark_oak_wood": "Mahagony Wood",
+  "block.minecraft.potted_dark_oak_sapling": "Potted Mahagony Sapling",
+  "block.minecraft.stripped_dark_oak_log": "Stripped Mahagony Log",
+  "block.minecraft.stripped_dark_oak_wood": "Stripped Mahagony Wood",
+  "item.minecraft.dark_oak_boat": "Mahagony Boat",
+}
+`;
