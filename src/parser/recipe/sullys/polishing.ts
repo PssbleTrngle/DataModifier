@@ -3,13 +3,14 @@ import { Result, ResultInput } from '../../../common/result.js'
 import { RecipeDefinition } from '../../../schema/data/recipe.js'
 import RecipeParser, { Recipe, Replacer } from '../index.js'
 
-export type HammeringRecipeDefinition = RecipeDefinition &
+export type GrindstonePolishingDefinition = RecipeDefinition &
    Readonly<{
       ingredients: Ingredient[]
       result: Result
+      experience?: number
    }>
 
-export class HammeringRecipe extends Recipe<HammeringRecipeDefinition> {
+export class GrindstonePolishing extends Recipe<GrindstonePolishingDefinition> {
    getIngredients(): IngredientInput[] {
       return this.definition.ingredients
    }
@@ -19,22 +20,25 @@ export class HammeringRecipe extends Recipe<HammeringRecipeDefinition> {
    }
 
    replaceIngredient(replace: Replacer<Ingredient>): Recipe {
-      return new HammeringRecipe({
+      return new GrindstonePolishing({
          ...this.definition,
          ingredients: this.definition.ingredients.map(replace),
       })
    }
 
    replaceResult(replace: Replacer<Result>): Recipe {
-      return new HammeringRecipe({
+      return new GrindstonePolishing({
          ...this.definition,
          result: replace(this.definition.result),
       })
    }
 }
 
-export default class HammeringRecipeParser extends RecipeParser<HammeringRecipeDefinition, HammeringRecipe> {
-   create(definition: HammeringRecipeDefinition): HammeringRecipe {
-      return new HammeringRecipe(definition)
+export default class GrindstonePolishingParser extends RecipeParser<
+   GrindstonePolishingDefinition,
+   GrindstonePolishing
+> {
+   create(definition: GrindstonePolishingDefinition): GrindstonePolishing {
+      return new GrindstonePolishing(definition)
    }
 }
