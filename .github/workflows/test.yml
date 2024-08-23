@@ -25,6 +25,8 @@ jobs:
               run_install: |
                  - recursive: true
                    args: [--frozen-lockfile, --strict-peer-dependencies]
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
          - run: pnpm run test:ci
 
