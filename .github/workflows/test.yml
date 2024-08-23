@@ -1,39 +1,36 @@
 name: Test
 on:
-  pull_request:
-    types: [opened, synchronize]
-  push:
-    branches: [main]
+   pull_request:
+      types: [opened, synchronize]
+   push:
+      branches: [main]
 
 jobs:
-  test:
-    permissions:
-      contents: read
-      packages: read
+   test:
+      permissions:
+         contents: read
+         packages: read
 
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      runs-on: ubuntu-20.04
+      steps:
+         - uses: actions/checkout@v3
+           with:
+              fetch-depth: 0
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+         - uses: actions/setup-node@v3
+           with:
+              node-version: 18
+         - uses: pnpm/action-setup@v2
+           with:
+              run_install: |
+                 - recursive: true
+                   args: [--frozen-lockfile, --strict-peer-dependencies]
 
-      - uses: pnpm/action-setup@v2
-        with:
-          run_install: |
-            - recursive: true
-              args: [--frozen-lockfile, --strict-peer-dependencies]
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         - run: pnpm run test:ci
 
-      - run: pnpm run test:ci
-
-      - name: notify sonarqube
-        if: ${{ github.event_name == 'push' }}
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+         - name: notify sonarqube
+           if: ${{ github.event_name == 'push' }}
+           uses: sonarsource/sonarqube-scan-action@master
+           env:
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
