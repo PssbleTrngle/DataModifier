@@ -71,7 +71,7 @@ export default class RecipeEmitter implements RecipeRules, ClearableEmitter {
    private readonly ruled = new RuledEmitter<Recipe, RecipeRule>(
       this.logger,
       this.registry,
-      this.recipePath,
+      id => this.recipePath(id),
       EMPTY_RECIPE,
       id => this.custom.has(id)
    )

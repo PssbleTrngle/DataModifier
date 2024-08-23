@@ -55,7 +55,7 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
    private readonly ruled = new RuledEmitter<LootTable, LootTableRule>(
       this.logger,
       this.lootTables,
-      this.tablePath,
+      id => this.tablePath(id),
       EMPTY_LOOT_TABLE,
       id => this.customTables.has(id)
    )
