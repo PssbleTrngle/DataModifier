@@ -1,3 +1,4 @@
+import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 import { Acceptor, exists } from '@pssbletrngle/pack-resolver'
 import { encodeId, Id, IdInput, NormalizedId } from '../../common/id.js'
 import {
@@ -15,13 +16,12 @@ import RegistryLookup from '../../loader/registry/index.js'
 import { TagRegistryHolder } from '../../loader/tags.js'
 import { Logger } from '../../logger.js'
 import { createReplacer, Recipe, Replacer } from '../../parser/recipe/index.js'
-import { Modifier } from '../rule/index.js'
-import RecipeRule from '../rule/recipe.js'
 import { RecipeDefinition } from '../../schema/data/recipe.js'
 import CustomEmitter from '../custom.js'
 import { ClearableEmitter, RegistryProvider } from '../index.js'
+import { Modifier } from '../rule/index.js'
+import RecipeRule from '../rule/recipe.js'
 import RuledEmitter from '../ruled.js'
-import { RecipeSerializerId } from '@pssbletrngle/data-modifier/generated'
 
 export type RecipeTest = Readonly<{
    id?: CommonTest<NormalizedId>
@@ -80,11 +80,13 @@ export default class RecipeEmitter implements RecipeRules, ClearableEmitter {
       private readonly logger: Logger,
       private readonly registry: RegistryProvider<Recipe>,
       private readonly tags: TagRegistryHolder,
-      private readonly lookup: () => RegistryLookup
+      private readonly lookup: () => RegistryLookup,
+      private readonly packFormat: number
    ) {}
 
    private recipePath(id: Id) {
-      return `data/${id.namespace}/recipes/${id.path}.json`
+      const folder = this.packFormat > 44 ? 'recipe' : 'recipes'
+      return `data/${id.namespace}/${folder}/${id.path}.json`
    }
 
    async emit(acceptor: Acceptor) {

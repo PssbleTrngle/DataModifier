@@ -12,10 +12,10 @@ import RegistryLookup from '../../loader/registry/index.js'
 import { TagRegistryHolder } from '../../loader/tags.js'
 import { Logger } from '../../logger.js'
 import { createLootEntry, LootItemInput, replaceItemInTable } from '../../parser/lootTable.js'
-import LootTableRule from '../rule/lootTable.js'
 import { EmptyLootEntry, LootModifier, LootTable, LootTableSchema } from '../../schema/data/loot.js'
 import CustomEmitter from '../custom.js'
 import { ClearableEmitter, RegistryProvider } from '../index.js'
+import LootTableRule from '../rule/lootTable.js'
 import RuledEmitter from '../ruled.js'
 
 export const EMPTY_LOOT_TABLE: LootTable = {
@@ -64,11 +64,13 @@ export default class LootTableEmitter implements LootRules, ClearableEmitter {
       private readonly logger: Logger,
       private readonly lootTables: RegistryProvider<LootTable>,
       private readonly tags: TagRegistryHolder,
-      private readonly lookup: () => RegistryLookup
+      private readonly lookup: () => RegistryLookup,
+      private readonly packFormat: number
    ) {}
 
    private tablePath(id: Id) {
-      return `data/${id.namespace}/loot_tables/${id.path}.json`
+      const folder = this.packFormat > 44 ? 'loot_table' : 'loot_tables'
+      return `data/${id.namespace}/${folder}/${id.path}.json`
    }
 
    private modifierPath(id: Id) {

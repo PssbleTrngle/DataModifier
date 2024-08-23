@@ -1,32 +1,34 @@
+import { RegistryId } from '@pssbletrngle/data-modifier/generated'
 import { Acceptor, IResolver, ResolverInfo } from '@pssbletrngle/pack-resolver'
 import match from 'minimatch'
 import { createIngredient, IngredientInput, IngredientTest } from '../common/ingredient.js'
-import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
+import { createResult, ResultInput } from '../common/result.js'
+import BlockstateEmitter, { BlockstateRules } from '../emit/assets/blockstates.js'
 import LangEmitter, { LangRules } from '../emit/assets/lang.js'
+import ModelEmitter, { ModelRulesGroup } from '../emit/assets/models.js'
+import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
+import BlockDefinitionEmitter, { BlockDefinitionRules } from '../emit/content/blockDefinition.js'
+import ItemDefinitionEmitter, { ItemDefinitionRules } from '../emit/content/itemDefinition.js'
 import LootTableEmitter, { LootRules } from '../emit/data/loot.js'
 import RecipeEmitter, { RecipeRules } from '../emit/data/recipe.js'
 import TagEmitter, { TagEmitterOptions, TagRules } from '../emit/data/tags.js'
+import { ClearableEmitter } from '../emit/index.js'
 import { Logger } from '../logger.js'
 import Loader, { AcceptorWithLoader } from './index.js'
 import LangLoader from './lang.js'
 import LootTableLoader from './loot.js'
 import RecipeLoader, { RecipeLoaderAccessor } from './recipe.js'
 import RegistryDumpLoader from './registry/dump.js'
+import EmptyRegistryLookup from './registry/empty.js'
 import RegistryLookup from './registry/index.js'
 import TagsLoader from './tags.js'
-import EmptyRegistryLookup from './registry/empty.js'
-import { createResult, ResultInput } from '../common/result.js'
-import { RegistryId } from '@pssbletrngle/data-modifier/generated'
-import BlockDefinitionEmitter, { BlockDefinitionRules } from '../emit/content/blockDefinition.js'
-import BlockstateEmitter, { BlockstateRules } from '../emit/assets/blockstates.js'
-import ModelEmitter, { ModelRulesGroup } from '../emit/assets/models.js'
-import ItemDefinitionEmitter, { ItemDefinitionRules } from '../emit/content/itemDefinition.js'
-import { ClearableEmitter } from '../emit/index.js'
 
-export interface PackLoaderOptions extends TagEmitterOptions {}
+export interface PackLoaderOptions extends TagEmitterOptions {
+   packFormat: number
+}
 
 export default class PackLoader implements Loader, ClearableEmitter {
-   constructor(private readonly logger: Logger, private readonly options: PackLoaderOptions = {}) {}
+   constructor(private readonly logger: Logger, private readonly options: PackLoaderOptions) {}
 
    private readonly emitters: ClearableEmitter[] = []
 
@@ -44,10 +46,22 @@ export default class PackLoader implements Loader, ClearableEmitter {
 
    readonly tags: TagRules = this.registerEmitter(new TagEmitter(this.logger, this.tagLoader, this.options))
    readonly recipes: RecipeRules = this.registerEmitter(
-      new RecipeEmitter(this.logger, this.recipesLoader, this.tagLoader, () => this.activeRegistryLookup)
+      new RecipeEmitter(
+         this.logger,
+         this.recipesLoader,
+         this.tagLoader,
+         () => this.activeRegistryLookup,
+         this.options.packFormat
+      )
    )
    readonly loot: LootRules = this.registerEmitter(
-      new LootTableEmitter(this.logger, this.lootLoader, this.tagLoader, () => this.activeRegistryLookup)
+      new LootTableEmitter(
+         this.logger,
+         this.lootLoader,
+         this.tagLoader,
+         () => this.activeRegistryLookup,
+         this.options.packFormat
+      )
    )
    readonly lang: LangRules = this.registerEmitter(new LangEmitter(this.langLoader))
    readonly blacklist: BlacklistRules = this.registerEmitter(
@@ -108,7 +122,9 @@ export default class PackLoader implements Loader, ClearableEmitter {
    private acceptors: Record<string, AcceptorWithLoader> = {
       'data/*/tags/**/*.json': this.tagLoader.accept,
       'data/*/recipes/**/*.json': this.recipesLoader.accept,
+      'data/*/recipe/**/*.json': this.recipesLoader.accept,
       'data/*/loot_tables/**/*.json': this.lootLoader.accept,
+      'data/*/loot_table/**/*.json': this.lootLoader.accept,
       'assets/*/lang/*.json': this.langLoader.accept,
    }
 
