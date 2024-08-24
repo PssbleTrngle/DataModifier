@@ -66,7 +66,7 @@ export const EMPTY_RECIPE: RecipeDefinition = {
 }
 
 export default class RecipeEmitter implements RecipeRules, ClearableEmitter {
-   private readonly custom = new CustomEmitter<RecipeDefinition>(this.recipePath)
+   private readonly custom = new CustomEmitter<RecipeDefinition>(it => this.recipePath(it))
 
    private readonly ruled = new RuledEmitter<Recipe, RecipeRule>(
       this.logger,

@@ -13,7 +13,10 @@ describe('loader respects different pack format versions', () => {
 
       await loader.emit(acceptor)
 
-      expect(acceptor.jsonAt('data/minecraft/loot_table/test.json')).toBe(EMPTY_LOOT_TABLE)
-      expect(acceptor.jsonAt('data/minecraft/recipe/test.json')).toBe(EMPTY_RECIPE)
+      expect(acceptor.jsonAt('data/example/loot_table/test.json')).toMatchObject(EMPTY_LOOT_TABLE)
+      expect(acceptor.jsonAt('data/example/recipe/test.json')).toMatchObject(EMPTY_RECIPE)
+
+      expect(acceptor.jsonAt('data/example/loot_tables/test.json')).toBeNull()
+      expect(acceptor.jsonAt('data/example/recipes/test.json')).toBeNull()
    })
 })

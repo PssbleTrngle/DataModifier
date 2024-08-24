@@ -49,8 +49,8 @@ export interface LootRules {
 }
 
 export default class LootTableEmitter implements LootRules, ClearableEmitter {
-   private readonly customTables = new CustomEmitter<LootTable>(this.tablePath)
-   private readonly customModifiers = new CustomEmitter<LootModifier>(this.modifierPath)
+   private readonly customTables = new CustomEmitter<LootTable>(it => this.tablePath(it))
+   private readonly customModifiers = new CustomEmitter<LootModifier>(it => this.modifierPath(it))
 
    private readonly ruled = new RuledEmitter<LootTable, LootTableRule>(
       this.logger,
