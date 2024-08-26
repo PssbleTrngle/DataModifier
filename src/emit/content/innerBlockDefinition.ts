@@ -1,15 +1,15 @@
-import { AbstractBlockDefinitionRules, BlockDefinitionRules } from './blockDefinition.js'
+import { IdInput } from '../../common/id.js'
+import { BlockDefinition } from '../../schema/content/blockDefinition.js'
+import { BlockstateRules } from '../assets/blockstates.js'
 import { ModelRules } from '../assets/models.js'
 import { LootRules } from '../data/loot.js'
-import { BlockstateRules } from '../assets/blockstates.js'
-import { BlockDefinition } from '../../schema/content/blockDefinition.js'
-import { IdInput } from '../../common/id.js'
+import { AbstractBlockDefinitionRules, BlockDefinitionRules } from './blockDefinition.js'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class InnerBlockDefinitionRules extends AbstractBlockDefinitionRules {
-   add<T extends BlockDefinition>(id: IdInput, definition: T): T {
-      return definition
+   add<T extends BlockDefinition>(id: IdInput | T, definition?: T): T {
+      return definition ?? (id as T)
    }
 }
 

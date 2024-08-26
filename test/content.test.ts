@@ -1,5 +1,5 @@
-import setupLoader from './shared/loaderSetup.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
+import setupLoader from './shared/loaderSetup.js'
 
 const { loader } = setupLoader({ load: false })
 
@@ -55,6 +55,34 @@ describe('integration with content packs mod', () => {
       loader.content.items.blockItem('example:sapphire_ore', {
          type: 'example_block_item',
          block: blocks => blocks.basic({ material: 'stone', type: 'example_block' }),
+      })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('content/example/block/sapphire_block.json')).toMatchObject({ type: 'example_block' })
+      expect(acceptor.jsonAt('content/example/item/sapphire.json')).toMatchObject({ type: 'example' })
+      expect(acceptor.jsonAt('content/example/item/sapphire_ore.json')).toMatchObject({
+         type: 'example_block_item',
+         block: {
+            type: 'example_block',
+         },
+      })
+   })
+
+   it('uses custom definition types for nested block', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.content.blocks.basic('example:sapphire_block', { material: 'stone', type: 'example_block' })
+      loader.content.items.basic('example:sapphire', { type: 'example' })
+      loader.content.items.blockItem('example:sapphire_ore', {
+         type: 'example_block_item',
+         block: blocks =>
+            blocks.add({
+               type: 'example_block',
+               properties: {
+                  material: 'ice',
+               },
+            }),
       })
 
       await loader.emit(acceptor)

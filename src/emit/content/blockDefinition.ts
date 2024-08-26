@@ -1,11 +1,11 @@
+import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { Id, IdInput } from '../../common/id.js'
-import CustomEmitter from '../custom.js'
 import { BlockDefinition, BlockProperties } from '../../schema/content/blockDefinition.js'
-import { ModelRules } from '../assets/models.js'
 import { BlockstateRules } from '../assets/blockstates.js'
+import { ModelRules } from '../assets/models.js'
+import CustomEmitter from '../custom.js'
 import { LootRules } from '../data/loot.js'
 import { ClearableEmitter } from '../index.js'
-import { Acceptor } from '@pssbletrngle/pack-resolver'
 
 export type BlockDefinitionOptions = Readonly<{
    blockstate?: boolean

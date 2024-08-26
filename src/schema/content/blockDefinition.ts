@@ -1,5 +1,5 @@
 export type BlockProperties = Readonly<{
-   material: string
+   material?: string
    strength?: number
 }>
 
