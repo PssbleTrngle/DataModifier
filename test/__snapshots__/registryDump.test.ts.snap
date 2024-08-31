@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`registry dump tests correctly loads imports registries: dumped fluid registry entries 1`] = `
+exports[`registry dump tests > correctly loads imports registries > dumped fluid registry entries 1`] = `
 Set {
   "minecraft:lava",
   "minecraft:empty",

@@ -1,6 +1,13 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`replacing translation entries emits custom values together with replaced values: custom values 1`] = `
+exports[`replacing translation entries > emits custom values > custom values 1`] = `
+{
+  "item.minecraft.diamond": "Sapphire",
+  "something.else": "The Value",
+}
+`;
+
+exports[`replacing translation entries > emits custom values together with replaced values > custom values 1`] = `
 {
   "advancements.story.mine_diamond.description": "Acquire rubys",
   "advancements.story.mine_diamond.title": "Rubys!",
@@ -25,14 +32,7 @@ exports[`replacing translation entries emits custom values together with replace
 }
 `;
 
-exports[`replacing translation entries emits custom values: custom values 1`] = `
-{
-  "item.minecraft.diamond": "Sapphire",
-  "something.else": "The Value",
-}
-`;
-
-exports[`replacing translation entries replaces requires the case to match: replaced matched case values 1`] = `
+exports[`replacing translation entries > replaces requires the case to match > replaced matched case values 1`] = `
 {
   "advancements.story.mine_stone.title": "Rock Age",
   "block.minecraft.chiseled_stone_bricks": "Chiseled Rock Bricks",
@@ -74,7 +74,7 @@ exports[`replacing translation entries replaces requires the case to match: repl
 }
 `;
 
-exports[`replacing translation entries replaces using string value: replaced diorite values 1`] = `
+exports[`replacing translation entries > replaces using string value > replaced diorite values 1`] = `
 {
   "block.minecraft.diorite": "Bird poop",
   "block.minecraft.diorite_slab": "Bird poop Slab",
@@ -86,7 +86,7 @@ exports[`replacing translation entries replaces using string value: replaced dio
 }
 `;
 
-exports[`replacing translation entries respects keepCase option: kept case values 1`] = `
+exports[`replacing translation entries > respects keepCase option > kept case values 1`] = `
 {
   "block.minecraft.dark_oak_button": "Mahagony Button",
   "block.minecraft.dark_oak_door": "Mahagony Door",

@@ -1,12 +1,16 @@
-import { createLogger } from '../src/index.js'
 import chalk from 'chalk'
+import { createLogger } from '../src/index.js'
 
 /* eslint-disable no-console */
 
-beforeEach(() => {
-   jest.spyOn(console, 'log').mockImplementation().mockReset()
-   jest.spyOn(console, 'warn').mockImplementation().mockReset()
-   jest.spyOn(console, 'error').mockImplementation().mockReset()
+const logMock = vi.spyOn(console, 'log')
+const warnMock = vi.spyOn(console, 'warn')
+const errorMock = vi.spyOn(console, 'error')
+
+afterAll(() => {
+   logMock.mockReset()
+   warnMock.mockReset()
+   errorMock.mockReset()
 })
 
 describe('tests regarding the logger', () => {
@@ -18,9 +22,9 @@ describe('tests regarding the logger', () => {
       logger.warn('Some Warning')
       logger.error('An Error Occured', error)
 
-      expect(console.log).toHaveBeenCalledWith(chalk.green('Info Test'))
-      expect(console.warn).toHaveBeenCalledWith(chalk.yellow('Some Warning'))
-      expect(console.error).toHaveBeenCalledWith(chalk.red('An Error Occured'), error)
+      expect(logMock).toHaveBeenCalledWith(chalk.green('Info Test'))
+      expect(warnMock).toHaveBeenCalledWith(chalk.yellow('Some Warning'))
+      expect(errorMock).toHaveBeenCalledWith(chalk.red('An Error Occured'), error)
    })
 
    it('grouped logger prefixes spaces', () => {
@@ -37,11 +41,11 @@ describe('tests regarding the logger', () => {
 
       logger.info('After')
 
-      expect(console.log).toHaveBeenCalledWith(chalk.green('Before'))
-      expect(console.log).toHaveBeenCalledWith(chalk.green('After'))
-      expect(console.log).toHaveBeenCalledWith(chalk.green('   Info Test'))
-      expect(console.warn).toHaveBeenCalledWith(chalk.yellow('   Some Warning'))
-      expect(console.error).toHaveBeenCalledWith(chalk.red('   An Error Occured'), error)
+      expect(logMock).toHaveBeenCalledWith(chalk.green('Before'))
+      expect(logMock).toHaveBeenCalledWith(chalk.green('After'))
+      expect(logMock).toHaveBeenCalledWith(chalk.green('   Info Test'))
+      expect(warnMock).toHaveBeenCalledWith(chalk.yellow('   Some Warning'))
+      expect(errorMock).toHaveBeenCalledWith(chalk.red('   An Error Occured'), error)
    })
 
    it('grouped logger adds prefix', () => {
@@ -52,9 +56,9 @@ describe('tests regarding the logger', () => {
       logger.warn('Some Warning')
       logger.error('An Error Occured', error)
 
-      expect(console.log).toHaveBeenCalledWith(chalk.green('prefix -> Info Test'))
-      expect(console.warn).toHaveBeenCalledWith(chalk.yellow('prefix -> Some Warning'))
-      expect(console.error).toHaveBeenCalledWith(chalk.red('prefix -> An Error Occured'), error)
+      expect(logMock).toHaveBeenCalledWith(chalk.green('prefix -> Info Test'))
+      expect(warnMock).toHaveBeenCalledWith(chalk.yellow('prefix -> Some Warning'))
+      expect(errorMock).toHaveBeenCalledWith(chalk.red('prefix -> An Error Occured'), error)
    })
 })
 

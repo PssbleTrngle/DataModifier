@@ -1,20 +1,18 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { jest } from '@jest/globals'
+import type { Mock } from 'vitest'
 import { Logger, wrapLogMethods } from '../../src/logger.js'
 
 export interface TestLogger extends Logger {
    reset(): void
-   info: jest.Mock
-   warn: jest.Mock
-   error: jest.Mock
+   info: Mock
+   warn: Mock
+   error: Mock
 }
 
 export default function createTestLogger(): TestLogger {
    const logger = wrapLogMethods({
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
    }) as TestLogger
 
    logger.reset = () => {

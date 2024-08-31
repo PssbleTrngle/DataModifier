@@ -6,7 +6,7 @@ import { createResult, ResultInput } from '../common/result.js'
 import BlockstateEmitter, { BlockstateRules } from '../emit/assets/blockstates.js'
 import LangEmitter, { LangRules } from '../emit/assets/lang.js'
 import ModelEmitter, { ModelRulesGroup } from '../emit/assets/models.js'
-import BlacklistEmitter, { BlacklistRules } from '../emit/blacklist.js'
+import BlacklistEmitter, { BlacklistOptions, BlacklistRules } from '../emit/blacklist.js'
 import BlockDefinitionEmitter, { BlockDefinitionRules } from '../emit/content/blockDefinition.js'
 import ItemDefinitionEmitter, { ItemDefinitionRules } from '../emit/content/itemDefinition.js'
 import LootTableEmitter, { LootRules } from '../emit/data/loot.js'
@@ -23,7 +23,7 @@ import EmptyRegistryLookup from './registry/empty.js'
 import RegistryLookup from './registry/index.js'
 import TagsLoader from './tags.js'
 
-export interface PackLoaderOptions extends TagEmitterOptions {
+export interface PackLoaderOptions extends TagEmitterOptions, BlacklistOptions {
    packFormat: number
 }
 
@@ -65,7 +65,7 @@ export default class PackLoader implements Loader, ClearableEmitter {
    )
    readonly lang: LangRules = this.registerEmitter(new LangEmitter(this.langLoader))
    readonly blacklist: BlacklistRules = this.registerEmitter(
-      new BlacklistEmitter(this.logger, this.tagLoader, () => this.activeRegistryLookup)
+      new BlacklistEmitter(this.logger, this.tagLoader, () => this.activeRegistryLookup, this.options)
    )
 
    readonly blockstates: BlockstateRules = this.registerEmitter(new BlockstateEmitter())

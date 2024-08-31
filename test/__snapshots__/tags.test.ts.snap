@@ -1,15 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`adding of tag entries adds tag entries to custom registries: #example:something content 1`] = `
-{
-  "replace": false,
-  "values": [
-    "example:entry",
-  ],
-}
-`;
-
-exports[`adding of tag entries adds tag entries: #mineable/axe content 1`] = `
+exports[`adding of tag entries > adds tag entries > #mineable/axe content 1`] = `
 {
   "replace": false,
   "values": [
@@ -22,7 +13,16 @@ exports[`adding of tag entries adds tag entries: #mineable/axe content 1`] = `
 }
 `;
 
-exports[`loading of tags loads tags correctly: #logs content 1`] = `
+exports[`adding of tag entries > adds tag entries to custom registries > #example:something content 1`] = `
+{
+  "replace": false,
+  "values": [
+    "example:entry",
+  ],
+}
+`;
+
+exports[`loading of tags > loads tags correctly > #logs content 1`] = `
 [
   "#minecraft:crimson_stems",
   "#minecraft:logs_that_burn",
@@ -30,7 +30,7 @@ exports[`loading of tags loads tags correctly: #logs content 1`] = `
 ]
 `;
 
-exports[`loading of tags loads tags correctly: #mineable/pickaxe content 1`] = `
+exports[`loading of tags > loads tags correctly > #mineable/pickaxe content 1`] = `
 [
   "#minecraft:anvil",
   "#minecraft:cauldrons",
@@ -856,7 +856,7 @@ exports[`loading of tags loads tags correctly: #mineable/pickaxe content 1`] = `
 ]
 `;
 
-exports[`loading of tags resolves tags correctly: resolved #mineable/axe entries 1`] = `
+exports[`loading of tags > resolves tags correctly > resolved #mineable/axe entries 1`] = `
 [
   "minecraft:black_banner",
   "minecraft:black_wall_banner",
@@ -1204,7 +1204,7 @@ exports[`loading of tags resolves tags correctly: resolved #mineable/axe entries
 ]
 `;
 
-exports[`loading of tags resolves tags correctly: resolved #trapdoors entries 1`] = `
+exports[`loading of tags > resolves tags correctly > resolved #trapdoors entries 1`] = `
 [
   "minecraft:acacia_trapdoor",
   "minecraft:birch_trapdoor",
@@ -1220,7 +1220,7 @@ exports[`loading of tags resolves tags correctly: resolved #trapdoors entries 1`
 ]
 `;
 
-exports[`removal of tag entries removes tag entries using id: #oak_logs content 1`] = `
+exports[`removal of tag entries > removes tag entries using id > #oak_logs content 1`] = `
 {
   "replace": true,
   "values": [
@@ -1231,7 +1231,7 @@ exports[`removal of tag entries removes tag entries using id: #oak_logs content 
 }
 `;
 
-exports[`removal of tag entries removes tag entries using predicate: modified #guarded_by_piglins 1`] = `
+exports[`removal of tag entries > removes tag entries using predicate > modified #guarded_by_piglins 1`] = `
 {
   "replace": true,
   "values": [
@@ -1261,7 +1261,7 @@ exports[`removal of tag entries removes tag entries using predicate: modified #g
 }
 `;
 
-exports[`removal of tag entries removes tag entries using regex: modified #birch_logs 1`] = `
+exports[`removal of tag entries > removes tag entries using regex > modified #birch_logs 1`] = `
 {
   "replace": true,
   "values": [
@@ -1271,14 +1271,14 @@ exports[`removal of tag entries removes tag entries using regex: modified #birch
 }
 `;
 
-exports[`removal of tag entries removes tag entries using tag: modified #guarded_by_piglins 1`] = `
+exports[`removal of tag entries > removes tag entries using tag > modified #guarded_by_piglins 1`] = `
 {
   "replace": true,
   "values": [],
 }
 `;
 
-exports[`removal of tag entries removes tag entries using tag: modified #minable/axe 1`] = `
+exports[`removal of tag entries > removes tag entries using tag > modified #minable/axe 1`] = `
 {
   "replace": true,
   "values": [

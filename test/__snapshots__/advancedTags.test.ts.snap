@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`creation of tag definitions for the advanced tag-loader mod can generate files using remove entries: created #minecraft:fire_resistant_logs 1`] = `
+exports[`creation of tag definitions for the advanced tag-loader mod > can generate files using remove entries > created #minecraft:fire_resistant_logs 1`] = `
 {
   "remove": [
     "#minecraft:logs_that_burn",

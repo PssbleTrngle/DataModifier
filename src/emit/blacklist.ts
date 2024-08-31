@@ -1,13 +1,19 @@
-import { createIngredient, IngredientTest, resolveIngredientTest } from '../common/ingredient.js'
-import { encodeId, NormalizedId } from '../common/id.js'
-import { Acceptor } from '@pssbletrngle/pack-resolver'
+import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { Acceptor, arrayOrSelf } from '@pssbletrngle/pack-resolver'
 import { uniq } from 'lodash-es'
+import { encodeId, NormalizedId } from '../common/id.js'
+import { createIngredient, IngredientTest, resolveIngredientTest } from '../common/ingredient.js'
 import { IllegalShapeError } from '../error.js'
-import { Logger } from '../logger.js'
 import RegistryLookup from '../loader/registry/index.js'
 import { TagRegistryHolder } from '../loader/tags.js'
-import { InferIds, RegistryId } from '@pssbletrngle/data-modifier/generated'
+import { Logger } from '../logger.js'
+import { toJson } from '../textHelper.js'
 import { ClearableEmitter } from './index.js'
+
+export type HideMode = 'jei' | 'polytone'
+export interface BlacklistOptions {
+   hideFrom?: HideMode | HideMode[]
+}
 
 export interface BlacklistRules {
    hide(...inputs: IngredientTest[]): void
@@ -18,12 +24,16 @@ type RegistryIdInput<T extends RegistryId> = InferIds<T> | RegExp
 
 export default class BlacklistEmitter implements BlacklistRules, ClearableEmitter {
    private hidden: NormalizedId[] = []
+   private hideModes: HideMode[]
 
    constructor(
       private readonly logger: Logger,
       private readonly tags: TagRegistryHolder,
-      private readonly lookup: () => RegistryLookup
-   ) {}
+      private readonly lookup: () => RegistryLookup,
+      private options: BlacklistOptions
+   ) {
+      this.hideModes = arrayOrSelf(options.hideFrom)
+   }
 
    hide(...inputs: IngredientTest[]) {
       this.hidden.push(...inputs.flatMap(test => this.resolveIds(test)).map(encodeId))
@@ -77,8 +87,32 @@ export default class BlacklistEmitter implements BlacklistRules, ClearableEmitte
       const hiddenIds = uniq(this.hidden).sort()
       if (hiddenIds.length === 0) return
 
+      const promises: Promise<void>[] = []
+      if (this.hideModes.includes('jei')) promises.push(this.emitJei(acceptor, hiddenIds))
+      if (this.hideModes.includes('polytone')) promises.push(this.emitPolytone(acceptor, hiddenIds))
+      await Promise.all(promises)
+   }
+
+   private async emitJei(acceptor: Acceptor, hiddenIds: NormalizedId[]) {
       const content = hiddenIds.join('\n')
       const path = 'jei/blacklist.cfg'
+      acceptor(path, content)
+   }
+
+   private async emitPolytone(acceptor: Acceptor, hiddenIds: NormalizedId[]) {
+      const tabs = this.lookup().keys('minecraft:creative_mode_tab')
+
+      const content = toJson({
+         targets: tabs,
+         removals: [
+            {
+               type: 'items_match',
+               items: hiddenIds,
+            },
+         ],
+      })
+
+      const path = 'assets/generated/polytone/creative_tab_modifiers/hidden.json'
       acceptor(path, content)
    }
 

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`creates custom loot tables: parsed loot table 1`] = `
+exports[`creates custom loot tables > parsed loot table 1`] = `
 {
   "pools": [
     {
@@ -26,7 +26,7 @@ exports[`creates custom loot tables: parsed loot table 1`] = `
 }
 `;
 
-exports[`loot table removal removes loot table with output filter: loot tables containing any log 1`] = `
+exports[`loot table removal > removes loot table with output filter > loot tables containing any log 1`] = `
 [
   "data/minecraft/loot_tables/blocks/acacia_log.json",
   "data/minecraft/loot_tables/blocks/acacia_wood.json",
@@ -66,7 +66,7 @@ exports[`loot table removal removes loot table with output filter: loot tables c
 ]
 `;
 
-exports[`loot tables output replacements keeps extended loot entry properties: modified wild rice loot table 1`] = `
+exports[`loot tables output replacements > keeps extended loot entry properties > modified wild rice loot table 1`] = `
 {
   "pools": [
     {
@@ -178,7 +178,7 @@ exports[`loot tables output replacements keeps extended loot entry properties: m
 }
 `;
 
-exports[`loot tables output replacements removes outputs: modified deepslate_iron_ore loot table 1`] = `
+exports[`loot tables output replacements > removes outputs > modified deepslate_iron_ore loot table 1`] = `
 {
   "pools": [
     {
@@ -229,7 +229,7 @@ exports[`loot tables output replacements removes outputs: modified deepslate_iro
 }
 `;
 
-exports[`loot tables output replacements removes outputs: modified iron_ore loot table 1`] = `
+exports[`loot tables output replacements > removes outputs > modified iron_ore loot table 1`] = `
 {
   "pools": [
     {
@@ -280,7 +280,7 @@ exports[`loot tables output replacements removes outputs: modified iron_ore loot
 }
 `;
 
-exports[`loot tables output replacements replaces outputs with additional tests: modified husk loot table 1`] = `
+exports[`loot tables output replacements > replaces outputs with additional tests > modified husk loot table 1`] = `
 {
   "pools": [
     {
@@ -361,7 +361,7 @@ exports[`loot tables output replacements replaces outputs with additional tests:
 }
 `;
 
-exports[`loot tables output replacements replaces outputs with additional tests: modified iron_golem loot table 1`] = `
+exports[`loot tables output replacements > replaces outputs with additional tests > modified iron_golem loot table 1`] = `
 {
   "pools": [
     {
@@ -411,7 +411,7 @@ exports[`loot tables output replacements replaces outputs with additional tests:
 }
 `;
 
-exports[`loot tables output replacements replaces outputs with additional tests: modified zombie loot table 1`] = `
+exports[`loot tables output replacements > replaces outputs with additional tests > modified zombie loot table 1`] = `
 {
   "pools": [
     {
@@ -492,7 +492,7 @@ exports[`loot tables output replacements replaces outputs with additional tests:
 }
 `;
 
-exports[`loot tables output replacements replaces outputs with additional tests: modified zombie_villager loot table 1`] = `
+exports[`loot tables output replacements > replaces outputs with additional tests > modified zombie_villager loot table 1`] = `
 {
   "pools": [
     {

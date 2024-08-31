@@ -1,9 +1,9 @@
-import setupLoader from './shared/loaderSetup.js'
+import { Ingredient } from '../src/index.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import { createDumpResolver } from './mock/TestResolver.js'
-import { Ingredient } from '../src/index.js'
+import setupLoader from './shared/loaderSetup.js'
 
-const { loader } = setupLoader({ load: false })
+const { loader } = setupLoader({ load: false, hideFrom: ['jei'] })
 
 describe('blacklist tests', () => {
    it('generated a jei blacklist config file', async () => {
