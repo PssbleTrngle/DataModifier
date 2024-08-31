@@ -2,12 +2,13 @@
 
 exports[`blacklist tests > does not create the jei blacklist config if nothing is hidden > creates a polytone tab modifier 1`] = `
 "{
+  "targets": ["minecraft:example_tab"],
   "removals": [
     {
       "type": "items_match",
       "items": [
-        "forge:milk",
         "minecraft:ice",
+        "minecraft:lava",
         "minecraft:stone",
         "minecraft:water"
       ]

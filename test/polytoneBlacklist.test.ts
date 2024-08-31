@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import createTestAcceptor from './mock/TestAcceptor.js'
+import { createDumpResolver } from './mock/TestResolver.js'
 import setupLoader from './shared/loaderSetup.js'
 
 const { loader } = setupLoader({ load: false, hideFrom: ['polytone'] })
+
+beforeEach(async () => {
+   const resolver = createDumpResolver()
+   await loader.loadRegistryDump(resolver)
+})
 
 describe('blacklist tests', () => {
    it('does not generate a jei blacklist config file', async () => {
@@ -21,7 +27,7 @@ describe('blacklist tests', () => {
       loader.blacklist.hide('minecraft:stone')
       loader.blacklist.hide({ fluid: 'water' })
       loader.blacklist.hide({ block: 'water' })
-      loader.blacklist.hide([{ item: 'ice' }, { fluid: 'forge:milk' }])
+      loader.blacklist.hide([{ item: 'ice' }, { fluid: 'minecraft:lava' }])
 
       await loader.emit(acceptor)
 
