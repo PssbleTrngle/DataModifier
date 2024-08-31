@@ -11,11 +11,7 @@
    "overrides": [
       {
          "files": ["test/**"],
-         "plugins": ["jest"],
-         "extends": ["plugin:jest/recommended"],
-         "rules": {
-            "jest/prefer-snapshot-hint": ["error", "always"]
-         }
+         "extends": ["plugin:@vitest/legacy-recommended"]
       }
    ]
 }
