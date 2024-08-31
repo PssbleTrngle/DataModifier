@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
 

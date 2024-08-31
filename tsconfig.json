@@ -16,20 +16,18 @@
       "experimentalDecorators": true,
       "declaration": true,
       "declarationMap": true,
+      "skipLibCheck": true,
       "typeRoots": [
          "node_modules/@types",
-         "node_modules",
-         "@types",
-      ],
-      "types": [
-         "vitest/globals"
-      ],
+         "@types"
+      ]
    },
    "include": [
-      "."
+      "src",
    ],
    "exclude": [
       "node_modules",
       "dist",
+      "test"
    ]
 }

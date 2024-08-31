@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Ingredient } from '../src/index.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import { createDumpResolver } from './mock/TestResolver.js'

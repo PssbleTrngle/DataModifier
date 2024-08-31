@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EMPTY_RECIPE, RecipeTest } from '../src/emit/data/recipe.js'
 import { NormalizedId } from '../src/index.js'
 import { ShapedRecipeDefinition } from '../src/parser/recipe/vanilla/shaped.js'

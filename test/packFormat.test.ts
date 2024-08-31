@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { EMPTY_LOOT_TABLE, EMPTY_RECIPE } from '../src/index.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'

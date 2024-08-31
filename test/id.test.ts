@@ -1,6 +1,7 @@
+import { expect, it } from 'vitest'
 import { createId, encodeId, Id, NormalizedId } from '../src/common/id.js'
-import Registry from '../src/common/registry.js'
 import { resolveIDTest } from '../src/common/predicates.js'
+import Registry from '../src/common/registry.js'
 
 it('parses id from string', () => {
    expect(createId('minecraft:stone')).toMatchObject({ namespace: 'minecraft', path: 'stone' })

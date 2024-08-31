@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest'
 import { createIngredient, createResult } from '../src/index.js'
 import { createDumpResolver } from './mock/TestResolver.js'
 import setupLoader from './shared/loaderSetup.js'

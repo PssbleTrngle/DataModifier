@@ -1,7 +1,8 @@
-import createTestAcceptor from './mock/TestAcceptor.js'
+import { describe, expect, it } from 'vitest'
 import { createIngredient } from '../src/common/ingredient.js'
 import { createResult } from '../src/common/result.js'
 import { tryCatching } from '../src/error.js'
+import createTestAcceptor from './mock/TestAcceptor.js'
 import setupLoader from './shared/loaderSetup.js'
 
 const { logger, loader } = setupLoader({ include: ['data/*/tags/**/*.json'] })

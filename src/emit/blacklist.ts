@@ -80,7 +80,7 @@ export default class BlacklistEmitter implements BlacklistRules, ClearableEmitte
       if ('fluid' in ingredient) return [ingredient.fluid]
       if ('block' in ingredient) return [ingredient.block]
 
-      throw new IllegalShapeError('illegal blacklist entry', test)
+      throw new IllegalShapeError('illegal blacklist entry', input)
    }
 
    async emit(acceptor: Acceptor) {
@@ -102,8 +102,10 @@ export default class BlacklistEmitter implements BlacklistRules, ClearableEmitte
    private async emitPolytone(acceptor: Acceptor, hiddenIds: NormalizedId[]) {
       const tabs = this.lookup().keys('minecraft:creative_mode_tab')
 
+      if (!tabs) throw new Error('Cannot use polytone output without creative mod tab registry')
+
       const content = toJson({
-         targets: tabs,
+         targets: [...tabs.values()],
          removals: [
             {
                type: 'items_match',

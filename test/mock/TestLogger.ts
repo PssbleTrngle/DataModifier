@@ -1,4 +1,4 @@
-import type { Mock } from 'vitest'
+import { vi, type Mock } from 'vitest'
 import { Logger, wrapLogMethods } from '../../src/logger.js'
 
 export interface TestLogger extends Logger {

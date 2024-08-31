@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 import { createLogger } from '../src/index.js'
 
 /* eslint-disable no-console */

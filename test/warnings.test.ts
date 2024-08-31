@@ -1,5 +1,6 @@
-import setupLoader from './shared/loaderSetup.js'
+import { describe, expect, it } from 'vitest'
 import createTestAcceptor from './mock/TestAcceptor.js'
+import setupLoader from './shared/loaderSetup.js'
 
 const { logger, loader } = setupLoader({ include: ['data/*/recipes/**/*.json'], from: 'test/resources/failing' })
 

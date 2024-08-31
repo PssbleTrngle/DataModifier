@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it } from 'vitest'
 import { EMPTY_LOOT_TABLE } from '../src/emit/data/loot.js'
 import { LootEntrySchema, LootTableSchema } from '../src/schema/data/loot.js'
 import createTestAcceptor from './mock/TestAcceptor.js'
