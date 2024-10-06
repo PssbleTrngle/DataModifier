@@ -1,3 +1,4 @@
+import { BlockId } from '@pssbletrngle/data-modifier/generated'
 import { Acceptor } from '@pssbletrngle/pack-resolver'
 import { Id, IdInput } from '../../common/id.js'
 import { BlockDefinition, BlockProperties } from '../../schema/content/blockDefinition.js'
@@ -13,7 +14,9 @@ export type BlockDefinitionOptions = Readonly<{
    loot?: boolean
 }>
 
-type ExtendedBlockProperties = BlockProperties & {
+type PropertiesOrCopy = BlockProperties | { copy: BlockId }
+
+type ExtendedBlockProperties = PropertiesOrCopy & {
    type?: string
 }
 
@@ -27,6 +30,11 @@ export interface BlockDefinitionRules {
       properties: ExtendedBlockProperties & { large?: boolean },
       options?: BlockDefinitionOptions
    ): BlockDefinition
+}
+
+function resolveProperties(from: PropertiesOrCopy): BlockProperties |string {
+      if('copy' in from) return from.copy
+      return from
 }
 
 export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRules {
@@ -47,7 +55,7 @@ export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRul
 
       return this.add(id, {
          type: type ?? 'basic',
-         properties,
+         properties: resolveProperties(properties),
       })
    }
 
@@ -65,7 +73,7 @@ export abstract class AbstractBlockDefinitionRules implements BlockDefinitionRul
       return this.add(id, {
          type: type ?? 'create:cog',
          large,
-         properties,
+         properties: resolveProperties(properties),
       })
    }
 }

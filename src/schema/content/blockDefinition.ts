@@ -5,7 +5,7 @@ export type BlockProperties = Readonly<{
 
 export type BlockDefinition = Readonly<{
    type: string
-   properties: BlockProperties
+   properties: BlockProperties | string
 }>
 
 export type CogBlockDefinition = BlockDefinition &

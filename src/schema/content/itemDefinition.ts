@@ -6,6 +6,7 @@ export type Rarity = 'common' | 'rare'
 export type ItemProperties = Readonly<{
    rarity?: Rarity
    stack_size?: number
+   creative_tab?: string
 }>
 
 export type ItemDefinition = Readonly<{

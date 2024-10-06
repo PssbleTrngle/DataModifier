@@ -1,5 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`integration with content packs mod > correctly resolves copy reference for block properties > block definition using reference for properties 1`] = `
+{
+  "properties": "minecraft:emerald_ore",
+  "type": "basic",
+}
+`;
+
 exports[`integration with content packs mod > generates additional resources for block definitions > basic block definition 1`] = `
 {
   "properties": {

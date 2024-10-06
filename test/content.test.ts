@@ -97,4 +97,14 @@ describe('integration with content packs mod', () => {
          },
       })
    })
+
+   it('correctly resolves copy reference for block properties', async () => {
+      const acceptor = createTestAcceptor()
+
+      loader.content.blocks.basic('example:ruby_ore', { material: 'stone', copy: 'minecraft:emerald_ore' })
+
+      await loader.emit(acceptor)
+
+      expect(acceptor.jsonAt('content/example/block/ruby_ore.json')).toMatchSnapshot('block definition using reference for properties')
+   })
 })
