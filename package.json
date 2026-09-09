@@ -29,7 +29,7 @@
     "husky": "^9.1.7",
     "prettier": "catalog:",
     "turbo": "^2.10.7",
-    "@types/bun": "^1.4.0"
+    "@types/bun": "^1.4.1"
   },
   "workspaces": [
     "lib",
